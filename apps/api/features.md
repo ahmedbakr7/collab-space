@@ -13,6 +13,7 @@
 
 - CreateUser (Register): Allows a new user to sign up.
 - GetUser: Retrieves user details by ID.
+- GetUsers: Retrieves all users.
 
 ### Ports
 
@@ -22,6 +23,7 @@
 
 - POST /users: Create a user.
 - GET /users/:id: Get a user.
+- GET /users: Get all users.
 
 ### Errors
 

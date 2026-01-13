@@ -30,4 +30,11 @@ export class InMemoryUserRepository implements UserRepository {
     if (!data) return okAsync(null);
     return okAsync(new User(data.id, data.email, data.name, data.createdAt));
   }
+
+  findAll(): ResultAsync<User[], AppError> {
+    const users = Array.from(this.users.values()).map(
+      (data) => new User(data.id, data.email, data.name, data.createdAt),
+    );
+    return okAsync(users);
+  }
 }

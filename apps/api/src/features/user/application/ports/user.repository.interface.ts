@@ -6,4 +6,5 @@ export interface UserRepository {
   save(user: User): ResultAsync<void, AppError>;
   findById(id: string): ResultAsync<User | null, AppError>;
   findByEmail(email: string): ResultAsync<User | null, AppError>;
+  findAll(): ResultAsync<User[], AppError>;
 }
