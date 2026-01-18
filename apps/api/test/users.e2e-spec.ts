@@ -78,4 +78,28 @@ describe('UsersController (e2e)', () => {
       .get('/users/00000000-0000-0000-0000-000000000000')
       .expect(404);
   });
+
+  it('/users/:id (PUT)', async () => {
+    const updateData = {
+      name: 'Updated Name',
+    };
+    const response = await request(app.getHttpServer())
+      .put(`/users/${createdUserId}`)
+      .send(updateData)
+      .expect(200);
+
+    expect(response.body.name).toBe(updateData.name);
+    expect(response.body.email).toBe(testUser.email); // Should remain same
+  });
+
+  it('/users/:id (DELETE)', async () => {
+    await request(app.getHttpServer())
+      .delete(`/users/${createdUserId}`)
+      .expect(200);
+
+    // Verify it is gone
+    await request(app.getHttpServer())
+      .get(`/users/${createdUserId}`)
+      .expect(404);
+  });
 });
