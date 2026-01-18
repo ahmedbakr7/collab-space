@@ -64,7 +64,6 @@ Must be:
 - No decorators
 - No I/O
 - No NestJS
-- No neverthrow
 
 Domain models the business, not technology.
 Entities should be simple TypeScript classes without factory methods unless necessary.
@@ -79,17 +78,18 @@ Contains:
 - Ports (interfaces)
 - Application errors
 
-All Use Cases MUST return:
-neverthrow.ResultAsync<T, AppError>
-
-No business logic is allowed to throw exceptions.
+Use Cases:
+- Use standard async/await
+- Use try/catch for error handling
+- Throw only typed AppError instances on failure
+- Never throw raw or untyped errors
 
 Errors must extend AppError and be typed (USER_NOT_FOUND, INVALID_STATE, etc).
 
 All external dependencies (DB, APIs, storage, queues) must be accessed via Ports.
 
 Naming Convention:
-- Ports (interfaces) MUST end with [.interface.ts](cci:7://file:///d:/code/collab-space/apps/api/src/features/user/application/ports/user.repository.interface.ts:0:0-0:0) (e.g., [user.repository.interface.ts](cci:7://file:///d:/code/collab-space/apps/api/src/features/user/application/ports/user.repository.interface.ts:0:0-0:0)).
+- Ports (interfaces) MUST end with [.interface.ts] (e.g., user.repository.interface.ts).
 
 ──────────────────────────────────────────────────
 INFRASTRUCTURE LAYER
@@ -102,11 +102,11 @@ Contains:
 - Queue adapters
 - Mappers
 
-All implementations MUST return neverthrow ResultAsync.
-
-No infrastructure errors may escape as thrown exceptions.
-
-Infrastructure implements Application ports.
+Responsibilities:
+- Implement Application ports
+- Use try/catch internally
+- Translate infrastructure/library errors into AppError
+- Never allow raw exceptions to escape the infrastructure layer
 
 ──────────────────────────────────────────────────
 PRESENTATION LAYER (NestJS)
@@ -124,8 +124,8 @@ Responsibilities:
 - Validate all input using Zod
 - Convert HTTP → Application DTOs
 - Call use cases
-- Unwrap ResultAsync
-- Throw AppError for the global exception filter
+- Catch and rethrow AppError only
+- Never contain business logic
 
 Controllers contain ZERO business logic.
 
@@ -144,10 +144,12 @@ Validation must include:
 ──────────────────────────────────────────────────
 ERROR HANDLING
 ──────────────────────────────────────────────────
-Use Cases never throw.
-They return ResultAsync<T, AppError>.
+Use Cases:
+- Use try/catch
+- Throw AppError on all known failure cases
 
-Controllers unwrap ResultAsync and throw AppError.
+Controllers:
+- Do not handle errors beyond passing them upward
 
 A global NestJS ExceptionFilter must:
 - Map AppError → HTTP responses
@@ -163,16 +165,13 @@ All HTTP errors must follow:
 }
 
 ──────────────────────────────────────────────────
-NEVERTHROW RULES
+TRY / CATCH RULES
 ──────────────────────────────────────────────────
-neverthrow is REQUIRED.
-
-All ports return ResultAsync.
-All use cases return ResultAsync.
-All infrastructure adapters return ResultAsync.
-
-No try/catch in business logic.
-No thrown errors outside Presentation.
+- Standard try/catch is REQUIRED
+- No functional error wrappers
+- No Result / Either / ResultAsync patterns
+- Errors are propagated exclusively via throwing AppError
+- No raw Error objects may cross layer boundaries
 
 ──────────────────────────────────────────────────
 DATA FLOW
@@ -184,8 +183,7 @@ HTTP Request
 → Port
 → Adapter
 → External System
-→ ResultAsync
-→ Controller
+→ Return / Throw AppError
 → Exception Filter
 → HTTP Response
 

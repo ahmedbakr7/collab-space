@@ -1,9 +1,10 @@
-export class User {
+export class Project {
   constructor(
     public readonly id: string,
-    public readonly email: string,
+    public readonly orgId: string,
     public readonly name: string,
-    public readonly passwordHash: string,
+    public readonly description: string,
+    public readonly slug: string,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
   ) {}

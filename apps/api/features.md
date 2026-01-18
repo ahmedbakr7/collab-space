@@ -6,8 +6,9 @@
 
 - [x] Domain Layer
 - [x] Application Layer
-- [x] Infrastructure Layer (In-Memory)
+- [x] Infrastructure Layer (In-Memory -> Prisma WIP)
 - [x] Presentation Layer
+- [x] Architecture Compliance: Strictly follows async/await + AppError patterns (v2 rules).
 
 ### Use Cases
 
@@ -35,3 +36,33 @@
 
 - Real database persistence (currently using In-Memory adapter).
 - Authentication/Authorization integration.
+
+## Organization Feature (Domain Only)
+
+### Status
+
+- [x] Domain Layer (Entity defined)
+
+## Project Feature (Domain Only)
+
+### Status
+
+- [x] Domain Layer (Entity defined)
+
+## Task Feature (Domain Only)
+
+### Status
+
+- [x] Domain Layer (Entities: Task, TaskComment defined)
+- [x] Enums: TaskStatus, TaskPriority
+
+## Tag Feature (Domain Only)
+
+### Status
+
+- [x] Domain Layer (Entity: Tag defined)
+
+## Infrastructure
+
+- [x] Database: Prisma Schema defined (User, Organization, Project, Task, TaskComment, Tag).
+- [x] Database: Prisma Client generated.

@@ -16,28 +16,16 @@ export class UsersController {
   @Post()
   @UsePipes(new ZodValidationPipe(createUserSchema))
   async create(@Body() body: CreateUserDto) {
-    const result = await this.createUserUseCase.execute(body);
-    if (result.isErr()) {
-      throw result.error;
-    }
-    return result.value;
+    return this.createUserUseCase.execute(body);
   }
 
   @Get()
   async getAll() {
-    const result = await this.getUsersUseCase.execute();
-    if (result.isErr()) {
-      throw result.error;
-    }
-    return result.value;
+    return this.getUsersUseCase.execute();
   }
 
   @Get(':id')
   async get(@Param('id') id: string) {
-    const result = await this.getUserUseCase.execute({ id });
-    if (result.isErr()) {
-      throw result.error;
-    }
-    return result.value;
+    return this.getUserUseCase.execute({ id });
   }
 }

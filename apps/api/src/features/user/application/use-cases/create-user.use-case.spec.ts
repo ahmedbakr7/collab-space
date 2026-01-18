@@ -19,15 +19,12 @@ describe('CreateUserUseCase', () => {
 
     const result = await useCase.execute(command);
 
-    expect(result.isOk()).toBe(true);
-    if (result.isOk()) {
-      expect(result.value.email).toBe(command.email);
-      expect(result.value.name).toBe(command.name);
-      expect(result.value.id).toBeDefined();
-    }
+    expect(result.email).toBe(command.email);
+    expect(result.name).toBe(command.name);
+    expect(result.id).toBeDefined();
   });
 
-  it('should return error if user already exists', async () => {
+  it('should throw error if user already exists', async () => {
     const command = {
       email: 'existing@example.com',
       name: 'Existing User',
@@ -37,11 +34,8 @@ describe('CreateUserUseCase', () => {
     await useCase.execute(command);
 
     // Try to create again
-    const result = await useCase.execute(command);
-
-    expect(result.isErr()).toBe(true);
-    if (result.isErr()) {
-      expect(result.error).toBeInstanceOf(UserAlreadyExistsError);
-    }
+    await expect(useCase.execute(command)).rejects.toThrow(
+      UserAlreadyExistsError,
+    );
   });
 });
