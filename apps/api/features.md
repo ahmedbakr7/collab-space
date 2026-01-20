@@ -180,3 +180,4 @@
 
 - [x] Database: Prisma Schema defined (User, Organization, Project, Task, TaskComment, Tag).
 - [x] Database: Prisma Client generated.
+- [x] Storage: Supabase Storage implemented.
