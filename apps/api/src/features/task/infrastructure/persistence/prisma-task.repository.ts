@@ -1,0 +1,58 @@
+import { Injectable } from '@nestjs/common';
+import { TaskRepository } from '../../application/ports/task.repository.interface';
+import { Task } from '../../domain/entities/task.entity';
+import { PrismaService } from '../../../../infrastructure/prisma/prisma.service';
+import { TaskMapper } from '../mappers/task.mapper';
+
+@Injectable()
+export class PrismaTaskRepository implements TaskRepository {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async save(task: Task): Promise<void> {
+    await this.prisma.task.upsert({
+      where: { id: task.id },
+      update: {
+        title: task.title,
+        description: task.description,
+        status: task.status,
+        priority: task.priority,
+        dueDate: task.dueDate,
+        assignedToId: task.assignedTo,
+        updatedAt: task.updatedAt,
+      },
+      create: {
+        id: task.id,
+        projectId: task.projectId,
+        title: task.title,
+        description: task.description,
+        status: task.status,
+        priority: task.priority,
+        dueDate: task.dueDate,
+        createdById: task.createdBy,
+        assignedToId: task.assignedTo,
+        createdAt: task.createdAt,
+        updatedAt: task.updatedAt,
+      },
+    });
+  }
+
+  async findById(id: string): Promise<Task | null> {
+    const task = await this.prisma.task.findUnique({
+      where: { id },
+    });
+    return task ? TaskMapper.toDomain(task) : null;
+  }
+
+  async findByProjectId(projectId: string): Promise<Task[]> {
+    const tasks = await this.prisma.task.findMany({
+      where: { projectId },
+    });
+    return tasks.map(TaskMapper.toDomain);
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.task.delete({
+      where: { id },
+    });
+  }
+}

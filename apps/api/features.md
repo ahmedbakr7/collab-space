@@ -111,18 +111,70 @@
 - PROJECT_NOT_FOUND
 - PROJECT_ALREADY_EXISTS
 
-## Task Feature (Domain Only)
+## Tag Feature
 
 ### Status
 
-- [x] Domain Layer (Entities: Task, TaskComment defined)
-- [x] Enums: TaskStatus, TaskPriority
+- [x] Domain Layer
+- [x] Application Layer
+- [x] Infrastructure Layer (Prisma)
+- [x] Presentation Layer
+- [x] Architecture Compliance
 
-## Tag Feature (Domain Only)
+### Use Cases
+
+- CreateTag: Create a new tag in an organization.
+- GetTags: List all tags for an organization.
+- DeleteTag: Delete a tag.
+
+### Ports
+
+- TagRepository: Persistence access for tags.
+
+### Endpoints
+
+- POST /tags: Create tag.
+- GET /tags: List tags (query param `orgId`).
+- DELETE /tags/:id: Delete tag.
+
+### Errors
+
+- TAG_NOT_FOUND
+- TAG_ALREADY_EXISTS
+
+## Task Feature
 
 ### Status
 
-- [x] Domain Layer (Entity: Tag defined)
+- [x] Domain Layer
+- [x] Application Layer
+- [x] Infrastructure Layer (Prisma)
+- [x] Presentation Layer
+- [x] Architecture Compliance
+
+### Use Cases
+
+- CreateTask: Create a new task in a project.
+- GetTask: Get task by ID.
+- GetTasks: List all tasks for a project.
+- UpdateTask: Update task details.
+- DeleteTask: Delete a task.
+
+### Ports
+
+- TaskRepository: Persistence access for tasks.
+
+### Endpoints
+
+- POST /tasks: Create task.
+- GET /tasks/:id: Get task.
+- GET /tasks: List tasks (query param `projectId`).
+- PUT /tasks/:id: Update task.
+- DELETE /tasks/:id: Delete task.
+
+### Errors
+
+- TASK_NOT_FOUND
 
 ## Infrastructure
 

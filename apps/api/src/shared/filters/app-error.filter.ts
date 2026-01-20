@@ -38,10 +38,13 @@ export class AppErrorFilter implements ExceptionFilter {
         break;
       case 'ORGANIZATION_NOT_FOUND':
       case 'PROJECT_NOT_FOUND':
+      case 'TAG_NOT_FOUND':
+      case 'TASK_NOT_FOUND':
         status = HttpStatus.NOT_FOUND;
         break;
       case 'ORGANIZATION_ALREADY_EXISTS':
       case 'PROJECT_ALREADY_EXISTS':
+      case 'TAG_ALREADY_EXISTS':
         status = HttpStatus.CONFLICT;
         break;
       default:
