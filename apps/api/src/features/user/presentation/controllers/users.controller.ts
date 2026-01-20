@@ -4,7 +4,6 @@ import {
   Body,
   Get,
   Param,
-  UsePipes,
   Put,
   Delete,
 } from '@nestjs/common';
@@ -15,6 +14,7 @@ import { UpdateUserUseCase } from '../../application/use-cases/update-user.use-c
 import { DeleteUserUseCase } from '../../application/use-cases/delete-user.use-case';
 import { CreateUserDto, createUserSchema } from '../dtos/create-user.dto';
 import { UpdateUserDto, updateUserSchema } from '../dtos/update-user.dto';
+import { userIdSchema } from '../dtos/user-id.dto';
 import { ZodValidationPipe } from '../../../../shared/pipes/zod-validation.pipe';
 
 @Controller('users')
@@ -40,20 +40,22 @@ export class UsersController {
   }
 
   @Get(':id')
-  async get(@Param('id') id: string) {
+  async get(@Param('id', new ZodValidationPipe(userIdSchema)) id: string) {
     return this.getUserUseCase.execute({ id });
   }
 
   @Put(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', new ZodValidationPipe(userIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateUserSchema)) body: UpdateUserDto,
   ) {
     return this.updateUserUseCase.execute({ id, ...body });
   }
 
   @Delete(':id')
-  async deleteUser(@Param('id') id: string) {
+  async deleteUser(
+    @Param('id', new ZodValidationPipe(userIdSchema)) id: string,
+  ) {
     return this.deleteUserUseCase.execute(id);
   }
 }

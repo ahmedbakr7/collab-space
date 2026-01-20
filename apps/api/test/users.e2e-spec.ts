@@ -79,6 +79,10 @@ describe('UsersController (e2e)', () => {
       .expect(404);
   });
 
+  it('/users/:id - invalid id format (GET)', async () => {
+    await request(app.getHttpServer()).get('/users/invalid-id').expect(400);
+  });
+
   it('/users/:id (PUT)', async () => {
     const updateData = {
       name: 'Updated Name',

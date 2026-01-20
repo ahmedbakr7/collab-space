@@ -41,11 +41,40 @@
 - Real database persistence (currently using In-Memory adapter).
 - Authentication/Authorization integration.
 
-## Organization Feature (Domain Only)
+## Organization Feature
 
 ### Status
 
-- [x] Domain Layer (Entity defined)
+- [x] Domain Layer
+- [x] Application Layer
+- [x] Infrastructure Layer (Prisma)
+- [x] Presentation Layer
+- [x] Architecture Compliance
+
+### Use Cases
+
+- CreateOrganization: Create a new organization.
+- GetOrganization: Get organization by ID.
+- GetOrganizations: List all organizations.
+- UpdateOrganization: Update organization details.
+- DeleteOrganization: Delete an organization.
+
+### Ports
+
+- OrganizationRepository: Persistence access for organizations.
+
+### Endpoints
+
+- POST /organizations: Create organization.
+- GET /organizations/:id: Get organization.
+- GET /organizations: List organizations.
+- PUT /organizations/:id: Update organization.
+- DELETE /organizations/:id: Delete organization.
+
+### Errors
+
+- ORGANIZATION_NOT_FOUND
+- ORGANIZATION_ALREADY_EXISTS
 
 ## Project Feature (Domain Only)
 
