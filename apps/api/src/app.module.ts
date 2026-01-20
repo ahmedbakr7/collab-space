@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
+import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/user/presentation/users.module';
 import { OrganizationsModule } from './features/organization/presentation/organizations.module';
 import { ProjectsModule } from './features/project/presentation/projects.module';
@@ -14,7 +15,9 @@ import { StorageModule } from './infrastructure/storage/storage.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     UsersModule,
+    AuthModule,
     OrganizationsModule,
+
     ProjectsModule,
     TagsModule,
     TasksModule,
