@@ -76,11 +76,40 @@
 - ORGANIZATION_NOT_FOUND
 - ORGANIZATION_ALREADY_EXISTS
 
-## Project Feature (Domain Only)
+## Project Feature
 
 ### Status
 
-- [x] Domain Layer (Entity defined)
+- [x] Domain Layer
+- [x] Application Layer
+- [x] Infrastructure Layer (Prisma)
+- [x] Presentation Layer
+- [x] Architecture Compliance
+
+### Use Cases
+
+- CreateProject: Create a new project in an organization.
+- GetProject: Get project by ID.
+- GetProjects: List all projects.
+- UpdateProject: Update project details.
+- DeleteProject: Delete a project.
+
+### Ports
+
+- ProjectRepository: Persistence access for projects.
+
+### Endpoints
+
+- POST /projects: Create project.
+- GET /projects/:id: Get project.
+- GET /projects: List projects.
+- PUT /projects/:id: Update project.
+- DELETE /projects/:id: Delete project.
+
+### Errors
+
+- PROJECT_NOT_FOUND
+- PROJECT_ALREADY_EXISTS
 
 ## Task Feature (Domain Only)
 

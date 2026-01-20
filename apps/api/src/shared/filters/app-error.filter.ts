@@ -36,6 +36,14 @@ export class AppErrorFilter implements ExceptionFilter {
       case 'INVALID_USER_DATA':
         status = HttpStatus.BAD_REQUEST;
         break;
+      case 'ORGANIZATION_NOT_FOUND':
+      case 'PROJECT_NOT_FOUND':
+        status = HttpStatus.NOT_FOUND;
+        break;
+      case 'ORGANIZATION_ALREADY_EXISTS':
+      case 'PROJECT_ALREADY_EXISTS':
+        status = HttpStatus.CONFLICT;
+        break;
       default:
         status = HttpStatus.BAD_REQUEST;
     }
