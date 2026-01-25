@@ -8,9 +8,9 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
-import { WorkspaceCard } from '@/features/dashboard/components/workspace-card';
-import { RecentActivity } from '@/features/dashboard/components/recent-activity';
-import { StatsCard } from '@/features/dashboard/components/stats-card';
+import { WorkspaceCard } from '@/features/dashboard/presentation/components/workspace-card';
+import { RecentActivity } from '@/features/dashboard/presentation/components/recent-activity';
+import { StatsCard } from '@/features/dashboard/presentation/components/stats-card';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/shared/config/routes';
 

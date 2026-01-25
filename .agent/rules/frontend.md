@@ -2,170 +2,95 @@
 trigger: manual
 ---
 
-You are an expert frontend engineer building a production-grade Next.js system using Clean Architecture (Hexagonal Architecture).
+You are an expert frontend engineer building a production-grade Next.js system within a Monorepo. You use Clean Architecture (Hexagonal Architecture) where the Domain is shared.
 
 You MUST follow all rules below for every feature and every file.
 
 ──────────────────────────────────────────────────
-ARCHITECTURE
+MONOREPO STRUCTURE
+──────────────────────────────────────────────────
+- /packages/domain/       # Shared business logic (Entities, Value Objects, Logic)
+- /apps/web/       # The Next.js frontend
+- /apps/...               # Other consumers (e.g., Admin, Mobile)
+
+──────────────────────────────────────────────────
+FEATURE ARCHITECTURE (Inside /apps/web/)
 ──────────────────────────────────────────────────
 
 Each feature lives in:
-
 src/features/<feature-name>/
-├── domain/
-│   ├── entities/      # Pure business models
-│   └── value-objects/ # Immutable domain values
-│
 ├── application/
-│   ├── use-cases/     # Application logic (orchestrators)
-│   ├── ports/         # Interfaces for infrastructure
+│   ├── use-cases/     # Orchestrates Domain logic + Ports
+│   ├── ports/         # Interfaces for infrastructure (repositories)
 │   ├── dto/           # Input/Output shapes for use cases
-│   └── errors/        # Domain-specific error classes
+│   └── errors/        # App-specific error types
 │
 ├── infrastructure/
-│   ├── adapters/      # API clients, LocalStorage, Firebase, etc.
-│   └── mappers/       # Data transformers (API -> Domain)
+│   ├── adapters/      # API clients, LocalStorage, Firebase
+│   └── mappers/       # Data transformers (External -> Domain)
 │
 └── presentation/
-    ├── components/    # Feature-specific UI
-    ├── hooks/         # React Query / SWR / State integration
-    ├── state/         # Local store (Zustand/Context)
-    └── zod/           # Form/API validation schemas
+    ├── components/    # Feature UI components
+    ├── pages/         # Feature UI pages
+    ├── hooks/         # React Query / SWR / State
+    ├── state/         # Zustand / Context
+    └── zod/           # Validation schemas
 
 Dependency rule (strict):
 
-Presentation → Application → Domain
+Presentation → Application → @repo/domain (Shared Package)
 ↑
 Infrastructure
 
-Domain and Application must NEVER import:
-- next/*
-- react
-- Browser APIs (window, document, localStorage)
-- HTTP clients (axios, fetch)
-
-Next.js/React is allowed ONLY in:
-- presentation/
-- infrastructure/ (only for adapter implementations)
-
 ──────────────────────────────────────────────────
-DOMAIN LAYER
+DOMAIN LAYER (@repo/domain)
 ──────────────────────────────────────────────────
-Contains:
-- Entities (Classes with business logic)
+The Domain layer resides in a shared package. It contains:
+- Entities (Classes/Types representing core business objects)
 - Value Objects
-- Business Rules
+- Pure Business Rules/Invariants
 
 Must be:
+- Framework-agnostic (No React, No Next.js)
+- No I/O (No fetch, no localStorage)
 - Pure TypeScript
-- No decorators
-- No React hooks or state
-- No I/O
-
-Domain models the business, not the UI state.
-Entities should be simple TypeScript classes or types that represent the core "truth" of the system.
 
 ──────────────────────────────────────────────────
 APPLICATION LAYER
 ──────────────────────────────────────────────────
 Contains:
-- Use cases (Functions or classes that execute a single task)
-- DTOs (Data Transfer Objects)
-- Ports (Repository or Service interfaces)
-- Application errors
-
-Use Cases:
-- Use standard async/await
-- Use try/catch for error handling
-- Throw only typed AppError instances
-- Never return raw Axios/Fetch responses
-
-All external dependencies (APIs, Browser Storage, Auth Providers) must be accessed via Ports (Interfaces).
+- Use cases: Functions that pull Entities from the shared Domain and execute logic.
+- Ports: Interfaces defining what the Infrastructure must provide.
 
 Naming Convention:
-- Ports (interfaces) MUST end with [.port.ts] (e.g., user-repository.port.ts).
+- Ports (interfaces) MUST end with [.port.ts] (e.g., auth-repository.port.ts).
 
 ──────────────────────────────────────────────────
 INFRASTRUCTURE LAYER
 ──────────────────────────────────────────────────
-Contains:
-- API Adapters (Fetch, Axios, GraphQL)
-- Storage Adapters (LocalStorage, IndexedDB)
-- External SDK implementations (Firebase, Stripe)
-- Mappers (Transforming snake_case API data to camelCase Domain entities)
-
-Responsibilities:
-- Implement Application ports
-- Handle technical errors (Network timeout, 404, 500)
-- Map technical errors to AppError
-- Keep the rest of the app "blind" to the API structure
+- Implements the Ports defined in the Application layer.
+- Uses Mappers to convert raw API data into Domain Entities from the shared package.
+- Handles technical errors (401, 500, Network Timeout).
 
 ──────────────────────────────────────────────────
-PRESENTATION LAYER (Next.js / React)
+PRESENTATION LAYER
 ──────────────────────────────────────────────────
-Contains:
-- React Components (Server & Client)
-- Custom Hooks (Connecting Use Cases to UI)
-- Form Validation (Zod)
-- State Management (Zustand, Context, or Signals)
-
-Responsibilities:
-- Validate form input using Zod
-- Handle UI state (loading, error, success)
-- Call Use Cases via Hooks
-- Never contain business or validation logic beyond the UI level
-
-Components must be "thin." All logic that can exist outside of React should be in the Application layer.
+- Validates UI input using Zod.
+- Calls Use Cases via custom Hooks.
+- Keeps UI logic strictly separated from business logic.
 
 ──────────────────────────────────────────────────
-VALIDATION
+VALIDATION & ERROR HANDLING
 ──────────────────────────────────────────────────
-- Use Zod for all form submissions and API response parsing.
-- Invalid data from the API should be caught in the Infrastructure layer.
-- Invalid UI input should be caught in the Presentation layer before hitting a Use Case.
-
-──────────────────────────────────────────────────
-ERROR HANDLING
-──────────────────────────────────────────────────
-- Use Cases throw AppError.
-- Presentation (Hooks) catches AppError and maps it to UI notifications/toasts.
-- Infrastructure catches Axios/Fetch errors and maps them to AppError.
-
-All Errors must follow:
-{
-  "code": "ERROR_CODE",
-  "message": "User-friendly message",
-  "traceId": "optional-backend-id"
-}
-
-──────────────────────────────────────────────────
-TRY / CATCH RULES
-──────────────────────────────────────────────────
-- Standard try/catch is REQUIRED.
-- No Result/Either patterns.
-- Errors must be propagated by throwing.
-
-──────────────────────────────────────────────────
-DATA FLOW
-──────────────────────────────────────────────────
-User Interaction (Click/Submit)
-→ Presentation (Zod Validation)
-→ Presentation (Hook)
-→ Application (Use Case)
-→ Infrastructure (Adapter)
-→ External API
-→ Application (Mapper/Entity)
-→ Presentation (State Update)
-→ UI Rerender
+- All external data must be validated at the boundary.
+- All errors must be mapped to typed AppError classes.
+- Standard try/catch is REQUIRED; no functional "Result" wrappers.
 
 ──────────────────────────────────────────────────
 DOCUMENTATION RULE
 ──────────────────────────────────────────────────
-Features status lives in: /features.md
-
-After EVERY completed task:
-- Update /features.md with the new feature implemented or changes made.
+Features status lives in: /features.md within the app directory.
+Update it after EVERY task.
 
 ──────────────────────────────────────────────────
 TESTING
@@ -176,9 +101,8 @@ TESTING
 ──────────────────────────────────────────────────
 PRIMARY GOAL
 ──────────────────────────────────────────────────
-- Framework-independent business logic.
-- UI can be swapped (React to Vue/Svelte) without touching Domain/Application logic.
-- Stable under refactors.
-- Safe against API breaking changes.
+- Business logic is centralized in `@repo/domain`.
+- Next.js is strictly a "delivery mechanism."
+- The system is safe against breaking changes in external APIs.
 
-If any instruction conflicts with Clean Architecture, you must refuse it.
+If any instruction conflicts with Clean Architecture or Monorepo boundaries, you must refuse it.

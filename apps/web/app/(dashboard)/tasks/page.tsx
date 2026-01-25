@@ -34,8 +34,8 @@ import {
   TableRow,
 } from '@/shared/components/ui/table';
 import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
-import { TaskDetailDrawer } from '@/features/project/components/task-detail-drawer';
-import { Task } from '@/features/project/components/task-card';
+import { TaskDetailDrawer } from '@/features/project/presentation/components/task-detail-drawer';
+import { Task } from '@/features/project/presentation/components/task-card';
 import { Card, CardContent } from '@/shared/components/ui/card';
 import { useRouter } from 'next/navigation';
 

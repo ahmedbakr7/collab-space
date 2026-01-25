@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { ArrowLeft, Filter, LayoutGrid, List, Plus } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
-import { KanbanBoard } from '@/features/project/components/kanban-board';
-import { TaskDetailDrawer } from '@/features/project/components/task-detail-drawer';
-import { Task } from '@/features/project/components/task-card';
+import { KanbanBoard } from '@/features/project/presentation/components/kanban-board';
+import { TaskDetailDrawer } from '@/features/project/presentation/components/task-detail-drawer';
+import { Task } from '@/features/project/presentation/components/task-card';
 import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { useRouter } from 'next/navigation';
 

@@ -16,8 +16,8 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/shared/components/ui/tabs';
-import { MemberList } from '@/features/workspace/components/member-list';
-import { InviteMember } from '@/features/workspace/components/invite-member';
+import { MemberList } from '@/features/workspace/presentation/components/member-list';
+import { InviteMember } from '@/features/workspace/presentation/components/invite-member';
 import { useRouter } from 'next/navigation';
 
 const mockMembers = [
