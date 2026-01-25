@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/components/ui/select';
-import { Task } from './task-card';
+import { Task } from '@repo/domain/src/task/entities/task.entity';
 import { Badge } from '@/shared/components/ui/badge';
 import { cn } from '@/shared/lib/utils';
 
@@ -118,7 +118,7 @@ export function TaskDetailDrawer({ task, onClose }: TaskDetailDrawerProps) {
                 <span>Due Date</span>
               </label>
               <div className="p-2 bg-secondary rounded-lg text-sm">
-                {task.dueDate}
+                {task.dueDate.toLocaleDateString()}
               </div>
             </div>
 

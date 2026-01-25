@@ -14,57 +14,16 @@ import { StatsCard } from '@/features/dashboard/presentation/components/stats-ca
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/shared/config/routes';
 
-const workspaces = [
-  {
-    name: 'Product Team',
-    description:
-      'Product development and feature planning for our core platform',
-    color: 'bg-chart-1',
-    members: 12,
-    projects: 8,
-    tasksCompleted: 45,
-    totalTasks: 68,
-    memberAvatars: [
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=Michael',
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma',
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
-    ],
-  },
-  {
-    name: 'Marketing',
-    description: 'Marketing campaigns, content strategy, and brand initiatives',
-    color: 'bg-chart-2',
-    members: 8,
-    projects: 5,
-    tasksCompleted: 32,
-    totalTasks: 45,
-    memberAvatars: [
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa',
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=James',
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=Anna',
-    ],
-  },
-  {
-    name: 'Engineering',
-    description:
-      'Software development, infrastructure, and technical operations',
-    color: 'bg-chart-3',
-    members: 15,
-    projects: 12,
-    tasksCompleted: 78,
-    totalTasks: 95,
-    memberAvatars: [
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex',
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=Sophie',
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=Chris',
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=Maya',
-    ],
-  },
-];
+import { useDashboard } from '@/features/dashboard/presentation/hooks/use-dashboard.hook';
 
 export default function Dashboard() {
   const router = useRouter();
+  const { data, loading } = useDashboard();
+  const { stats, workspaces } = data || {};
+
+  if (loading || !data || !stats || !workspaces) {
+    return <div className="p-8">Loading dashboard...</div>;
+  }
 
   return (
     <div className="p-8 space-y-8">
@@ -86,29 +45,29 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatsCard
           title="Total Projects"
-          value="25"
-          change="+12% from last month"
+          value={stats.totalProjects.value}
+          change={stats.totalProjects.change}
           icon={FolderKanban}
           iconColor="bg-chart-1"
         />
         <StatsCard
           title="Active Tasks"
-          value="208"
-          change="+8% from last week"
+          value={stats.activeTasks.value}
+          change={stats.activeTasks.change}
           icon={CheckSquare}
           iconColor="bg-chart-2"
         />
         <StatsCard
           title="Team Members"
-          value="35"
-          change="+3 new this month"
+          value={stats.teamMembers.value}
+          change={stats.teamMembers.change}
           icon={Users}
           iconColor="bg-chart-3"
         />
         <StatsCard
           title="Completion Rate"
-          value="73%"
-          change="+5% from last month"
+          value={stats.completionRate.value}
+          change={stats.completionRate.change}
           icon={TrendingUp}
           iconColor="bg-chart-4"
         />
@@ -122,6 +81,8 @@ export default function Dashboard() {
             <WorkspaceCard
               key={workspace.name}
               {...workspace}
+              members={workspace.membersCount}
+              projects={workspace.projectsCount}
               onClick={() =>
                 router.push(
                   `/workspaces/${workspace.name.toLowerCase().replace(' ', '-')}`,

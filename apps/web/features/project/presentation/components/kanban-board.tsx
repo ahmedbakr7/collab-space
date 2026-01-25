@@ -1,6 +1,7 @@
 import { Plus } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
-import { TaskCard, Task } from './task-card';
+import { TaskCard } from './task-card';
+import { Task } from '@repo/domain/src/task/entities/task.entity';
 import { ScrollArea } from '@/shared/components/ui/scroll-area';
 import { cn } from '@/shared/lib/utils';
 

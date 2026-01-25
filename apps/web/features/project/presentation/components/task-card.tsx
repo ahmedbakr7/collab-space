@@ -7,23 +7,7 @@ import { Badge } from '@/shared/components/ui/badge';
 import { Clock, MessageSquare, Paperclip } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 
-export interface Task {
-  id: string;
-  title: string;
-  description?: string;
-  assignee: {
-    name: string;
-    avatar: string;
-  };
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  dueDate: string;
-  comments: number;
-  attachments: number;
-  tags?: string[];
-  status?: string; // Added status for board
-  workspace?: string; // Added for tables
-  project?: string; // Added for tables
-}
+import { Task, TaskPriority } from '@repo/domain/src/task/entities/task.entity';
 
 interface TaskCardProps {
   task: Task;
@@ -31,13 +15,13 @@ interface TaskCardProps {
 }
 
 const priorityVariants: Record<
-  string,
+  TaskPriority,
   'default' | 'secondary' | 'destructive' | 'outline'
 > = {
-  low: 'outline',
-  medium: 'secondary',
-  high: 'default',
-  urgent: 'destructive',
+  [TaskPriority.LOW]: 'outline',
+  [TaskPriority.MEDIUM]: 'secondary',
+  [TaskPriority.HIGH]: 'default',
+  [TaskPriority.URGENT]: 'destructive',
 };
 
 export function TaskCard({ task, onClick }: TaskCardProps) {
@@ -86,7 +70,7 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
         <div className="flex items-center space-x-3 text-xs text-muted-foreground">
           <div className="flex items-center space-x-1">
             <Clock className="w-3.5 h-3.5" />
-            <span>{task.dueDate}</span>
+            <span>{task.dueDate.toLocaleDateString()}</span>
           </div>
           {task.comments > 0 && (
             <div className="flex items-center space-x-1">

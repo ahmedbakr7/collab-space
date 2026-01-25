@@ -10,6 +10,7 @@ export class Organization {
     public readonly slug: string,
     public readonly description: string,
     public readonly visibility: Visibility,
+    public readonly members: string[], // User IDs
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
   ) {}

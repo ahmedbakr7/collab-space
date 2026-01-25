@@ -1,15 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Search,
-  Filter,
-  SlidersHorizontal,
-  Download,
-  Plus,
-  CheckSquare,
-  Calendar,
-} from 'lucide-react';
+import { Search, Download, Plus, CheckSquare, Calendar } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import { Badge } from '@/shared/components/ui/badge';
@@ -18,13 +10,6 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '@/shared/components/ui/avatar';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/shared/components/ui/select';
 import {
   Table,
   TableBody,
@@ -35,100 +20,68 @@ import {
 } from '@/shared/components/ui/table';
 import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { TaskDetailDrawer } from '@/features/project/presentation/components/task-detail-drawer';
-import { Task } from '@/features/project/presentation/components/task-card';
+import {
+  Task,
+  TaskPriority,
+  TaskStatus,
+} from '@repo/domain/src/task/entities/task.entity';
 import { Card, CardContent } from '@/shared/components/ui/card';
 import { useRouter } from 'next/navigation';
+import { useTasks } from '@/features/task/presentation/hooks/use-tasks.hook';
 
-const mockTasks = [
-  {
-    id: '1',
-    title: 'Design new landing page',
-    description:
-      'Create mockups for the new product landing page with updated branding',
-    status: 'todo',
-    priority: 'high' as const,
-    assignee: {
-      name: 'Emma Wilson',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma',
-    },
-    dueDate: 'Oct 30',
-    workspace: 'Product Team',
-    project: 'Website Redesign',
-    tags: ['Design', 'Marketing'],
-    comments: 3,
-    attachments: 2,
+const statusConfig: Record<
+  string,
+  { label: string; color: string; dotColor: string }
+> = {
+  [TaskStatus.TODO]: {
+    label: 'To Do',
+    color: 'bg-muted',
+    dotColor: 'bg-muted-foreground',
   },
-  // ... (keeping a subset for brevity or mock data from previous context)
-  {
-    id: '3',
-    title: 'Implement user authentication',
-    description: 'Add OAuth 2.0 support and JWT token handling',
-    status: 'in-progress',
-    priority: 'urgent' as const,
-    assignee: {
-      name: 'David Kim',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David',
-    },
-    dueDate: 'Oct 28',
-    workspace: 'Engineering',
-    project: 'Authentication System',
-    tags: ['Backend', 'Security'],
-    comments: 8,
-    attachments: 3,
-  },
-  {
-    id: '4',
-    title: 'Mobile app testing',
-    description: 'Test new features on iOS and Android devices',
-    status: 'in-progress',
-    priority: 'high' as const,
-    assignee: {
-      name: 'Sarah Anderson',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
-    },
-    dueDate: 'Oct 29',
-    workspace: 'Product Team',
-    project: 'Mobile App Q4',
-    tags: ['QA', 'Mobile'],
-    comments: 5,
-    attachments: 1,
-  },
-] as Task[];
-
-const statusConfig: any = {
-  todo: { label: 'To Do', color: 'bg-muted', dotColor: 'bg-muted-foreground' },
-  'in-progress': {
+  [TaskStatus.IN_PROGRESS]: {
     label: 'In Progress',
     color: 'bg-chart-1',
     dotColor: 'bg-chart-1',
   },
-  review: {
+  [TaskStatus.REVIEW]: {
     label: 'Review',
     color: 'bg-chart-4',
     dotColor: 'bg-chart-4',
   },
-  done: { label: 'Done', color: 'bg-chart-2', dotColor: 'bg-chart-2' },
+  [TaskStatus.DONE]: {
+    label: 'Done',
+    color: 'bg-chart-2',
+    dotColor: 'bg-chart-2',
+  },
 };
 
-const priorityConfig: any = {
-  urgent: { label: 'Urgent', variant: 'destructive' },
-  high: { label: 'High', variant: 'default' },
-  medium: { label: 'Medium', variant: 'secondary' },
-  low: { label: 'Low', variant: 'outline' },
+const priorityConfig: Record<
+  string,
+  {
+    label: string;
+    variant: 'default' | 'destructive' | 'secondary' | 'outline';
+  }
+> = {
+  [TaskPriority.URGENT]: { label: 'Urgent', variant: 'destructive' },
+  [TaskPriority.HIGH]: { label: 'High', variant: 'default' },
+  [TaskPriority.MEDIUM]: { label: 'Medium', variant: 'secondary' },
+  [TaskPriority.LOW]: { label: 'Low', variant: 'outline' },
 };
 
 export default function TasksPage() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [priorityFilter, setPriorityFilter] = useState<string>('all');
-  const [workspaceFilter, setWorkspaceFilter] = useState<string>('all');
-  const [projectFilter, setProjectFilter] = useState<string>('all');
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [viewMode, setViewMode] = useState<string>('all');
   const router = useRouter();
 
+  const { tasks, loading } = useTasks();
+
+  if (loading) {
+    return <div className="p-8">Loading tasks...</div>;
+  }
+
   // Filter tasks
-  const filteredTasks = mockTasks.filter((task) => {
+  const filteredTasks = tasks.filter((task) => {
     if (
       searchQuery &&
       !task.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -141,10 +94,11 @@ export default function TasksPage() {
   // Calculate stats
   const stats = {
     total: filteredTasks.length,
-    todo: filteredTasks.filter((t) => t.status === 'todo').length,
-    inProgress: filteredTasks.filter((t) => t.status === 'in-progress').length,
-    review: filteredTasks.filter((t) => t.status === 'review').length,
-    done: filteredTasks.filter((t) => t.status === 'done').length,
+    todo: filteredTasks.filter((t) => t.status === TaskStatus.TODO).length,
+    inProgress: filteredTasks.filter((t) => t.status === TaskStatus.IN_PROGRESS)
+      .length,
+    review: filteredTasks.filter((t) => t.status === TaskStatus.REVIEW).length,
+    done: filteredTasks.filter((t) => t.status === TaskStatus.DONE).length,
   };
 
   return (
@@ -273,10 +227,10 @@ export default function TasksPage() {
                   <TableCell>
                     <div className="flex items-center space-x-2">
                       <div
-                        className={`w-2 h-2 rounded-full ${statusConfig[task.status || 'todo'].dotColor}`}
+                        className={`w-2 h-2 rounded-full ${statusConfig[task.status].dotColor}`}
                       />
                       <span className="text-sm">
-                        {statusConfig[task.status || 'todo'].label}
+                        {statusConfig[task.status].label}
                       </span>
                     </div>
                   </TableCell>
@@ -305,7 +259,9 @@ export default function TasksPage() {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-sm">{task.dueDate}</span>
+                    <span className="text-sm">
+                      {task.dueDate.toLocaleDateString()}
+                    </span>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end space-x-3 text-xs text-muted-foreground">

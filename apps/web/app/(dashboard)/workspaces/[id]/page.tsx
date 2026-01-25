@@ -20,60 +20,56 @@ import { MemberList } from '@/features/workspace/presentation/components/member-
 import { InviteMember } from '@/features/workspace/presentation/components/invite-member';
 import { useRouter } from 'next/navigation';
 
-const mockMembers = [
-  {
-    id: '1',
-    name: 'Sarah Anderson',
-    email: 'sarah@company.com',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
-    role: 'owner' as const,
-    joinedDate: 'Jan 2024',
-  },
-  {
-    id: '2',
-    name: 'Michael Chen',
-    email: 'michael@company.com',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michael',
-    role: 'admin' as const,
-    joinedDate: 'Feb 2024',
-  },
-];
+import { useParams } from 'next/navigation';
+import { useWorkspace } from '@/features/workspace/presentation/hooks/use-workspace.hook';
+import { useProjects } from '@/features/project/presentation/hooks/use-projects.hook';
+import { ProjectStatus } from '@repo/domain/src/project/entities/project.entity';
 
-const mockProjects = [
+const statusConfig: Record<
+  string,
   {
-    id: '1',
-    name: 'Product Roadmap Q4',
-    description: 'Q4 2024 feature planning and development roadmap',
-    status: 'active' as const,
-    progress: 68,
-    totalTasks: 95,
-    completedTasks: 65,
-    dueDate: 'Dec 31, 2024',
-    members: [
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=Michael',
-      'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma',
-    ],
-  },
-];
-
-const statusConfig: any = {
-  active: { label: 'Active', variant: 'default' },
-  planning: { label: 'Planning', variant: 'secondary' },
-  review: { label: 'Review', variant: 'default' },
-  completed: { label: 'Completed', variant: 'outline' },
+    label: string;
+    variant: 'default' | 'secondary' | 'outline' | 'destructive';
+  }
+> = {
+  [ProjectStatus.ACTIVE]: { label: 'Active', variant: 'default' },
+  [ProjectStatus.PLANNING]: { label: 'Planning', variant: 'secondary' },
+  [ProjectStatus.REVIEW]: { label: 'Review', variant: 'default' },
+  [ProjectStatus.COMPLETED]: { label: 'Completed', variant: 'outline' },
 };
 
 export default function WorkspaceDetailPage() {
   const router = useRouter();
-  const totalTasks = mockProjects.reduce((sum, p) => sum + p.totalTasks, 0);
-  const completedTasks = mockProjects.reduce(
-    (sum, p) => sum + p.completedTasks,
-    0,
-  );
+  const params = useParams();
+  const id = params?.id as string;
+
+  const { workspace, loading: workspaceLoading } = useWorkspace(id);
+  const { projects, loading: projectsLoading } = useProjects(id);
+
+  if (workspaceLoading || projectsLoading || !workspace) {
+    return <div className="p-8">Loading workspace...</div>;
+  }
+
+  // Calculate stats from projects
+  const totalTasks = projects.reduce((sum, p) => sum + p.totalTasks, 0);
+  const completedTasks = projects.reduce((sum, p) => sum + p.completedTasks, 0);
   const overallProgress = totalTasks
     ? Math.round((completedTasks / totalTasks) * 100)
     : 0;
+
+  // Mock members for now since Organization entity has only IDs
+  // We should ideally fetch users by IDs.
+  // For this refactor, we can map IDs to mock users or just display placeholder.
+  // Or we use the helper in `DashboardRepository`?
+  // Let's create a minimal helper or just map IDs to generic objects.
+  const members = workspace.members.map((id) => ({
+    id,
+    name: `User ${id}`,
+    email: `user${id}@example.com`,
+    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${id}`,
+    role: 'member',
+    joinedDate: 'Jan 2024',
+  }));
 
   return (
     <div className="p-8 space-y-6">
@@ -92,9 +88,9 @@ export default function WorkspaceDetailPage() {
               <FolderKanban className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="mb-0 text-xl font-bold">Product Team</h1>
+              <h1 className="mb-0 text-xl font-bold">{workspace.name}</h1>
               <p className="text-sm text-muted-foreground">
-                {mockMembers.length} members · {mockProjects.length} projects
+                {members.length} members · {projects.length} projects
               </p>
             </div>
           </div>
@@ -113,7 +109,7 @@ export default function WorkspaceDetailPage() {
               <FolderKanban className="w-4 h-4" />
               <span className="text-sm">Total Projects</span>
             </div>
-            <p className="text-2xl font-semibold">{mockProjects.length}</p>
+            <p className="text-2xl font-semibold">{projects.length}</p>
           </CardContent>
         </Card>
         <Card>
@@ -131,7 +127,7 @@ export default function WorkspaceDetailPage() {
               <Users className="w-4 h-4" />
               <span className="text-sm">Team Members</span>
             </div>
-            <p className="text-2xl font-semibold">{mockMembers.length}</p>
+            <p className="text-2xl font-semibold">{members.length}</p>
           </CardContent>
         </Card>
         <Card>
@@ -157,7 +153,7 @@ export default function WorkspaceDetailPage() {
 
         <TabsContent value="projects" className="space-y-4 mt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockProjects.map((project) => (
+            {projects.map((project) => (
               <Card
                 key={project.id}
                 className="hover:shadow-lg transition-all cursor-pointer group"
@@ -180,7 +176,7 @@ export default function WorkspaceDetailPage() {
                       {statusConfig[project.status].label}
                     </Badge>
                     <span className="text-xs text-muted-foreground">
-                      {project.dueDate}
+                      {project.dueDate.toLocaleDateString()}
                     </span>
                   </div>
 
@@ -202,15 +198,20 @@ export default function WorkspaceDetailPage() {
                   {/* Team Members */}
                   <div className="pt-2 border-t border-border">
                     <div className="flex -space-x-2">
-                      {project.members.slice(0, 4).map((avatar, idx) => (
-                        <Avatar
-                          key={idx}
-                          className="w-8 h-8 border-2 border-card"
-                        >
-                          <AvatarImage src={avatar} />
-                          <AvatarFallback>M</AvatarFallback>
-                        </Avatar>
-                      ))}
+                      {project.members &&
+                        project.members
+                          .slice(0, 4)
+                          .map((memberId: string, idx: number) => (
+                            <Avatar
+                              key={idx}
+                              className="w-8 h-8 border-2 border-card"
+                            >
+                              <AvatarImage
+                                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${memberId}`}
+                              />
+                              <AvatarFallback>M</AvatarFallback>
+                            </Avatar>
+                          ))}
                     </div>
                   </div>
                 </CardContent>
@@ -224,7 +225,7 @@ export default function WorkspaceDetailPage() {
             <div>
               <h3 className="mb-1 font-medium">Team Members</h3>
               <p className="text-sm text-muted-foreground">
-                {mockMembers.length} members in this workspace
+                {members.length} members in this workspace
               </p>
             </div>
             <Button>
@@ -232,7 +233,8 @@ export default function WorkspaceDetailPage() {
               Invite member
             </Button>
           </div>
-          <MemberList members={mockMembers} />
+          <MemberList members={members as any[]} />
+          {/* Casting mock map to any explicitly to conform with MemberList if it expects strict typing */}
         </TabsContent>
 
         <TabsContent value="invite" className="mt-6">
