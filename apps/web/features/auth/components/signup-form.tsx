@@ -1,0 +1,144 @@
+'use client';
+
+import { z } from 'zod';
+import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { User, Mail, Lock, Briefcase } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@/shared/components/ui/button';
+import { Form } from '@/shared/components/form/form';
+import FormInput from '@/shared/components/form/input';
+import { FormCheckbox } from '@/shared/components/form/checkbox';
+import { ROUTES } from '@/shared/config/routes';
+
+const signUpSchema = z.object({
+  name: z.string().min(1, 'Full name is required'),
+  email: z.string().email('Please enter a valid email address'),
+  company: z.string().optional(),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  terms: z.literal(true, {
+    errorMap: () => ({ message: 'You must accept the terms and conditions' }),
+  }),
+});
+
+type SignUpValues = z.infer<typeof signUpSchema>;
+
+export function SignUpForm() {
+  const router = useRouter();
+
+  const handleSubmit = async (values: SignUpValues) => {
+    // Signup logic here
+    console.log('Signing up', values);
+    router.push(ROUTES.ROOT);
+  };
+
+  return (
+    <>
+      <div className="mb-8 text-center">
+        <h1 className="mb-2 text-2xl font-bold">Create your account</h1>
+        <p className="text-muted-foreground">
+          Start collaborating with your team today
+        </p>
+      </div>
+
+      <Form<SignUpValues>
+        onSubmit={handleSubmit}
+        defaultValues={{
+          name: '',
+          email: '',
+          company: '',
+          password: '',
+          terms: undefined, // undefined to start, but bool type
+        }}
+        resolver={zodResolver(signUpSchema)}
+        className="space-y-5"
+      >
+        {(form) => (
+          <>
+            <div className="space-y-5">
+              <FormInput
+                control={form.control}
+                name="name"
+                label="Full name"
+                type="text"
+                placeholder="John Doe"
+                startContent={
+                  <User className="w-5 h-5 text-muted-foreground" />
+                }
+              />
+
+              <FormInput
+                control={form.control}
+                name="email"
+                label="Email address"
+                type="email"
+                placeholder="you@company.com"
+                startContent={
+                  <Mail className="w-5 h-5 text-muted-foreground" />
+                }
+              />
+
+              <FormInput
+                control={form.control}
+                name="company"
+                label="Company name"
+                type="text"
+                placeholder="Acme Inc."
+                startContent={
+                  <Briefcase className="w-5 h-5 text-muted-foreground" />
+                }
+              />
+
+              <FormInput
+                control={form.control}
+                name="password"
+                label="Password"
+                type="password"
+                placeholder="Create a strong password"
+                startContent={
+                  <Lock className="w-5 h-5 text-muted-foreground" />
+                }
+                requiredMarker
+              />
+
+              <FormCheckbox
+                control={form.control}
+                name="terms"
+                className="items-start"
+                label={
+                  <span className="leading-tight">
+                    I agree to the{' '}
+                    <Link
+                      href="/terms"
+                      className="text-primary hover:underline"
+                    >
+                      Terms of Service
+                    </Link>{' '}
+                    and{' '}
+                    <Link
+                      href="/privacy"
+                      className="text-primary hover:underline"
+                    >
+                      Privacy Policy
+                    </Link>
+                  </span>
+                }
+              />
+
+              <Button type="submit" className="w-full">
+                Create account
+              </Button>
+            </div>
+          </>
+        )}
+      </Form>
+
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        Already have an account?{' '}
+        <Link href="/login" className="text-primary hover:underline">
+          Sign in
+        </Link>
+      </p>
+    </>
+  );
+}

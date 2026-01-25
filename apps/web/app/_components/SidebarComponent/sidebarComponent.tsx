@@ -13,7 +13,7 @@ import {
     SidebarSeparator,
     SidebarTrigger,
     useSidebar,
-} from "@/components/ui/sidebar";
+} from "@/shared/components/ui/sidebar";
 import Logo from "@/features/shared/components/Logo/Logo";
 import {
     Item,
@@ -21,8 +21,8 @@ import {
     ItemDescription,
     ItemMedia,
     ItemTitle,
-} from "@/components/ui/item";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+} from "@/shared/components/ui/item";
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/components/ui/avatar";
 import Link from "next/link";
 
 // Menu items.
