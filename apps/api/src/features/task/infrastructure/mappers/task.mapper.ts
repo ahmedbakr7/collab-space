@@ -1,9 +1,5 @@
 import { Task as PrismaTask } from '@prisma/client';
-import {
-  Task,
-  TaskStatus,
-  TaskPriority,
-} from '../../domain/entities/task.entity';
+import { Task, TaskStatus, TaskPriority } from '@repo/domain';
 
 export class TaskMapper {
   static toDomain(prismaTask: PrismaTask): Task {

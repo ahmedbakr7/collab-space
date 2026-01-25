@@ -1,8 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { AuthSession } from '../../domain/entities/auth-session.entity';
-import { AuthUser } from '../../domain/entities/auth-user.entity';
+import { AuthSession, AuthUser } from '@repo/domain';
 import { LoginUserDto, RegisterUserDto } from '../../application/dto/auth.dto';
 import {
   AuthProviderError,

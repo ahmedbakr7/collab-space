@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { TaskStatus, TaskPriority } from '../../domain/entities/task.entity';
+import { TaskPriority, TaskStatus } from '@repo/domain';
 
 export const updateTaskSchema = z
   .object({

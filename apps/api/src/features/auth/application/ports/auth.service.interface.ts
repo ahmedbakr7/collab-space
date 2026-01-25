@@ -1,5 +1,4 @@
-import { AuthSession } from '../../domain/entities/auth-session.entity';
-import { AuthUser } from '../../domain/entities/auth-user.entity';
+import { AuthSession, AuthUser } from '@repo/domain';
 import { LoginUserDto, RegisterUserDto } from '../dto/auth.dto';
 
 export interface AuthServiceInterface {

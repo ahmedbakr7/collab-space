@@ -1,4 +1,4 @@
-import { Organization } from '../../domain/entities/organization.entity';
+import { Organization } from '@repo/domain';
 import { OrganizationRepository } from '../ports/organization.repository.interface';
 
 export class GetOrganizationsUseCase {

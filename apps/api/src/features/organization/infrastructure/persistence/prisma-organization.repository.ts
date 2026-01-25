@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { OrganizationRepository } from '../../application/ports/organization.repository.interface';
-import { Organization } from '../../domain/entities/organization.entity';
+import { Organization } from '@repo/domain';
 import { PrismaService } from '../../../../infrastructure/prisma/prisma.service';
 import { OrganizationMapper } from '../mappers/organization.mapper';
 import { Visibility as PrismaVisibility } from '@prisma/client';

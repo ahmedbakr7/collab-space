@@ -1,7 +1,4 @@
-import {
-  Organization,
-  Visibility,
-} from '../../domain/entities/organization.entity';
+import { Organization, Visibility } from '@repo/domain';
 import { OrganizationRepository } from '../ports/organization.repository.interface';
 import {
   OrganizationNotFoundError,

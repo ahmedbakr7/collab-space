@@ -1,4 +1,4 @@
-import { Project } from '../../domain/entities/project.entity';
+import { Project } from '@repo/domain';
 import { ProjectRepository } from '../ports/project.repository.interface';
 import { ProjectAlreadyExistsError } from '../errors/project.errors';
 import { randomUUID } from 'crypto';

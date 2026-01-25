@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ProjectRepository } from '../../application/ports/project.repository.interface';
-import { Project } from '../../domain/entities/project.entity';
+import { Project } from '@repo/domain';
 import { PrismaService } from '../../../../infrastructure/prisma/prisma.service';
 import { ProjectMapper } from '../mappers/project.mapper';
 

@@ -1,8 +1,5 @@
 import { Organization as PrismaOrganization } from '@prisma/client';
-import {
-  Organization,
-  Visibility,
-} from '../../domain/entities/organization.entity';
+import { Organization, Visibility } from '@repo/domain';
 
 export class OrganizationMapper {
   static toDomain(prismaOrganization: PrismaOrganization): Organization {

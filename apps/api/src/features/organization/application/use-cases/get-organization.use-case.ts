@@ -1,4 +1,4 @@
-import { Organization } from '../../domain/entities/organization.entity';
+import { Organization } from '@repo/domain';
 import { OrganizationRepository } from '../ports/organization.repository.interface';
 import { OrganizationNotFoundError } from '../errors/organization.errors';
 

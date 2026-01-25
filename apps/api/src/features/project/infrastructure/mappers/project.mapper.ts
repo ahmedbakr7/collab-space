@@ -1,5 +1,5 @@
 import { Project as PrismaProject } from '@prisma/client';
-import { Project } from '../../domain/entities/project.entity';
+import { Project } from '@repo/domain';
 
 export class ProjectMapper {
   static toDomain(prismaProject: PrismaProject): Project {

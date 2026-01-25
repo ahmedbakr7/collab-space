@@ -1,4 +1,4 @@
-import { Tag } from '../../domain/entities/tag.entity';
+import { Tag } from '@repo/domain';
 
 export interface TagRepository {
   save(tag: Tag): Promise<void>;

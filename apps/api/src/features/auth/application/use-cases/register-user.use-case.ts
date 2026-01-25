@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { AuthSession } from '../../domain/entities/auth-session.entity';
-import { AuthUser } from '../../domain/entities/auth-user.entity';
+import { AuthSession, AuthUser } from '@repo/domain';
 import { RegisterUserDto } from '../dto/auth.dto';
 import { AuthServiceInterface } from '../ports/auth.service.interface';
 

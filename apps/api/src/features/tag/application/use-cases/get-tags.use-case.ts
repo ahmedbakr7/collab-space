@@ -1,4 +1,4 @@
-import { Tag } from '../../domain/entities/tag.entity';
+import { Tag } from '@repo/domain';
 import { TagRepository } from '../ports/tag.repository.interface';
 
 export class GetTagsUseCase {

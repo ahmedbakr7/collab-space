@@ -1,4 +1,4 @@
-import { User } from '../../domain/entities/user.entity';
+import { User } from '@repo/domain';
 import { UserRepository } from '../ports/user.repository.interface';
 
 export class GetUsersUseCase {

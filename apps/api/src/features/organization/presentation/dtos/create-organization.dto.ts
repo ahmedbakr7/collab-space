@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Visibility } from '../../domain/entities/organization.entity';
+import { Visibility } from '@repo/domain';
 
 export const createOrganizationSchema = z
   .object({

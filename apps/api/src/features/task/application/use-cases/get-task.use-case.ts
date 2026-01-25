@@ -1,4 +1,4 @@
-import { Task } from '../../domain/entities/task.entity';
+import { Task } from '@repo/domain';
 import { TaskRepository } from '../ports/task.repository.interface';
 import { TaskNotFoundError } from '../errors/task.errors';
 

@@ -1,4 +1,4 @@
-import { Organization } from '../../domain/entities/organization.entity';
+import { Organization } from '@repo/domain';
 
 export interface OrganizationRepository {
   save(organization: Organization): Promise<void>;

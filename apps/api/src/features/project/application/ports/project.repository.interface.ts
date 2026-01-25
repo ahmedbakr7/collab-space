@@ -1,4 +1,4 @@
-import { Project } from '../../domain/entities/project.entity';
+import { Project } from '@repo/domain';
 
 export interface ProjectRepository {
   save(project: Project): Promise<void>;

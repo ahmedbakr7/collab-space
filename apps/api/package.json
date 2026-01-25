@@ -24,7 +24,8 @@
     "@supabase/supabase-js": "^2.91.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "zod": "^3.25.76"
+    "zod": "^3.25.76",
+    "@repo/domain": "*"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",

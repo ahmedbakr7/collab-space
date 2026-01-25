@@ -3,7 +3,7 @@ import { UsersController } from './users.controller';
 import { CreateUserUseCase } from '../../application/use-cases/create-user.use-case';
 import { GetUserUseCase } from '../../application/use-cases/get-user.use-case';
 import { GetUsersUseCase } from '../../application/use-cases/get-users.use-case';
-import { User } from '../../domain/entities/user.entity';
+import { User } from '@repo/domain';
 
 describe('UsersController', () => {
   let controller: UsersController;
