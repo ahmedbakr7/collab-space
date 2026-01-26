@@ -23,4 +23,10 @@ export class MockAuthAdapter implements AuthPort {
     console.log('MockAuthAdapter: Logging out');
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
+
+  async getUser(): Promise<any> {
+    console.log('MockAuthAdapter: Getting user');
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { id: 'mock-user-id', email: 'mock@example.com' };
+  }
 }

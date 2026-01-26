@@ -39,4 +39,11 @@ export class SupabaseAuthAdapter implements AuthPort {
       throw error;
     }
   }
+
+  async getUser(): Promise<any> {
+    const {
+      data: { user },
+    } = await this.supabase.auth.getUser();
+    return user;
+  }
 }

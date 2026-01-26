@@ -6,6 +6,7 @@ import { SupabaseAuthAdapter } from '../../../features/auth/infrastructure/adapt
 import { LoginUseCase } from '../../../features/auth/application/use-cases/login.use-case';
 import { SignupUseCase } from '../../../features/auth/application/use-cases/signup.use-case';
 import { LogoutUseCase } from '../../../features/auth/application/use-cases/logout.use-case';
+import { VerifySessionUseCase } from '../../../features/auth/application/use-cases/verify-session.use-case';
 
 // Project
 import { InMemoryProjectRepository } from '../../../features/project/infrastructure/repositories/in-memory-project.repository';
@@ -21,6 +22,9 @@ export function registerClientDependencies(container: DependencyContainer) {
   container.register(TYPES.ILoginUseCase, { useClass: LoginUseCase });
   container.register(TYPES.ISignupUseCase, { useClass: SignupUseCase });
   container.register(TYPES.ILogoutUseCase, { useClass: LogoutUseCase });
+  container.register(TYPES.IVerifySessionUseCase, {
+    useClass: VerifySessionUseCase,
+  });
 
   // Project
   container.register(TYPES.IProjectRepository, {

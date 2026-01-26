@@ -5,4 +5,6 @@ export interface AuthPort {
     password: string,
     data?: Record<string, any>,
   ): Promise<void>;
+  logout(): Promise<void>;
+  getUser(): Promise<any>;
 }
