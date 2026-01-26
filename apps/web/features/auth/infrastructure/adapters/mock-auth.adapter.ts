@@ -8,4 +8,14 @@ export class MockAuthAdapter implements AuthPort {
     // Simulate delay
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
+
+  async signup(
+    email: string,
+    password: string,
+    data?: Record<string, any>,
+  ): Promise<void> {
+    console.log('MockAuthAdapter: Signing up with', email, password, data);
+    // Simulate delay
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
 }

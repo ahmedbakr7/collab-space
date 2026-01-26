@@ -11,6 +11,7 @@ import FormInput from '@/shared/components/form/input';
 import { FormCheckbox } from '@/shared/components/form/checkbox';
 import { ROUTES } from '@/shared/config/routes';
 import { useLogin } from '../hooks/use-login';
+import { toast } from 'sonner';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -28,8 +29,8 @@ export function LoginForm() {
     try {
       await login(values.email, values.password);
       router.push(ROUTES.ROOT);
-    } catch (error) {
-      // Handle error (e.g. set form error)
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to sign in');
       console.error(error);
     }
   };

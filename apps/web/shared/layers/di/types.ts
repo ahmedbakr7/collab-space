@@ -13,6 +13,7 @@ export const TYPES = {
 
   // Authentication
   ISignInUseCase: Symbol.for('ISignInUseCase'),
+  ISignupUseCase: Symbol.for('ISignupUseCase'),
 
   // Project Feature
   IProjectRepository: Symbol.for('IProjectRepository'),

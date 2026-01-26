@@ -2,8 +2,9 @@ import { DependencyContainer } from 'tsyringe';
 import { TYPES } from './types';
 
 // Auth
-import { MockAuthAdapter } from '../../../features/auth/infrastructure/adapters/mock-auth.adapter';
+import { SupabaseAuthAdapter } from '../../../features/auth/infrastructure/adapters/supabase-auth.adapter';
 import { LoginUseCase } from '../../../features/auth/application/use-cases/login.use-case';
+import { SignupUseCase } from '../../../features/auth/application/use-cases/signup.use-case';
 
 // Project
 import { InMemoryProjectRepository } from '../../../features/project/infrastructure/repositories/in-memory-project.repository';
@@ -15,8 +16,9 @@ import { GetTasksUseCase } from '../../../features/task/application/use-cases/ge
 
 export function registerClientDependencies(container: DependencyContainer) {
   // Auth
-  container.register(TYPES.IAuthRepository, { useClass: MockAuthAdapter });
+  container.register(TYPES.IAuthRepository, { useClass: SupabaseAuthAdapter });
   container.register(TYPES.ILoginUseCase, { useClass: LoginUseCase });
+  container.register(TYPES.ISignupUseCase, { useClass: SignupUseCase });
 
   // Project
   container.register(TYPES.IProjectRepository, {

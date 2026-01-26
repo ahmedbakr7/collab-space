@@ -10,9 +10,9 @@ Status of features in `apps/web/features` following Clean Architecture.
 
 - **Location**: `src/features/auth`
 - **Layers**:
-  - `presentation`: Components and Pages (Refactored, using `useLogin` hook)
-  - `application`: Use Cases (`LoginUseCase`) and Ports (`AuthPort`) added
-  - `infrastructure`: Adapters (`MockAuthAdapter`) and DI setup complete
+  - `presentation`: Components and Pages (Refactored, using `useLogin` and `useSignup` hooks)
+  - `application`: Use Cases (`LoginUseCase`, `SignupUseCase`) and Ports (`AuthPort`) added
+  - `infrastructure`: Adapters (`SupabaseAuthAdapter`, `MockAuthAdapter`) and DI setup complete (Client-side Supabase integrated)
 
 ### `dashboard`
 

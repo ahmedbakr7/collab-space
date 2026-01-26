@@ -10,7 +10,8 @@ import { Form } from '@/shared/components/form/form';
 import FormInput from '@/shared/components/form/input';
 import { FormCheckbox } from '@/shared/components/form/checkbox';
 import { ROUTES } from '@/shared/config/routes';
-
+import { useSignup } from '../hooks/use-signup';
+import { toast } from 'sonner';
 const signUpSchema = z.object({
   name: z.string().min(1, 'Full name is required'),
   email: z.string().email('Please enter a valid email address'),
@@ -25,11 +26,16 @@ type SignUpValues = z.infer<typeof signUpSchema>;
 
 export function SignUpForm() {
   const router = useRouter();
+  const { signup } = useSignup();
 
   const handleSubmit = async (values: SignUpValues) => {
-    // Signup logic here
-    console.log('Signing up', values);
-    router.push(ROUTES.ROOT);
+    try {
+      await signup(values.email, values.password, values.name, values.company);
+      toast.success('Account created successfully! Please check your email.');
+      router.push(ROUTES.ROOT);
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to create account');
+    }
   };
 
   return (
