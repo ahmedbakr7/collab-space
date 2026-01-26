@@ -32,4 +32,11 @@ export class SupabaseAuthAdapter implements AuthPort {
       throw error;
     }
   }
+
+  async logout(): Promise<void> {
+    const { error } = await this.supabase.auth.signOut();
+    if (error) {
+      throw error;
+    }
+  }
 }

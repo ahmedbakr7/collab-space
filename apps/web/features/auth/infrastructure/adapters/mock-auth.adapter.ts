@@ -18,4 +18,9 @@ export class MockAuthAdapter implements AuthPort {
     // Simulate delay
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
+
+  async logout(): Promise<void> {
+    console.log('MockAuthAdapter: Logging out');
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
 }

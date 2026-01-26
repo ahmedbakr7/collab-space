@@ -5,6 +5,7 @@ import { TYPES } from './types';
 import { SupabaseAuthAdapter } from '../../../features/auth/infrastructure/adapters/supabase-auth.adapter';
 import { LoginUseCase } from '../../../features/auth/application/use-cases/login.use-case';
 import { SignupUseCase } from '../../../features/auth/application/use-cases/signup.use-case';
+import { LogoutUseCase } from '../../../features/auth/application/use-cases/logout.use-case';
 
 // Project
 import { InMemoryProjectRepository } from '../../../features/project/infrastructure/repositories/in-memory-project.repository';
@@ -19,6 +20,7 @@ export function registerClientDependencies(container: DependencyContainer) {
   container.register(TYPES.IAuthRepository, { useClass: SupabaseAuthAdapter });
   container.register(TYPES.ILoginUseCase, { useClass: LoginUseCase });
   container.register(TYPES.ISignupUseCase, { useClass: SignupUseCase });
+  container.register(TYPES.ILogoutUseCase, { useClass: LogoutUseCase });
 
   // Project
   container.register(TYPES.IProjectRepository, {
