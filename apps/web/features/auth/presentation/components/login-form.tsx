@@ -1,6 +1,6 @@
 'use client';
 
-import { z } from 'zod';
+import { loginSchema, LoginValues } from '@repo/shared-schemas';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Mail, Lock } from 'lucide-react';
@@ -12,14 +12,6 @@ import { FormCheckbox } from '@/shared/components/form/checkbox';
 import { ROUTES } from '@/shared/config/routes';
 import { useLogin } from '../hooks/use-login';
 import { toast } from 'sonner';
-
-const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(1, 'Password is required'),
-  remember: z.boolean().optional(),
-});
-
-type LoginValues = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
   const router = useRouter();

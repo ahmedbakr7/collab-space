@@ -1,7 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { z } from 'zod';
+
+import {
+  forgotPasswordSchema,
+  ForgotPasswordValues,
+} from '@repo/shared-schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Mail, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -10,12 +14,6 @@ import { Form } from '@/shared/components/form/form';
 import FormInput from '@/shared/components/form/input';
 import { ROUTES } from '@/shared/config/routes';
 import { cn } from '@/shared/lib/utils';
-
-const forgotPasswordSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-});
-
-type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
 
 export function ForgotPasswordForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);

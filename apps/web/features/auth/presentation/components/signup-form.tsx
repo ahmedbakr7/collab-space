@@ -1,6 +1,6 @@
 'use client';
 
-import { z } from 'zod';
+import { signUpSchema, SignUpValues } from '@repo/shared-schemas';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { User, Mail, Lock, Briefcase } from 'lucide-react';
@@ -12,18 +12,6 @@ import { FormCheckbox } from '@/shared/components/form/checkbox';
 import { ROUTES } from '@/shared/config/routes';
 import { useSignup } from '../hooks/use-signup';
 import { toast } from 'sonner';
-
-const signUpSchema = z.object({
-  name: z.string().min(1, 'Full name is required'),
-  email: z.string().email('Please enter a valid email address'),
-  company: z.string().optional(),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  terms: z.literal(true, {
-    errorMap: () => ({ message: 'You must accept the terms and conditions' }),
-  }),
-});
-
-type SignUpValues = z.infer<typeof signUpSchema>;
 
 export function SignUpForm() {
   const router = useRouter();

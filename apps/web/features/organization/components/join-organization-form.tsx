@@ -1,17 +1,11 @@
 'use client';
 
-import { z } from 'zod';
+import { joinOrgSchema, JoinOrgValues } from '@repo/shared-schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/shared/components/ui/button';
 import { Form } from '@/shared/components/form/form';
 import FormInput from '@/shared/components/form/input';
 import { KeyRound } from 'lucide-react';
-
-const joinOrgSchema = z.object({
-  inviteCode: z.string().min(1, 'Invite code is required'),
-});
-
-export type JoinOrgValues = z.infer<typeof joinOrgSchema>;
 
 interface JoinOrganizationFormProps {
   onJoinOrganization: (values: JoinOrgValues) => void;
