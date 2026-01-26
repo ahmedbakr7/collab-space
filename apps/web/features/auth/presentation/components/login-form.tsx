@@ -26,19 +26,26 @@ export function LoginForm() {
   const { login } = useLogin();
 
   const handleSubmit = async (values: LoginValues) => {
+    const loginPromise = login(values.email, values.password);
+
+    toast.promise(loginPromise, {
+      loading: 'Signing in...',
+      success: 'Welcome back!',
+      error: (error: any) => error.message || 'Failed to sign in',
+    });
+
     try {
-      await login(values.email, values.password);
-      router.push(ROUTES.ROOT);
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to sign in');
+      await loginPromise;
+      router.push(ROUTES.ONBOARDING);
+    } catch (error) {
       console.error(error);
     }
   };
 
   return (
     <>
-      <div className="mb-8 text-center">
-        <h1 className="mb-2 text-2xl font-bold">Welcome back</h1>
+      <div className="mb-2 text-center">
+        <h1 className="mb-1 text-2xl font-bold">Welcome back</h1>
         <p className="text-muted-foreground">
           Sign in to your CollabSpace account
         </p>
@@ -52,7 +59,7 @@ export function LoginForm() {
           remember: false,
         }}
         resolver={zodResolver(loginSchema)}
-        className="space-y-4"
+        fieldGroupClassName="gap-3"
       >
         {(form) => (
           <>
@@ -63,7 +70,7 @@ export function LoginForm() {
               type="email"
               placeholder="you@example.com"
               startContent={<Mail className="w-5 h-5 text-muted-foreground" />}
-              className="space-y-2"
+              className="space-y-1"
             />
 
             <FormInput
@@ -73,7 +80,7 @@ export function LoginForm() {
               type="password"
               placeholder="Enter your password"
               startContent={<Lock className="w-5 h-5 text-muted-foreground" />}
-              className="space-y-2"
+              className="space-y-1"
               requiredMarker
             />
 
@@ -99,7 +106,7 @@ export function LoginForm() {
         )}
       </Form>
 
-      <p className="mt-6 text-center text-sm text-muted-foreground">
+      <p className="mt-1 text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{' '}
         <Link
           href={ROUTES.AUTH.SIGNUP}
