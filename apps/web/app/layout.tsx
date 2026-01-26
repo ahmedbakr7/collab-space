@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 // import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from '@/shared/components/theme-provider';

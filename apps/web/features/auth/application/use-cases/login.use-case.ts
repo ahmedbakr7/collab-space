@@ -1,5 +1,5 @@
 import { injectable, inject } from 'tsyringe';
-import { TYPES } from '../../../infrastructure/di/types';
+import { TYPES } from '../../../../shared/layers/di/types';
 import type { AuthPort } from '../ports/auth.port';
 
 @injectable()

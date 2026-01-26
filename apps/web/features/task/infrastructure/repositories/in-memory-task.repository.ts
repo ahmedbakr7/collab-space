@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { injectable } from 'tsyringe';
 import { TaskRepositoryPort } from '../../application/ports/task.repository.port';
 import {

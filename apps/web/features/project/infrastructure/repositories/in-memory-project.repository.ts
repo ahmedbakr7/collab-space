@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { injectable } from 'tsyringe';
 import { ProjectRepositoryPort } from '../../application/ports/project.repository.port';
 import { Project } from '@repo/domain/src/project/entities/project.entity';
