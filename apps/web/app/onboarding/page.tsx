@@ -2,8 +2,6 @@
 
 import { useState } from 'react';
 import { Building2 } from 'lucide-react';
-import { CreateOrgValues } from '@/features/organization/components/create-organization-form';
-import { JoinOrgValues } from '@/features/organization/components/join-organization-form';
 import { OrganizationModePicker } from '@/features/organization/components/organization-mode-picker';
 import { CreateOrganizationFlow } from '@/features/organization/components/create-organization-flow';
 import { JoinOrganizationFlow } from '@/features/organization/components/join-organization-flow';
@@ -13,26 +11,6 @@ type Mode = 'choose' | 'create' | 'join';
 
 export default function OrganizationSetupPage() {
   const [mode, setMode] = useState<Mode>('choose');
-
-  const handleCreateOrganization = async (values: CreateOrgValues) => {
-    try {
-      console.log('Creating organization:', values);
-      // TODO: Call API to create organization
-      // router.push('/dashboard');
-    } catch (error) {
-      console.error('Failed to create organization:', error);
-    }
-  };
-
-  const handleJoinOrganization = async (values: JoinOrgValues) => {
-    try {
-      console.log('Joining organization:', values);
-      // TODO: Call API to join organization
-      // router.push('/dashboard');
-    } catch (error) {
-      console.error('Failed to join organization:', error);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 relative">
@@ -69,17 +47,11 @@ export default function OrganizationSetupPage() {
             )}
 
             {mode === 'create' && (
-              <CreateOrganizationFlow
-                onBack={() => setMode('choose')}
-                onCreateOrganization={handleCreateOrganization}
-              />
+              <CreateOrganizationFlow onBack={() => setMode('choose')} />
             )}
 
             {mode === 'join' && (
-              <JoinOrganizationFlow
-                onBack={() => setMode('choose')}
-                onJoinOrganization={handleJoinOrganization}
-              />
+              <JoinOrganizationFlow onBack={() => setMode('choose')} />
             )}
           </CardContent>
         </Card>

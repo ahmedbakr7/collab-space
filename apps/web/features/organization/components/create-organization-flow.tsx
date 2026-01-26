@@ -2,19 +2,14 @@
 
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
-import {
-  CreateOrganizationForm,
-  CreateOrgValues,
-} from './create-organization-form';
+import { CreateOrganizationForm } from './create-organization-form';
 
 interface CreateOrganizationFlowProps {
   onBack: () => void;
-  onCreateOrganization: (values: CreateOrgValues) => void;
 }
 
 export function CreateOrganizationFlow({
   onBack,
-  onCreateOrganization,
 }: CreateOrganizationFlowProps) {
   return (
     <div className="animate-in fade-in slide-in-from-right-4 duration-300">
@@ -22,7 +17,7 @@ export function CreateOrganizationFlow({
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back
       </Button>
-      <CreateOrganizationForm onCreateOrganization={onCreateOrganization} />
+      <CreateOrganizationForm />
     </div>
   );
 }

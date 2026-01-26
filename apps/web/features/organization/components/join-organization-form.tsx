@@ -6,16 +6,30 @@ import { Button } from '@/shared/components/ui/button';
 import { Form } from '@/shared/components/form/form';
 import FormInput from '@/shared/components/form/input';
 import { KeyRound } from 'lucide-react';
+import { useJoinOrganization } from '../presentation/hooks/use-join-organization';
+import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/shared/config/routes';
 
 interface JoinOrganizationFormProps {
-  onJoinOrganization: (values: JoinOrgValues) => void;
+  onJoinOrganization?: (values: JoinOrgValues) => void;
 }
 
 export function JoinOrganizationForm({
   onJoinOrganization,
 }: JoinOrganizationFormProps) {
+  const { joinOrganization, isLoading } = useJoinOrganization();
+  const router = useRouter();
+
   const handleSubmit = async (values: JoinOrgValues) => {
-    onJoinOrganization(values);
+    try {
+      await joinOrganization(values);
+      // Navigate to dashboard after successful join
+      router.push(ROUTES.ROOT);
+      onJoinOrganization?.(values);
+    } catch (error) {
+      // Error is already handled by the hook with toast
+      console.error(error);
+    }
   };
 
   return (
@@ -40,8 +54,8 @@ export function JoinOrganizationForm({
             className="space-y-1"
           />
 
-          <Button type="submit" className="w-full">
-            Join Organization
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? 'Joining...' : 'Join Organization'}
           </Button>
         </>
       )}
