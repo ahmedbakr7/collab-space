@@ -2,7 +2,7 @@
 trigger: manual
 ---
 
-You are an expert frontend engineer building a production-grade Next.js system within a Monorepo. You use Clean Architecture (Hexagonal Architecture) where the Domain is shared.
+You are an expert frontend engineer building a production-grade Next.js system within a Monorepo. You use Clean Architecture (Hexagonal Architecture) with TSyringe for Dependency Injection and a shared Domain package.
 
 You MUST follow all rules below for every feature and every file.
 
@@ -10,99 +10,103 @@ You MUST follow all rules below for every feature and every file.
 MONOREPO STRUCTURE
 ──────────────────────────────────────────────────
 - /packages/domain/       # Shared business logic (Entities, Value Objects, Logic)
-- /apps/web/       # The Next.js frontend
-- /apps/...               # Other consumers (e.g., Admin, Mobile)
+- /apps/nextjs-app/       # The Next.js frontend
 
 ──────────────────────────────────────────────────
-FEATURE ARCHITECTURE (Inside /apps/web/)
+DEPENDENCY INJECTION (TSyringe)
+──────────────────────────────────────────────────
+You must maintain TWO separate DI containers to ensure environment isolation:
+
+1. **Server Container (`src/infrastructure/di/server.container.ts`)**
+   - Used for Server Components, Server Actions, and API Routes.
+   - Injects server-side adapters (Secrets, Database, Node-specific SDKs).
+
+2. **Client Container (`src/infrastructure/di/client.container.ts`)**
+   - Used for Client Components and Hooks.
+   - Injects browser-side adapters (LocalStorage, Cookies, Fetch).
+
+Rules for DI:
+- Interfaces (Ports) MUST be injected using string tokens or Symbols.
+- Use `@injectable()` on Use Cases and Adapters.
+- Use `@inject("TOKEN")` in constructors to reference Ports.
+- Registration must happen in a centralized `registry.ts` for each container.
+
+──────────────────────────────────────────────────
+FEATURE ARCHITECTURE (Inside /apps/nextjs-app/)
 ──────────────────────────────────────────────────
 
 Each feature lives in:
 src/features/<feature-name>/
 ├── application/
-│   ├── use-cases/     # Orchestrates Domain logic + Ports
-│   ├── ports/         # Interfaces for infrastructure (repositories)
-│   ├── dto/           # Input/Output shapes for use cases
+│   ├── use-cases/     # @injectable classes orchestrating logic
+│   ├── ports/         # Interface definitions for adapters
+│   ├── dto/           # Use case Request/Response shapes
 │   └── errors/        # App-specific error types
 │
 ├── infrastructure/
-│   ├── adapters/      # API clients, LocalStorage, Firebase
-│   └── mappers/       # Data transformers (External -> Domain)
+│   ├── adapters/      # @injectable implementations of ports
+│   └── mappers/       # Data transformers
 │
 └── presentation/
-    ├── components/    # Feature UI components
-    ├── pages/         # Feature UI pages
-    ├── hooks/         # React Query / SWR / State
+    ├── components/    # UI (Server or Client)
+    ├── hooks/         # Logic to resolve Use Cases from clientContainer
     ├── state/         # Zustand / Context
     └── zod/           # Validation schemas
 
 Dependency rule (strict):
-
 Presentation → Application → @repo/domain (Shared Package)
 ↑
-Infrastructure
+Infrastructure (Registers implementations to DI Containers)
 
 ──────────────────────────────────────────────────
 DOMAIN LAYER (@repo/domain)
 ──────────────────────────────────────────────────
-The Domain layer resides in a shared package. It contains:
-- Entities (Classes/Types representing core business objects)
-- Value Objects
-- Pure Business Rules/Invariants
-
-Must be:
-- Framework-agnostic (No React, No Next.js)
-- No I/O (No fetch, no localStorage)
-- Pure TypeScript
+- Framework-agnostic, pure TypeScript.
+- No TSyringe decorators (Domain should not know about DI).
+- Contains core business logic and entities.
 
 ──────────────────────────────────────────────────
 APPLICATION LAYER
 ──────────────────────────────────────────────────
-Contains:
-- Use cases: Functions that pull Entities from the shared Domain and execute logic.
-- Ports: Interfaces defining what the Infrastructure must provide.
-
-Naming Convention:
-- Ports (interfaces) MUST end with [.port.ts] (e.g., auth-repository.port.ts).
+- Use Cases must be classes decorated with `@injectable()`.
+- Use Cases must depend ONLY on Interfaces (Ports) via `@inject("TOKEN")`.
+- Ports MUST end with [.port.ts].
 
 ──────────────────────────────────────────────────
 INFRASTRUCTURE LAYER
 ──────────────────────────────────────────────────
-- Implements the Ports defined in the Application layer.
-- Uses Mappers to convert raw API data into Domain Entities from the shared package.
-- Handles technical errors (401, 500, Network Timeout).
+- Adapters must be classes decorated with `@injectable()`.
+- Responsible for mapping external data to Domain Entities.
+- All implementation-specific logic (Axios, Fetch, Firebase) stays here.
 
 ──────────────────────────────────────────────────
 PRESENTATION LAYER
 ──────────────────────────────────────────────────
-- Validates UI input using Zod.
-- Calls Use Cases via custom Hooks.
-- Keeps UI logic strictly separated from business logic.
+- **Server Components:** Resolve Use Cases via `serverContainer.resolve(UseCaseClass)`.
+- **Client Components:** Resolve Use Cases via custom hooks that use `clientContainer.resolve(UseCaseClass)`.
+- Use Zod for all boundary validation.
 
 ──────────────────────────────────────────────────
 VALIDATION & ERROR HANDLING
 ──────────────────────────────────────────────────
-- All external data must be validated at the boundary.
-- All errors must be mapped to typed AppError classes.
-- Standard try/catch is REQUIRED; no functional "Result" wrappers.
+- Standard try/catch is REQUIRED.
+- Throw typed AppError instances.
+- Never let raw infrastructure errors reach the UI.
 
 ──────────────────────────────────────────────────
 DOCUMENTATION RULE
 ──────────────────────────────────────────────────
-Features status lives in: /features.md within the app directory.
+Features status lives in: /features.md
 Update it after EVERY task.
 
 ──────────────────────────────────────────────────
 TESTING
 ──────────────────────────────────────────────────
-**IGNORE TESTING**
-- Focus purely on implementation and architecture correctness.
+**IGNORE TESTING** unless explicitly requested.
 
 ──────────────────────────────────────────────────
 PRIMARY GOAL
 ──────────────────────────────────────────────────
-- Business logic is centralized in `@repo/domain`.
-- Next.js is strictly a "delivery mechanism."
-- The system is safe against breaking changes in external APIs.
+The system must be fully decoupled. The Application layer should never know if it's running on the server or client, or which library is fetching the data. DI manages the "wiring" based on the environment.
 
-If any instruction conflicts with Clean Architecture or Monorepo boundaries, you must refuse it.
+If any instruction conflicts with Clean Architecture, TSyringe best practices, or Monorepo boundaries, you must refuse it.

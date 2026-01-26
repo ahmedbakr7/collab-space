@@ -10,6 +10,7 @@ import { Form } from '@/shared/components/form/form';
 import FormInput from '@/shared/components/form/input';
 import { FormCheckbox } from '@/shared/components/form/checkbox';
 import { ROUTES } from '@/shared/config/routes';
+import { useLogin } from '../hooks/use-login';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -21,12 +22,16 @@ type LoginValues = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
   const router = useRouter();
+  const { login } = useLogin();
 
   const handleSubmit = async (values: LoginValues) => {
-    // Validate and submit logic here
-    console.log('Logging in with', values.email, values.password);
-    // Simulate login success
-    router.push(ROUTES.ROOT);
+    try {
+      await login(values.email, values.password);
+      router.push(ROUTES.ROOT);
+    } catch (error) {
+      // Handle error (e.g. set form error)
+      console.error(error);
+    }
   };
 
   return (

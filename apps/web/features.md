@@ -10,9 +10,9 @@ Status of features in `apps/web/features` following Clean Architecture.
 
 - **Location**: `src/features/auth`
 - **Layers**:
-  - `presentation`: Components and Pages (Refactored)
-  - `application`: (To be added)
-  - `infrastructure`: (To be added)
+  - `presentation`: Components and Pages (Refactored, using `useLogin` hook)
+  - `application`: Use Cases (`LoginUseCase`) and Ports (`AuthPort`) added
+  - `infrastructure`: Adapters (`MockAuthAdapter`) and DI setup complete
 
 ### `dashboard`
 
@@ -24,7 +24,9 @@ Status of features in `apps/web/features` following Clean Architecture.
 
 - **Location**: `src/features/project`
 - **Layers**:
-  - `presentation`: Components (Refactored, Consolidated from `Projects`)
+  - `presentation`: Components and Hooks (`useProjects`) refactored to use DI
+  - `application`: Use Cases (`GetProjectsByWorkspaceUseCase`) and Ports (`ProjectRepositoryPort`) DI-ready
+  - `infrastructure`: Adapters (`InMemoryProjectRepository`) registered in DI
 
 ### `shared`
 
@@ -34,9 +36,11 @@ Status of features in `apps/web/features` following Clean Architecture.
 
 ### `tasks`
 
-- **Location**: `src/features/tasks`
+- **Location**: `src/features/tasks` (and `src/features/task`)
 - **Layers**:
-  - `presentation`: Pages and Data (Refactored, Consolidated from `Tasks`)
+  - `presentation`: Hooks (`useProjectTasks`) refactored to use DI
+  - `application`: Use Cases (`GetTasksUseCase`) DI-ready
+  - `infrastructure`: Adapters (`InMemoryTaskRepository`) registered in DI
 
 ### `workspace`
 

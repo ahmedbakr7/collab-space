@@ -1,3 +1,4 @@
+import { injectable } from 'tsyringe';
 import { TaskRepositoryPort } from '../../application/ports/task.repository.port';
 import {
   Task,
@@ -5,6 +6,7 @@ import {
   TaskPriority,
 } from '@repo/domain/src/task/entities/task.entity';
 
+@injectable()
 export class InMemoryTaskRepository implements TaskRepositoryPort {
   async getTasks(filter?: {
     projectId?: string;

@@ -1,10 +1,9 @@
+import { injectable } from 'tsyringe';
 import { ProjectRepositoryPort } from '../../application/ports/project.repository.port';
-import {
-  Project,
-  ProjectStatus,
-} from '@repo/domain/src/project/entities/project.entity';
+import { Project } from '@repo/domain/src/project/entities/project.entity';
 import { MOCK_PROJECTS } from '@/features/shared/data/mock-data';
 
+@injectable()
 export class InMemoryProjectRepository implements ProjectRepositoryPort {
   async getAllProjects(): Promise<Project[]> {
     return MOCK_PROJECTS;

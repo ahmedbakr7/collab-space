@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { clientContainer } from '@/shared/layers/di/client.container';
+import { TYPES } from '@/shared/layers/di/types';
 import { GetTasksUseCase } from '@/features/task/application/use-cases/get-tasks.usecase';
-import { InMemoryTaskRepository } from '@/features/task/infrastructure/repositories/in-memory-task.repository';
 import { Task, TaskStatus } from '@repo/domain/src/task/entities/task.entity';
 
 export interface KanbanColumn {
@@ -14,10 +15,13 @@ export function useProjectTasks(projectId: string) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const repository = new InMemoryTaskRepository();
-    const useCase = new GetTasksUseCase(repository);
+  // Resolve Use Case from DI Container
+  const useCase = useMemo(
+    () => clientContainer.resolve<GetTasksUseCase>(TYPES.IGetTasksUseCase),
+    [],
+  );
 
+  useEffect(() => {
     async function fetchTasks() {
       try {
         const data = await useCase.execute({ projectId });
@@ -30,7 +34,7 @@ export function useProjectTasks(projectId: string) {
     }
 
     fetchTasks();
-  }, [projectId]);
+  }, [projectId, useCase]);
 
   const columns: KanbanColumn[] = [
     {

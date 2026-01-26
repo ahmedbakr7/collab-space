@@ -9,7 +9,9 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": [
     "**/*.ts",
