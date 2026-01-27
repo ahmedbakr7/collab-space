@@ -32,6 +32,7 @@ export class CreateOrganizationUseCase {
       command.slug,
       command.description,
       command.visibility,
+      [],
       now,
       now,
     );

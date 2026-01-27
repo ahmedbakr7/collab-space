@@ -37,7 +37,7 @@ export class TasksController {
   ) {
     return this.createTaskUseCase.execute({
       ...body,
-      dueDate: new Date(body.dueDate),
+      dueDate: body.dueDate ? new Date(body.dueDate) : undefined,
     });
   }
 
@@ -62,7 +62,12 @@ export class TasksController {
     return this.updateTaskUseCase.execute({
       id,
       ...body,
-      dueDate: body.dueDate ? new Date(body.dueDate) : undefined,
+      dueDate:
+        body.dueDate === null
+          ? null
+          : body.dueDate
+            ? new Date(body.dueDate)
+            : undefined,
     });
   }
 

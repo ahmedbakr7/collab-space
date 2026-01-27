@@ -40,6 +40,7 @@ export class UpdateOrganizationUseCase {
       command.slug ?? organization.slug,
       command.description ?? organization.description,
       command.visibility ?? organization.visibility,
+      organization.members,
       organization.createdAt,
       new Date(),
     );

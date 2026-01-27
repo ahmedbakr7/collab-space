@@ -7,7 +7,7 @@ export const updateTaskSchema = z
     description: z.string().optional(),
     status: z.nativeEnum(TaskStatus).optional(),
     priority: z.nativeEnum(TaskPriority).optional(),
-    dueDate: z.string().datetime().optional(),
+    dueDate: z.string().datetime().nullable().optional(),
     assignedToId: z.string().uuid().nullable().optional(),
   })
   .strict();
@@ -17,6 +17,6 @@ export interface UpdateTaskDto {
   description?: string;
   status?: TaskStatus;
   priority?: TaskPriority;
-  dueDate?: string;
+  dueDate?: string | null;
   assignedToId?: string | null;
 }

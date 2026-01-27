@@ -24,7 +24,7 @@ export class UpdateProjectUseCase {
 
     if (command.slug && command.slug !== project.slug) {
       const existingProject = await this.projectRepository.findBySlug(
-        project.orgId,
+        project.workspaceId,
         command.slug,
       );
       if (existingProject) {
@@ -34,7 +34,7 @@ export class UpdateProjectUseCase {
 
     const updatedProject = new Project(
       project.id,
-      project.orgId,
+      project.workspaceId,
       command.name ?? project.name,
       command.description ?? project.description,
       command.slug ?? project.slug,

@@ -8,7 +8,7 @@ export interface CreateTaskCommand {
   description: string;
   status: TaskStatus;
   priority: TaskPriority;
-  dueDate: Date;
+  dueDate?: Date;
   createdById: string;
   assignedToId?: string;
 }
@@ -26,7 +26,7 @@ export class CreateTaskUseCase {
       command.description,
       command.status,
       command.priority,
-      command.dueDate,
+      command.dueDate || null,
       command.createdById,
       command.assignedToId || null,
       now,

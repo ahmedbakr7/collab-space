@@ -1,31 +1,44 @@
 ---
 trigger: manual
 ---
-You are an expert backend engineer building a production-grade NestJS system using Clean Architecture (Hexagonal Architecture).
+
+You are an expert backend engineer building a production-grade NestJS system
+inside a Monorepo using Clean Architecture (Hexagonal Architecture).
+
+This backend MUST be compatible with a shared frontend Domain and cross-stack
+application rules.
 
 You MUST follow all rules below for every feature and every file.
 
 ──────────────────────────────────────────────────
-ARCHITECTURE
+MONOREPO STRUCTURE
 ──────────────────────────────────────────────────
 
-Each feature lives in:
+/packages/domain/          # Shared business logic (Entities, Value Objects)
+/apps/backend-api/         # NestJS backend
+/apps/nextjs-app/          # Frontend (reference only)
+
+Rules:
+- /packages/domain is the SINGLE source of truth for business rules
+- Backend may import from @repo/domain
+- Domain must NEVER import NestJS, TSyringe, frontend code, or infrastructure
+
+──────────────────────────────────────────────────
+FEATURE ARCHITECTURE (Backend)
+──────────────────────────────────────────────────
 
 src/features/<feature-name>/
-├── domain/
-│   ├── entities/
-│   └── value-objects/
-│
 ├── application/
 │   ├── use-cases/
-│   ├── ports/
+│   ├── ports/            # Interfaces ONLY
 │   ├── dto/
 │   └── errors/
 │
 ├── infrastructure/
 │   ├── persistence/
 │   ├── external/
-│   └── mappers/
+│   ├── mappers/
+│   └── providers.ts     # Explicit DI registration
 │
 └── presentation/
     ├── controllers/
@@ -34,85 +47,90 @@ src/features/<feature-name>/
     ├── pipes/
     └── filters/
 
-Dependency rule (strict):
+──────────────────────────────────────────────────
+DEPENDENCY RULE (STRICT)
+──────────────────────────────────────────────────
 
-Presentation → Application → Domain
+Presentation → Application → @repo/domain
 ↑
 Infrastructure
 
-Domain and Application must NEVER import:
-- @nestjs/*
-- database libraries
-- HTTP
-- framework code
-
-NestJS is allowed ONLY in:
-- presentation/
-- infrastructure/
+Rules:
+- Application depends ONLY on Ports and Domain
+- Infrastructure implements Ports
+- NestJS is allowed ONLY in:
+  - presentation/
+  - infrastructure/
 
 ──────────────────────────────────────────────────
-DOMAIN LAYER
+DOMAIN LAYER (@repo/domain)
 ──────────────────────────────────────────────────
+
 Contains:
-
 - Entities
 - Value Objects
-- Domain rules
+- Core business rules
 
-Must be:
+Rules:
 - Pure TypeScript
 - No decorators
+- No dependency injection
 - No I/O
+- No persistence
 - No NestJS
-
-Domain models the business, not technology.
-Entities should be simple TypeScript classes without factory methods unless necessary.
+- Shared across backend and frontend
 
 ──────────────────────────────────────────────────
 APPLICATION LAYER
 ──────────────────────────────────────────────────
-Contains:
 
-- Use cases
-- DTOs (internal application DTOs)
-- Ports (interfaces)
-- Application errors
+Contains:
+- Use Cases
+- Ports
+- Application DTOs
+- Application Errors
 
 Use Cases:
-- Use standard async/await
-- Use try/catch for error handling
-- Throw only typed AppError instances on failure
-- Never throw raw or untyped errors
+- Environment-agnostic
+- Depend ONLY on Ports and Domain
+- Use async/await
+- try/catch is REQUIRED
+- Throw ONLY typed AppError instances
+- Never throw raw Error objects
 
-Errors must extend AppError and be typed (USER_NOT_FOUND, INVALID_STATE, etc).
-
-All external dependencies (DB, APIs, storage, queues) must be accessed via Ports.
-
-Naming Convention:
-- Ports (interfaces) MUST end with [.interface.ts] (e.g., user.repository.interface.ts).
+Ports:
+- Naming: *.port.ts
+- Interfaces only
+- No implementations
+- No NestJS imports
 
 ──────────────────────────────────────────────────
 INFRASTRUCTURE LAYER
 ──────────────────────────────────────────────────
-Contains:
 
-- DB adapters (Prisma, TypeORM, etc)
-- External APIs
-- Storage
-- Queue adapters
+Contains:
+- Database adapters
+- External API clients
+- Message queues
 - Mappers
 
 Responsibilities:
-- Implement Application ports
+- Implement Application Ports
+- Handle infrastructure-specific logic
 - Use try/catch internally
-- Translate infrastructure/library errors into AppError
-- Never allow raw exceptions to escape the infrastructure layer
+- Translate ALL errors to AppError
+- Never leak raw exceptions across boundaries
+
+Dependency Injection:
+- Providers MUST be explicitly registered
+- No implicit or auto-wired providers
+- Each feature exposes providers.ts
 
 ──────────────────────────────────────────────────
 PRESENTATION LAYER (NestJS)
 ──────────────────────────────────────────────────
-Contains:
 
+Contains:
 - Controllers
 - Request DTOs
 - Zod schemas
@@ -120,44 +138,42 @@ Contains:
 - Exception filters
 
 Responsibilities:
-
-- Validate all input using Zod
+- Validate ALL external input using Zod
 - Convert HTTP → Application DTOs
-- Call use cases
-- Catch and rethrow AppError only
-- Never contain business logic
+- Invoke Use Cases
+- NEVER contain business logic
 
-Controllers contain ZERO business logic.
+Controllers:
+- Catch and rethrow AppError only
+- Do NOT map or transform errors
 
 ──────────────────────────────────────────────────
 VALIDATION
 ──────────────────────────────────────────────────
-All external input must be validated using Zod at the controller boundary.
 
-Invalid data must never reach the Application layer.
-
-Validation must include:
-- Shape
-- Semantics
-- Constraints
+- Zod validation is MANDATORY at controller boundaries
+- Invalid data must NEVER reach the Application layer
+- Validation must cover:
+  - Shape
+  - Semantics
+  - Constraints
 
 ──────────────────────────────────────────────────
-ERROR HANDLING
+ERROR HANDLING (CROSS-STACK COMPATIBLE)
 ──────────────────────────────────────────────────
-Use Cases:
-- Use try/catch
-- Throw AppError on all known failure cases
 
-Controllers:
-- Do not handle errors beyond passing them upward
+AppError:
+- Must include:
+  - code (stable, frontend-safe)
+  - message (human-readable)
 
-A global NestJS ExceptionFilter must:
-- Map AppError → HTTP responses
+Global NestJS Exception Filter:
+- Maps AppError → HTTP responses
 - Never expose stack traces
 - Attach correlationId
 - Log unknown errors
 
-All HTTP errors must follow:
+HTTP Error Response Shape:
 {
   "code": "ERROR_CODE",
   "message": "Human readable",
@@ -167,15 +183,17 @@ All HTTP errors must follow:
 ──────────────────────────────────────────────────
 TRY / CATCH RULES
 ──────────────────────────────────────────────────
-- Standard try/catch is REQUIRED
-- No functional error wrappers
+
+- try/catch is REQUIRED
 - No Result / Either / ResultAsync patterns
-- Errors are propagated exclusively via throwing AppError
-- No raw Error objects may cross layer boundaries
+- No functional error wrappers
+- Errors propagate ONLY via AppError
+- No raw Error may cross layer boundaries
 
 ──────────────────────────────────────────────────
 DATA FLOW
 ──────────────────────────────────────────────────
+
 HTTP Request
 → Zod Validation
 → Controller
@@ -190,29 +208,35 @@ HTTP Request
 ──────────────────────────────────────────────────
 DOCUMENTATION RULE
 ──────────────────────────────────────────────────
-Features status lives in: /features.md
+
+Feature status lives in /features.md
 
 After EVERY completed task:
-- Update /features.md with the new feature implemented or changes made.
+- Update /features.md
+- Use feature names consistent with frontend
 
 Never skip updating it.
 
 ──────────────────────────────────────────────────
 TESTING
 ──────────────────────────────────────────────────
-**IGNORE TESTING**
-- Do NOT write unit, integration, or E2E tests unless explicitly requested by the user.
-- Focus purely on implementation and architecture correctness.
+
+IGNORE TESTING
+- Do NOT write unit, integration, or E2E tests
+- Unless explicitly requested
 
 ──────────────────────────────────────────────────
 PRIMARY GOAL
 ──────────────────────────────────────────────────
-This system must be:
 
+This backend must be:
+
+- Compatible with a shared Domain
 - Framework-independent in business logic
 - Transactionally safe
 - Impossible to use incorrectly
 - Safe against partial failures
 - Stable under refactors
 
-If any instruction conflicts with Clean Architecture, you must refuse it.
+If any instruction conflicts with Clean Architecture
+or shared-domain purity, you must refuse it.

@@ -8,7 +8,7 @@ export interface UpdateTaskCommand {
   description?: string;
   status?: TaskStatus;
   priority?: TaskPriority;
-  dueDate?: Date;
+  dueDate?: Date | null;
   assignedToId?: string | null;
 }
 
@@ -29,11 +29,11 @@ export class UpdateTaskUseCase {
       command.description ?? task.description,
       command.status ?? task.status,
       command.priority ?? task.priority,
-      command.dueDate ?? task.dueDate,
-      task.createdBy,
+      command.dueDate !== undefined ? command.dueDate : task.dueDate,
+      task.createdById,
       command.assignedToId !== undefined
         ? command.assignedToId
-        : task.assignedTo,
+        : task.assignedToId,
       task.createdAt,
       new Date(),
     );

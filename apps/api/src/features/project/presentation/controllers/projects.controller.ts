@@ -6,6 +6,7 @@ import {
   Param,
   Put,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CreateProjectUseCase } from '../../application/use-cases/create-project.use-case';
 import { GetProjectUseCase } from '../../application/use-cases/get-project.use-case';
@@ -22,7 +23,9 @@ import {
 } from '../dtos/update-project.dto';
 import { projectIdSchema } from '../dtos/project-id.dto';
 import { ZodValidationPipe } from '../../../../shared/pipes/zod-validation.pipe';
+import { z } from 'zod';
 
+const workspaceIdQuerySchema = z.string().uuid().optional();
 @Controller('projects')
 export class ProjectsController {
   constructor(
@@ -41,8 +44,11 @@ export class ProjectsController {
   }
 
   @Get()
-  async getAll() {
-    return this.getProjectsUseCase.execute();
+  async getAll(
+    @Query('workspaceId', new ZodValidationPipe(workspaceIdQuerySchema))
+    workspaceId?: string,
+  ) {
+    return this.getProjectsUseCase.execute(workspaceId);
   }
 
   @Get(':id')

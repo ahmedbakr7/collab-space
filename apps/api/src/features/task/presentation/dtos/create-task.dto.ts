@@ -7,9 +7,8 @@ export const createTaskSchema = z.object({
   description: z.string(),
   status: z.nativeEnum(TaskStatus),
   priority: z.nativeEnum(TaskPriority),
-  dueDate: z.string().datetime(), // Accepts ISO 8601 string
-  createdById: z.string().uuid(),
   assignedToId: z.string().uuid().optional(),
+  dueDate: z.string().datetime().optional(),
 });
 
 export interface CreateTaskDto {
@@ -18,7 +17,7 @@ export interface CreateTaskDto {
   description: string;
   status: TaskStatus;
   priority: TaskPriority;
-  dueDate: string; // Received as string, converted to Date in controller/usecase
+  dueDate?: string; // Received as string, converted to Date in controller/usecase
   createdById: string;
   assignedToId?: string;
 }
