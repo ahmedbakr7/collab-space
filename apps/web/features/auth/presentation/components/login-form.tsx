@@ -73,7 +73,6 @@ export function LoginForm() {
               placeholder="Enter your password"
               startContent={<Lock className="w-5 h-5 text-muted-foreground" />}
               className="space-y-1"
-              requiredMarker
             />
 
             <div className="flex items-center justify-between">

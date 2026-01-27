@@ -96,7 +96,6 @@ export function SignUpForm() {
                 startContent={
                   <Lock className="w-5 h-5 text-muted-foreground" />
                 }
-                requiredMarker
                 className="space-y-1"
               />
 
