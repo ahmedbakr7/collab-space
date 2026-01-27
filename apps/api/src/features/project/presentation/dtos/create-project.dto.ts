@@ -1,14 +1,14 @@
 import { z } from 'zod';
 
 export const createProjectSchema = z.object({
-  orgId: z.string().uuid(),
+  workspaceId: z.string().uuid(),
   name: z.string().min(1),
   slug: z.string().min(1),
   description: z.string(),
 });
 
 export interface CreateProjectDto {
-  orgId: string;
+  workspaceId: string;
   name: string;
   slug: string;
   description: string;

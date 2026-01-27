@@ -1,7 +1,6 @@
 export enum TaskStatus {
   TODO = 'todo',
-  IN_PROGRESS = 'in-progress', // Fixed to match frontend hyphenated
-  REVIEW = 'review',
+  IN_PROGRESS = 'in_progress',
   DONE = 'done',
 }
 
@@ -9,7 +8,6 @@ export enum TaskPriority {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  URGENT = 'urgent',
 }
 
 export class Task {
@@ -20,15 +18,9 @@ export class Task {
     public readonly description: string,
     public readonly status: TaskStatus,
     public readonly priority: TaskPriority,
-    public readonly dueDate: Date,
-    public readonly createdBy: string,
-    public readonly assignedTo: string | null,
-    public readonly assignee: { name: string; avatar: string }, // Frontend hydration
-    public readonly comments: number,
-    public readonly attachments: number,
-    public readonly tags: string[],
-    public readonly workspace: string, // Name or ID? Frontend has name 'Engineering'
-    public readonly project: string, // Name or ID?
+    public readonly dueDate: Date | null,
+    public readonly createdById: string,
+    public readonly assignedToId: string | null,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
   ) {}

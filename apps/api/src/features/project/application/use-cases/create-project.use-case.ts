@@ -4,7 +4,7 @@ import { ProjectAlreadyExistsError } from '../errors/project.errors';
 import { randomUUID } from 'crypto';
 
 export interface CreateProjectCommand {
-  orgId: string;
+  workspaceId: string;
   name: string;
   slug: string;
   description: string;
@@ -15,7 +15,7 @@ export class CreateProjectUseCase {
 
   async execute(command: CreateProjectCommand): Promise<Project> {
     const existingProject = await this.projectRepository.findBySlug(
-      command.orgId,
+      command.workspaceId,
       command.slug,
     );
 
@@ -27,7 +27,7 @@ export class CreateProjectUseCase {
 
     const project = new Project(
       randomUUID(),
-      command.orgId,
+      command.workspaceId,
       command.name,
       command.description,
       command.slug,

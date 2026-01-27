@@ -9,6 +9,7 @@ export class OrganizationMapper {
       prismaOrganization.slug,
       prismaOrganization.description,
       prismaOrganization.visibility as Visibility,
+      [], // members
       prismaOrganization.createdAt,
       prismaOrganization.updatedAt,
     );

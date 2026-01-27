@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DATABASE_DIRECT_URL")
 }
 
@@ -25,6 +25,11 @@ enum TaskPriority {
   high
 }
 
+enum RoleScope {
+  organization
+  workspace
+}
+
 model User {
   id           String   @id @default(uuid())
   email        String   @unique
@@ -33,9 +38,13 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  createdTasks  Task[]        @relation("CreatedTasks")
-  assignedTasks Task[]        @relation("AssignedTasks")
-  comments      TaskComment[]
+  createdTasks   Task[]        @relation("CreatedTasks")
+  assignedTasks  Task[]        @relation("AssignedTasks")
+  comments       TaskComment[]
+  attachments    Attachment[]
+
+  organizations  OrganizationMember[]
+  workspaces     WorkspaceMember[]
 
   @@map("users")
 }
@@ -49,46 +58,97 @@ model Organization {
   createdAt   DateTime   @default(now()) @map("created_at")
   updatedAt   DateTime   @updatedAt @map("updated_at")
 
-  projects Project[]
-  tags     Tag[]
+  members     OrganizationMember[]
+  workspaces  Workspace[]
+  tags        Tag[]
 
   @@map("organizations")
 }
 
-model Project {
+model OrganizationMember {
+  orgId  String @map("org_id")
+  userId String @map("user_id")
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id])
+  roles        OrganizationMemberRole[]
+
+  @@id([orgId, userId])
+  @@map("organization_members")
+}
+
+model Workspace {
   id          String   @id @default(uuid())
   orgId       String   @map("org_id")
+  name        String
+  slug        String
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  members      WorkspaceMember[]
+  projects     Project[]
+
+  @@unique([orgId, slug])
+  @@index([orgId])
+  @@index([slug])
+  @@map("workspaces")
+}
+
+model WorkspaceMember {
+  workspaceId String @map("workspace_id")
+  userId      String @map("user_id")
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id])
+  roles     WorkspaceMemberRole[]
+
+  @@id([workspaceId, userId])
+  @@map("workspace_members")
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  workspaceId String   @map("workspace_id")
   name        String
   description String
   slug        String
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  organization Organization @relation(fields: [orgId], references: [id])
-  tasks        Task[]
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  tasks     Task[]
 
+  @@unique([workspaceId, slug])
+  @@index([workspaceId])
+  @@index([slug])
   @@map("projects")
 }
 
 model Task {
-  id          String       @id @default(uuid())
-  projectId   String       @map("project_id")
-  title       String
-  description String
-  status      TaskStatus
-  priority    TaskPriority
-  dueDate     DateTime     @map("due_date")
-  createdById String       @map("created_by")
-  assignedToId String?     @map("assigned_to")
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
+  id            String       @id @default(uuid())
+  projectId     String       @map("project_id")
+  title         String
+  description   String
+  status        TaskStatus
+  priority      TaskPriority
+  dueDate       DateTime?    @map("due_date")
+  createdById   String       @map("created_by")
+  assignedToId  String?      @map("assigned_to")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
 
-  project    Project       @relation(fields: [projectId], references: [id])
-  createdBy  User          @relation("CreatedTasks", fields: [createdById], references: [id])
-  assignedTo User?         @relation("AssignedTasks", fields: [assignedToId], references: [id])
-  comments   TaskComment[]
-  tags       TaskTag[]
+  project       Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdBy    User          @relation("CreatedTasks", fields: [createdById], references: [id])
+  assignedTo   User?         @relation("AssignedTasks", fields: [assignedToId], references: [id])
+  comments     TaskComment[]
+  tags         TaskTag[]
+  attachments  Attachment[]
 
+  @@index([projectId])
+  @@index([assignedToId])
+  @@index([status])
   @@map("tasks")
 }
 
@@ -100,10 +160,28 @@ model TaskComment {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  task Task @relation(fields: [taskId], references: [id])
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id])
 
   @@map("task_comments")
+}
+
+model Attachment {
+  id           String   @id @default(uuid())
+  taskId       String   @map("task_id")
+  uploadedById String   @map("uploaded_by")
+
+  fileName     String   @map("file_name")
+  fileType     String   @map("file_type")
+  fileSize     Int      @map("file_size")
+  url          String?
+
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  task       Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  uploadedBy User @relation(fields: [uploadedById], references: [id])
+
+  @@map("attachments")
 }
 
 model Tag {
@@ -111,9 +189,11 @@ model Tag {
   name  String
   orgId String @map("org_id")
 
-  organization Organization @relation(fields: [orgId], references: [id])
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
   tasks        TaskTag[]
 
+  @@unique([orgId, name])
+  @@index([orgId])
   @@map("tags")
 }
 
@@ -121,9 +201,69 @@ model TaskTag {
   taskId String @map("task_id")
   tagId  String @map("tag_id")
 
-  task Task @relation(fields: [taskId], references: [id])
-  tag  Tag  @relation(fields: [tagId], references: [id])
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([taskId, tagId])
   @@map("task_tags")
+}
+
+/* ---------- RBAC ---------- */
+
+model Role {
+  id    String    @id @default(uuid())
+  name  String
+  scope RoleScope
+
+  rolePermissions      RolePermission[]
+  orgMemberRoles       OrganizationMemberRole[]
+  workspaceMemberRoles WorkspaceMemberRole[]
+
+  @@unique([name, scope])
+  @@map("roles")
+}
+
+model Permission {
+  id          String @id @default(uuid())
+  key         String @unique
+  description String
+
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String @map("role_id")
+  permissionId String @map("permission_id")
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model OrganizationMemberRole {
+  orgId  String @map("org_id")
+  userId String @map("user_id")
+  roleId String @map("role_id")
+
+  member OrganizationMember @relation(fields: [orgId, userId], references: [orgId, userId], onDelete: Cascade)
+  role   Role               @relation(fields: [roleId], references: [id])
+
+  @@id([orgId, userId, roleId])
+  @@map("organization_member_roles")
+}
+
+model WorkspaceMemberRole {
+  workspaceId String @map("workspace_id")
+  userId      String @map("user_id")
+  roleId      String @map("role_id")
+
+  member WorkspaceMember @relation(fields: [workspaceId, userId], references: [workspaceId, userId], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@id([workspaceId, userId, roleId])
+  @@map("workspace_member_roles")
 }

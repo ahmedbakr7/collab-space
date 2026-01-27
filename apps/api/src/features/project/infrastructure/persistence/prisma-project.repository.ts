@@ -12,7 +12,7 @@ export class PrismaProjectRepository implements ProjectRepository {
     await this.prisma.project.upsert({
       where: { id: project.id },
       update: {
-        orgId: project.orgId,
+        workspaceId: project.workspaceId,
         name: project.name,
         slug: project.slug,
         description: project.description,
@@ -20,7 +20,7 @@ export class PrismaProjectRepository implements ProjectRepository {
       },
       create: {
         id: project.id,
-        orgId: project.orgId,
+        workspaceId: project.workspaceId,
         name: project.name,
         slug: project.slug,
         description: project.description,
@@ -42,16 +42,16 @@ export class PrismaProjectRepository implements ProjectRepository {
     return projects.map(ProjectMapper.toDomain);
   }
 
-  async findByOrgId(orgId: string): Promise<Project[]> {
+  async findByWorkspaceId(workspaceId: string): Promise<Project[]> {
     const projects = await this.prisma.project.findMany({
-      where: { orgId },
+      where: { workspaceId },
     });
     return projects.map(ProjectMapper.toDomain);
   }
 
-  async findBySlug(orgId: string, slug: string): Promise<Project | null> {
+  async findBySlug(workspaceId: string, slug: string): Promise<Project | null> {
     const project = await this.prisma.project.findFirst({
-      where: { orgId, slug },
+      where: { workspaceId, slug },
     });
     return project ? ProjectMapper.toDomain(project) : null;
   }

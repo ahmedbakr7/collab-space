@@ -5,7 +5,7 @@ export class ProjectMapper {
   static toDomain(prismaProject: PrismaProject): Project {
     return new Project(
       prismaProject.id,
-      prismaProject.orgId,
+      prismaProject.workspaceId,
       prismaProject.name,
       prismaProject.description,
       prismaProject.slug,
