@@ -1,5 +1,8 @@
 import { DashboardRepositoryPort } from '../../application/ports/dashboard.repository.port';
-import { DashboardData } from '../../domain/models/dashboard-data';
+import {
+  DashboardData,
+  DashboardWorkspace,
+} from '../../domain/models/dashboard-data';
 import {
   MOCK_WORKSPACES,
   MOCK_PROJECTS,
@@ -9,27 +12,7 @@ import { TaskStatus } from '@repo/domain/src/task/entities/task.entity';
 
 export class InMemoryDashboardRepository implements DashboardRepositoryPort {
   async getDashboardData(): Promise<DashboardData> {
-    const workspaces = MOCK_WORKSPACES.map((ws) => {
-      const wsProjects = MOCK_PROJECTS.filter((p) => p.orgId === ws.id);
-
-      const projectIds = wsProjects.map((p) => p.id);
-      const wsTasks = MOCK_TASKS.filter(
-        (t) =>
-          (t.projectId && projectIds.includes(t.projectId)) ||
-          t.workspace === ws.name,
-      );
-
-      return {
-        ...ws,
-        membersCount: ws.members.length,
-        projectsCount: wsProjects.length,
-        tasksCompleted: wsTasks.filter((t) => t.status === TaskStatus.DONE)
-          .length,
-        memberAvatars: ws.members.map(
-          (id) => `https://api.dicebear.com/7.x/avataaars/svg?seed=${id}`,
-        ),
-      };
-    });
+    const workspaces = await this.getWorkspaces();
 
     const totalTasks = MOCK_TASKS.length;
     const completedTasks = MOCK_TASKS.filter(
@@ -109,5 +92,27 @@ export class InMemoryDashboardRepository implements DashboardRepositoryPort {
         },
       ],
     };
+  }
+
+  async getWorkspaces(): Promise<DashboardWorkspace[]> {
+    return MOCK_WORKSPACES.map((ws) => {
+      const wsProjects = MOCK_PROJECTS.filter((p) => p.workspaceId === ws.id);
+
+      const projectIds = wsProjects.map((p) => p.id);
+      const wsTasks = MOCK_TASKS.filter(
+        (t) => t.projectId && projectIds.includes(t.projectId),
+      );
+
+      return {
+        ...ws,
+        membersCount: ws.members.length,
+        projectsCount: wsProjects.length,
+        tasksCompleted: wsTasks.filter((t) => t.status === TaskStatus.DONE)
+          .length,
+        memberAvatars: ws.members.map(
+          (id) => `https://api.dicebear.com/7.x/avataaars/svg?seed=${id}`,
+        ),
+      };
+    });
   }
 }

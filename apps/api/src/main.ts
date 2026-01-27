@@ -10,4 +10,5 @@ async function bootstrap() {
   await app.listen(3000);
 }
 
+// Force restart again
 void bootstrap();
