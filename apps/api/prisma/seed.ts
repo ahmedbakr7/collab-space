@@ -2,7 +2,6 @@ import {
   PrismaClient,
   TaskStatus,
   TaskPriority,
-  RoleScope,
   Visibility,
 } from '@prisma/client';
 
@@ -19,15 +18,11 @@ async function main() {
     await prisma.tag.deleteMany();
     await prisma.task.deleteMany();
     await prisma.project.deleteMany();
-    await prisma.workspaceMemberRole.deleteMany();
+
     await prisma.workspaceMember.deleteMany();
     await prisma.workspace.deleteMany();
-    await prisma.organizationMemberRole.deleteMany();
     await prisma.organizationMember.deleteMany();
     await prisma.organization.deleteMany();
-    await prisma.rolePermission.deleteMany();
-    await prisma.permission.deleteMany();
-    await prisma.role.deleteMany();
     await prisma.user.deleteMany();
   } catch (error) {
     console.warn(
@@ -63,21 +58,6 @@ async function main() {
 
   console.log(`Created users: ${alice.name}, ${bob.name}, ${charlie.name}`);
 
-  // 2. Create Roles
-  const adminRole = await prisma.role.create({
-    data: {
-      name: 'Owner',
-      scope: RoleScope.organization,
-    },
-  });
-
-  const memberRole = await prisma.role.create({
-    data: {
-      name: 'Member',
-      scope: RoleScope.organization,
-    },
-  });
-
   // 3. Create Organization
   const org = await prisma.organization.create({
     data: {
@@ -89,15 +69,9 @@ async function main() {
         create: [
           {
             userId: alice.id,
-            roles: {
-              create: { roleId: adminRole.id },
-            },
           },
           {
             userId: bob.id,
-            roles: {
-              create: { roleId: memberRole.id },
-            },
           },
         ],
       },
@@ -177,9 +151,6 @@ async function main() {
     data: {
       orgId: org.id,
       userId: charlie.id,
-      roles: {
-        create: { roleId: memberRole.id },
-      },
     },
   });
 

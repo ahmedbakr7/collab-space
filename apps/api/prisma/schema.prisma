@@ -25,10 +25,7 @@ enum TaskPriority {
   high
 }
 
-enum RoleScope {
-  organization
-  workspace
-}
+
 
 model User {
   id           String   @id @default(uuid())
@@ -71,7 +68,7 @@ model OrganizationMember {
 
   organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
   user         User         @relation(fields: [userId], references: [id])
-  roles        OrganizationMemberRole[]
+
 
   @@id([orgId, userId])
   @@map("organization_members")
@@ -102,7 +99,7 @@ model WorkspaceMember {
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   user      User      @relation(fields: [userId], references: [id])
-  roles     WorkspaceMemberRole[]
+
 
   @@id([workspaceId, userId])
   @@map("workspace_members")
@@ -208,62 +205,4 @@ model TaskTag {
   @@map("task_tags")
 }
 
-/* ---------- RBAC ---------- */
 
-model Role {
-  id    String    @id @default(uuid())
-  name  String
-  scope RoleScope
-
-  rolePermissions      RolePermission[]
-  orgMemberRoles       OrganizationMemberRole[]
-  workspaceMemberRoles WorkspaceMemberRole[]
-
-  @@unique([name, scope])
-  @@map("roles")
-}
-
-model Permission {
-  id          String @id @default(uuid())
-  key         String @unique
-  description String
-
-  rolePermissions RolePermission[]
-
-  @@map("permissions")
-}
-
-model RolePermission {
-  roleId       String @map("role_id")
-  permissionId String @map("permission_id")
-
-  role       Role       @relation(fields: [roleId], references: [id])
-  permission Permission @relation(fields: [permissionId], references: [id])
-
-  @@id([roleId, permissionId])
-  @@map("role_permissions")
-}
-
-model OrganizationMemberRole {
-  orgId  String @map("org_id")
-  userId String @map("user_id")
-  roleId String @map("role_id")
-
-  member OrganizationMember @relation(fields: [orgId, userId], references: [orgId, userId], onDelete: Cascade)
-  role   Role               @relation(fields: [roleId], references: [id])
-
-  @@id([orgId, userId, roleId])
-  @@map("organization_member_roles")
-}
-
-model WorkspaceMemberRole {
-  workspaceId String @map("workspace_id")
-  userId      String @map("user_id")
-  roleId      String @map("role_id")
-
-  member WorkspaceMember @relation(fields: [workspaceId, userId], references: [workspaceId, userId], onDelete: Cascade)
-  role Role @relation(fields: [roleId], references: [id])
-
-  @@id([workspaceId, userId, roleId])
-  @@map("workspace_member_roles")
-}
