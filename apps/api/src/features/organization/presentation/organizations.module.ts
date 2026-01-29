@@ -51,6 +51,6 @@ const OrganizationRepositoryToken = 'OrganizationRepository';
       inject: [OrganizationRepositoryToken],
     },
   ],
-  exports: [],
+  exports: [GetOrganizationUseCase],
 })
 export class OrganizationsModule {}

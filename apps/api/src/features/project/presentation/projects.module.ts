@@ -50,6 +50,12 @@ const ProjectRepositoryToken = 'ProjectRepository';
       inject: [ProjectRepositoryToken],
     },
   ],
-  exports: [],
+  exports: [
+    CreateProjectUseCase,
+    GetProjectUseCase,
+    GetProjectsUseCase,
+    UpdateProjectUseCase,
+    DeleteProjectUseCase,
+  ],
 })
 export class ProjectsModule {}

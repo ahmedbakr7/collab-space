@@ -11,7 +11,10 @@ import { WorkspaceRepository } from '../application/ports/workspace.repository.i
 
 const WorkspaceRepositoryToken = 'WorkspaceRepository';
 
+import { OrganizationsModule } from '../../organization/presentation/organizations.module';
+
 @Module({
+  imports: [OrganizationsModule],
   controllers: [WorkspacesController],
   providers: [
     PrismaService,
@@ -49,6 +52,13 @@ const WorkspaceRepositoryToken = 'WorkspaceRepository';
         new DeleteWorkspaceUseCase(workspaceRepository),
       inject: [WorkspaceRepositoryToken],
     },
+  ],
+  exports: [
+    CreateWorkspaceUseCase,
+    GetWorkspaceUseCase,
+    GetWorkspacesUseCase,
+    UpdateWorkspaceUseCase,
+    DeleteWorkspaceUseCase,
   ],
 })
 export class WorkspacesModule {}

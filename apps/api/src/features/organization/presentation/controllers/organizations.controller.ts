@@ -23,7 +23,7 @@ import {
 import { organizationIdSchema } from '../dtos/organization-id.dto';
 import { ZodValidationPipe } from '../../../../shared/pipes/zod-validation.pipe';
 
-@Controller('organizations')
+@Controller()
 export class OrganizationsController {
   constructor(
     private readonly createOrganizationUseCase: CreateOrganizationUseCase,

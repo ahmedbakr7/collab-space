@@ -50,5 +50,12 @@ const TaskRepositoryToken = 'TaskRepository';
       inject: [TaskRepositoryToken],
     },
   ],
+  exports: [
+    CreateTaskUseCase,
+    GetTaskUseCase,
+    GetTasksUseCase,
+    UpdateTaskUseCase,
+    DeleteTaskUseCase,
+  ],
 })
 export class TasksModule {}

@@ -6,7 +6,7 @@ import {
   Param,
   Put,
   Delete,
-  Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateWorkspaceUseCase } from '../../application/use-cases/create-workspace.use-case';
 import { GetWorkspaceUseCase } from '../../application/use-cases/get-workspace.use-case';
@@ -25,9 +25,12 @@ import { workspaceIdSchema } from '../../application/dtos/workspace-id.dto';
 import { ZodValidationPipe } from '../../../../shared/pipes/zod-validation.pipe';
 import { z } from 'zod';
 
-const orgIdQuerySchema = z.string().uuid().optional();
+import { OrganizationExistsInterceptor } from '../../../../features/organization/presentation/interceptors/organization-exists.interceptor';
 
-@Controller('workspaces')
+const orgIdSchema = z.string().uuid();
+
+@Controller()
+@UseInterceptors(OrganizationExistsInterceptor)
 export class WorkspacesController {
   constructor(
     private readonly createWorkspaceUseCase: CreateWorkspaceUseCase,
@@ -47,7 +50,7 @@ export class WorkspacesController {
 
   @Get()
   async getAll(
-    @Query('orgId', new ZodValidationPipe(orgIdQuerySchema)) orgId?: string,
+    @Param('orgId', new ZodValidationPipe(orgIdSchema)) orgId: string,
   ) {
     return this.getWorkspacesUseCase.execute({ orgId });
   }

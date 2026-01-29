@@ -40,6 +40,7 @@ export class AppErrorFilter implements ExceptionFilter {
       case 'PROJECT_NOT_FOUND':
       case 'TAG_NOT_FOUND':
       case 'TASK_NOT_FOUND':
+      case 'WORKSPACE_NOT_FOUND':
         status = HttpStatus.NOT_FOUND;
         break;
       case 'ORGANIZATION_ALREADY_EXISTS':

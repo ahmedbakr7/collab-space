@@ -115,7 +115,7 @@ async function main() {
     },
   });
 
-  console.log(`Created organization: ${org.name}`);
+  console.log(`Created organization: ${org.name} (ID: ${org.id})`);
 
   const frontendTag = org.tags.find((t) => t.name === 'frontend');
   const backendTag = org.tags.find((t) => t.name === 'backend');
@@ -133,7 +133,7 @@ async function main() {
     },
   });
 
-  console.log(`Created workspace: ${workspace.name}`);
+  console.log(`Created workspace: ${workspace.name} (ID: ${workspace.id})`);
 
   // 5. Create Project
   const project = await prisma.project.create({
@@ -145,7 +145,7 @@ async function main() {
     },
   });
 
-  console.log(`Created project: ${project.name}`);
+  console.log(`Created project: ${project.name} (ID: ${project.id})`);
 
   // 6. Create Tasks
   await prisma.task.create({

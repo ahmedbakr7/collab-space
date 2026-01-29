@@ -6,7 +6,6 @@ import {
   Param,
   Put,
   Delete,
-  Query,
 } from '@nestjs/common';
 import { CreateTaskUseCase } from '../../application/use-cases/create-task.use-case';
 import { GetTaskUseCase } from '../../application/use-cases/get-task.use-case';
@@ -19,9 +18,9 @@ import { taskIdSchema } from '../dtos/task-id.dto';
 import { ZodValidationPipe } from '../../../../shared/pipes/zod-validation.pipe';
 import { z } from 'zod';
 
-const projectIdQuerySchema = z.string().uuid();
+const projectIdParamSchema = z.string().uuid();
 
-@Controller('tasks')
+@Controller()
 export class TasksController {
   constructor(
     private readonly createTaskUseCase: CreateTaskUseCase,
@@ -33,17 +32,20 @@ export class TasksController {
 
   @Post()
   async create(
+    @Param('projectId', new ZodValidationPipe(projectIdParamSchema))
+    projectId: string,
     @Body(new ZodValidationPipe(createTaskSchema)) body: CreateTaskDto,
   ) {
     return this.createTaskUseCase.execute({
       ...body,
+      projectId,
       dueDate: body.dueDate ? new Date(body.dueDate) : undefined,
     });
   }
 
   @Get()
   async getAll(
-    @Query('projectId', new ZodValidationPipe(projectIdQuerySchema))
+    @Param('projectId', new ZodValidationPipe(projectIdParamSchema))
     projectId: string,
   ) {
     return this.getTasksUseCase.execute(projectId);
