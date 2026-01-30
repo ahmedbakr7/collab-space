@@ -7,15 +7,15 @@ import {
     type FieldPath,
     type Control,
 } from "react-hook-form";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@/shared/components/ui/textarea";
 import {
     Field,
     FieldLabel,
     FieldDescription,
     FieldError,
     FieldContent,
-} from "@/components/ui/field";
-import { cn } from "@/src/core/lib/utils";
+} from "@/shared/components/ui/field";
+import { cn } from "@/shared/lib/utils";
 import { Label } from "./input";
 
 export interface FormTextareaProps<
