@@ -23,7 +23,24 @@ import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import { useWorkspace } from '@/features/workspace/presentation/hooks/use-workspace.hook';
 import { useProjects } from '@/features/project/presentation/hooks/use-projects.hook';
-import { ProjectStatus } from '@repo/domain/src/project/entities/project.entity';
+import { Project } from '@repo/domain/src/project/entities/project.entity';
+
+// Mock types for UI since Domain Entity doesn't have these fields anymore
+enum ProjectStatus {
+  ACTIVE = 'active',
+  PLANNING = 'planning',
+  REVIEW = 'review',
+  COMPLETED = 'completed',
+}
+
+interface ProjectWithStats extends Project {
+  totalTasks: number;
+  completedTasks: number;
+  status: ProjectStatus;
+  progress: number;
+  dueDate: Date;
+  members: string[];
+}
 
 const statusConfig: Record<
   string,
@@ -44,11 +61,22 @@ export default function WorkspaceDetailPage() {
   const id = params?.id as string;
 
   const { workspace, loading: workspaceLoading } = useWorkspace(id);
-  const { projects, loading: projectsLoading } = useProjects(id);
+  const { projects: rawProjects, loading: projectsLoading } = useProjects(id);
 
   if (workspaceLoading || projectsLoading || !workspace) {
     return <div className="p-8">Loading workspace...</div>;
   }
+
+  // Mock data enhancement
+  const projects: ProjectWithStats[] = rawProjects.map((p) => ({
+    ...p,
+    totalTasks: 12, // Mocked
+    completedTasks: 8, // Mocked
+    status: ProjectStatus.ACTIVE, // Mocked
+    progress: 66, // Mocked
+    dueDate: new Date(), // Mocked
+    members: ['1', '2'], // Mocked user IDs
+  }));
 
   // Calculate stats from projects
   const totalTasks = projects.reduce((sum, p) => sum + p.totalTasks, 0);
@@ -57,16 +85,12 @@ export default function WorkspaceDetailPage() {
     ? Math.round((completedTasks / totalTasks) * 100)
     : 0;
 
-  // Mock members for now since Organization entity has only IDs
-  // We should ideally fetch users by IDs.
-  // For this refactor, we can map IDs to mock users or just display placeholder.
-  // Or we use the helper in `DashboardRepository`?
-  // Let's create a minimal helper or just map IDs to generic objects.
-  const members = workspace.members.map((id) => ({
-    id,
-    name: `User ${id}`,
-    email: `user${id}@example.com`,
-    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${id}`,
+  // Mock members since Workspace entity doesn't have them
+  const members = Array.from({ length: 5 }).map((_, i) => ({
+    id: `user-${i}`,
+    name: `User ${i}`,
+    email: `user${i}@example.com`,
+    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${i}`,
     role: 'member',
     joinedDate: 'Jan 2024',
   }));

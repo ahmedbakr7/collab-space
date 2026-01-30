@@ -5,7 +5,6 @@ import {
   FolderKanban,
   CheckSquare,
   Settings,
-  User,
   Plus,
   ChevronLeft,
   ChevronRight,
@@ -16,10 +15,11 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '@/shared/components/ui/avatar';
-import { useState } from 'react';
+import { useState, use } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/shared/lib/utils';
+import { Workspace } from '@repo/domain/src/workspace/entities/workspace.entity';
 
 const navigation = [
   { name: 'Dashboard', icon: Home, href: '/' },
@@ -27,13 +27,13 @@ const navigation = [
   { name: 'Tasks', icon: CheckSquare, href: '/tasks' },
 ];
 
-const workspaces = [
-  { name: 'Product Team', color: 'bg-blue-500', href: '/workspaces/1' },
-  { name: 'Marketing', color: 'bg-purple-500', href: '/workspaces/2' },
-  { name: 'Engineering', color: 'bg-teal-500', href: '/workspaces/3' },
-];
+interface SidebarProps {
+  workspacesPromise: Promise<Workspace[]>;
+}
 
-export function Sidebar() {
+export function Sidebar(props: SidebarProps) {
+  const { workspacesPromise } = props;
+  const workspaces = use(workspacesPromise);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
 
@@ -103,18 +103,19 @@ export function Sidebar() {
             </div>
 
             {workspaces.map((workspace) => (
-              <button
-                key={workspace.name}
+              <Link
+                key={workspace.id}
+                href={`/workspaces/${workspace.id}`}
                 className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
               >
                 <div
                   className={cn(
                     'w-5 h-5 rounded flex-shrink-0',
-                    workspace.color,
+                    'bg-blue-500', // Default color as entity doesn't have one
                   )}
                 />
                 <span className="truncate">{workspace.name}</span>
-              </button>
+              </Link>
             ))}
           </>
         )}

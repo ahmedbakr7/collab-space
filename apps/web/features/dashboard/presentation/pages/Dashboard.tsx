@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/shared/config/routes';
 
 import { useDashboard } from '@/features/dashboard/presentation/hooks/use-dashboard.hook';
+import { Skeleton } from '@/shared/components/ui/skeleton';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -22,7 +23,40 @@ export default function Dashboard() {
   const { stats, workspaces } = data || {};
 
   if (loading || !data || !stats || !workspaces) {
-    return <div className="p-8">Loading dashboard...</div>;
+    return (
+      <div className="p-8 space-y-8">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-64" />
+            <Skeleton className="h-4 w-80" />
+          </div>
+          <Skeleton className="h-10 w-32" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-lg" />
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
+            <div className="space-y-4">
+              <Skeleton className="h-6 w-48" />
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-20 rounded-lg" />
+              ))}
+            </div>
+          </div>
+          <div className="space-y-6">
+            <Skeleton className="h-6 w-32" />
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-16 rounded-lg" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -79,16 +113,13 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {workspaces.map((workspace) => (
             <WorkspaceCard
-              key={workspace.name}
+              color={''} totalTasks={0} key={workspace.name}
               {...workspace}
               members={workspace.membersCount}
               projects={workspace.projectsCount}
-              onClick={() =>
-                router.push(
-                  `/workspaces/${workspace.name.toLowerCase().replace(' ', '-')}`,
-                )
-              }
-            />
+              onClick={() => router.push(
+                `/workspaces/${workspace.name.toLowerCase().replace(' ', '-')}`
+              )}            />
           ))}
         </div>
       </div>

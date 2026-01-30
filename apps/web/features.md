@@ -46,7 +46,9 @@ Status of features in `apps/web/features` following Clean Architecture.
 
 - **Location**: `src/features/workspace`
 - **Layers**:
-  - `presentation`: Components (Refactored)
+  - `presentation`: Components (Refactored, Sidebar connected)
+  - `application`: Use Cases (`GetAllWorkspacesUseCase`) integrated in Sidebar
+  - `infrastructure`: Adapters (`WorkspaceRepositoryAdapter`) registered in Server Container
 
 ## Next Steps
 
