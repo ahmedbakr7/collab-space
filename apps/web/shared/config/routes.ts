@@ -12,21 +12,21 @@ export const ROUTES = {
 
   PROJECTS: {
     ROOT: '/projects',
-    NEW: '/projects/new',
+    CREATE: '/projects/create',
     VIEW: (id: string) => `/projects/${id}`,
     UPDATE: (id: string) => `/projects/${id}/edit`,
   },
 
   TASKS: {
     ROOT: '/tasks',
-    NEW: '/tasks/new',
+    CREATE: '/tasks/create',
     VIEW: (id: string) => `/tasks/${id}`,
     UPDATE: (id: string) => `/tasks/${id}/edit`,
   },
 
   WORKSPACES: {
     ROOT: '/workspaces',
-    NEW: '/workspaces/new',
+    CREATE: '/workspaces/create',
     VIEW: (id: string) => `/workspaces/${id}`,
     UPDATE: (id: string) => `/workspaces/${id}/edit`,
   },

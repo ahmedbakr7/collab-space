@@ -28,12 +28,13 @@ import {
   AvatarImage,
 } from '@/shared/components/ui/avatar';
 import Link from 'next/link';
+import { ROUTES } from '@/shared/config/routes';
 
 // Menu items.
 const items = [
-  { title: 'Dashboard', url: '/', icon: Home },
-  { title: 'Projects', url: '/projects', icon: FolderKanban },
-  { title: 'Tasks', url: '/tasks', icon: CheckSquare },
+  { title: 'Dashboard', url: ROUTES.ROOT, icon: Home },
+  { title: 'Projects', url: ROUTES.PROJECTS.ROOT, icon: FolderKanban },
+  { title: 'Tasks', url: ROUTES.TASKS.ROOT, icon: CheckSquare },
 ];
 
 export function AppSidebar() {
@@ -56,12 +57,14 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
+                  <SidebarMenuButton
+                    render={
+                      <Link href={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    }
+                  />
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -72,28 +75,34 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
-                    <SettingsIcon size={15} />
-                    <span>Product Team</span>
-                  </a>
-                </SidebarMenuButton>
+                <SidebarMenuButton
+                  render={
+                    <a href="#">
+                      <SettingsIcon size={15} />
+                      <span>Product Team</span>
+                    </a>
+                  }
+                />
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
-                    <SettingsIcon size={15} />
-                    <span>Marketing</span>
-                  </a>
-                </SidebarMenuButton>
+                <SidebarMenuButton
+                  render={
+                    <a href="#">
+                      <SettingsIcon size={15} />
+                      <span>Marketing</span>
+                    </a>
+                  }
+                />
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
-                    <SettingsIcon size={15} />
-                    <span>Engineering</span>
-                  </a>
-                </SidebarMenuButton>
+                <SidebarMenuButton
+                  render={
+                    <a href="#">
+                      <SettingsIcon size={15} />
+                      <span>Engineering</span>
+                    </a>
+                  }
+                />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
@@ -104,12 +113,14 @@ export function AppSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <a href="#">
-                <SettingsIcon size={15} />
-                <span className="text-muted-foreground">Settings</span>
-              </a>
-            </SidebarMenuButton>
+            <SidebarMenuButton
+              render={
+                <a href="#">
+                  <SettingsIcon size={15} />
+                  <span className="text-muted-foreground">Settings</span>
+                </a>
+              }
+            />
           </SidebarMenuItem>
         </SidebarMenu>
         {open && (

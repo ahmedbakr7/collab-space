@@ -16,6 +16,7 @@ import { ROUTES } from '@/shared/config/routes';
 
 import { useDashboard } from '@/features/dashboard/presentation/hooks/use-dashboard.hook';
 import { Skeleton } from '@/shared/components/ui/skeleton';
+import Link from 'next/link';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -69,10 +70,14 @@ export default function Dashboard() {
             Here&apos;s what&apos;s happening with your projects today
           </p>
         </div>
-        <Button onClick={() => router.push(ROUTES.WORKSPACES.NEW)}>
-          <Plus className="w-4 h-4 mr-2" />
-          New workspace
-        </Button>
+        <Button
+          render={
+            <Link href={ROUTES.WORKSPACES.CREATE}>
+              <Plus className="w-4 h-4 mr-2" />
+              New workspace
+            </Link>
+          }
+        ></Button>
       </div>
 
       {/* Stats */}
@@ -113,13 +118,18 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {workspaces.map((workspace) => (
             <WorkspaceCard
-              color={''} totalTasks={0} key={workspace.name}
+              color={''}
+              totalTasks={0}
+              key={workspace.name}
               {...workspace}
               members={workspace.membersCount}
               projects={workspace.projectsCount}
-              onClick={() => router.push(
-                `/workspaces/${workspace.name.toLowerCase().replace(' ', '-')}`
-              )}            />
+              onClick={() =>
+                router.push(
+                  `/workspaces/${workspace.name.toLowerCase().replace(' ', '-')}`,
+                )
+              }
+            />
           ))}
         </div>
       </div>

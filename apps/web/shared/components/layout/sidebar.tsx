@@ -20,11 +20,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/shared/lib/utils';
 import { Workspace } from '@repo/domain/src/workspace/entities/workspace.entity';
+import { ROUTES } from '@/shared/config/routes';
 
 const navigation = [
-  { name: 'Dashboard', icon: Home, href: '/' },
-  { name: 'Projects', icon: FolderKanban, href: '/projects' },
-  { name: 'Tasks', icon: CheckSquare, href: '/tasks' },
+  { name: 'Dashboard', icon: Home, href: ROUTES.ROOT },
+  { name: 'Projects', icon: FolderKanban, href: ROUTES.PROJECTS.ROOT },
+  { name: 'Tasks', icon: CheckSquare, href: ROUTES.TASKS.ROOT },
 ];
 
 interface SidebarProps {
@@ -105,7 +106,7 @@ export function Sidebar(props: SidebarProps) {
             {workspaces.map((workspace) => (
               <Link
                 key={workspace.id}
-                href={`/workspaces/${workspace.id}`}
+                href={ROUTES.WORKSPACES.VIEW(workspace.id)}
                 className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
               >
                 <div
@@ -124,10 +125,10 @@ export function Sidebar(props: SidebarProps) {
       {/* Bottom section */}
       <div className="p-3 border-t border-border space-y-1">
         <Link
-          href="/settings"
+          href={ROUTES.SETTINGS.ROOT}
           className={cn(
             'w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors',
-            pathname === '/settings'
+            pathname === ROUTES.SETTINGS.ROOT
               ? 'bg-primary text-primary-foreground'
               : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
           )}

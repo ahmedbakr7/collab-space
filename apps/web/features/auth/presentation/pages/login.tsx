@@ -13,6 +13,7 @@ import { Button } from '@/shared/components/ui/button';
 import useFormCtx from '../../shared/components/form/useFormContext';
 import Link from 'next/link';
 import { Checkbox } from '@/shared/components/ui/checkbox';
+import { ROUTES } from '@/shared/config/routes';
 
 // Sign in form schema
 const signInSchema = z.object({
@@ -122,7 +123,10 @@ export default function Page() {
 
         <p>
           Don&apos;t have an account?{' '}
-          <Link href="/" className="text-primary hover:underline font-bold">
+          <Link
+            href={ROUTES.AUTH.SIGNUP}
+            className="text-primary hover:underline font-bold"
+          >
             Sign up
           </Link>
         </p>

@@ -82,11 +82,13 @@ export function DataTable<TData, TValue>({
         />
       </div>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="ml-auto">
-            Columns
-          </Button>
-        </DropdownMenuTrigger>
+        <DropdownMenuTrigger
+          render={
+            <Button variant="outline" className="ml-auto">
+              Columns
+            </Button>
+          }
+        />
         <DropdownMenuContent align="end">
           {table
             .getAllColumns()
