@@ -19,6 +19,9 @@ export const TYPES = {
   IProjectRepository: Symbol.for('IProjectRepository'),
   IGetProjectsByWorkspaceUseCase: Symbol.for('IGetProjectsByWorkspaceUseCase'),
 
+  // Workspace Feature
+  IWorkspaceRepository: Symbol.for('IWorkspaceRepository'),
+
   // Task Feature
   ITaskRepository: Symbol.for('ITaskRepository'),
   IGetTasksUseCase: Symbol.for('IGetTasksUseCase'),

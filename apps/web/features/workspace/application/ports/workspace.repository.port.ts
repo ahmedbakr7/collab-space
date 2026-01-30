@@ -1,6 +1,6 @@
-import { Organization } from '@repo/domain/src/organization/entities/organization.entity';
+import { Workspace } from '@repo/domain/src/workspace/entities/workspace.entity';
 
 export interface WorkspaceRepositoryPort {
-  getAllWorkspaces(): Promise<Organization[]>;
-  getWorkspace(id: string): Promise<Organization | null>;
+  getAllWorkspaces(orgId: string): Promise<Workspace[]>;
+  getWorkspace(id: string): Promise<Workspace | null>;
 }
