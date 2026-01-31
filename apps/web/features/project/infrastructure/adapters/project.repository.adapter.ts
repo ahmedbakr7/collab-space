@@ -27,7 +27,6 @@ export class ProjectRepositoryAdapter implements ProjectRepositoryPort {
       data.workspaceId,
       data.name,
       data.description,
-      data.slug,
       new Date(data.createdAt),
       new Date(data.updatedAt),
     );

@@ -4,7 +4,7 @@ import { ORGANIZATION_REPOSITORY_TOKEN } from '../ports/organization.repository.
 
 // Inline port interface to bypass Turbopack module resolution issue
 interface OrganizationRepositoryPort {
-  create(data: any): Promise<{ id: string; name: string; slug: string }>;
+  create(data: any): Promise<{ id: string; name: string }>;
   join(inviteCode: string): Promise<{ id: string; name: string }>;
 }
 

@@ -37,7 +37,6 @@ export function CreateOrganizationForm({
       onSubmit={handleSubmit}
       defaultValues={{
         name: '',
-        slug: '',
       }}
       resolver={zodResolver(createOrgSchema)}
       fieldGroupClassName="gap-2"
@@ -52,15 +51,6 @@ export function CreateOrganizationForm({
             startContent={
               <Building2 className="w-5 h-5 text-muted-foreground" />
             }
-            className="space-y-1"
-          />
-
-          <FormInput
-            control={form.control}
-            name="slug"
-            label="Organization Slug"
-            placeholder="acme-corp"
-            description="This will be used in your organization URL"
             className="space-y-1"
           />
 

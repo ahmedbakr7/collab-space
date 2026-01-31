@@ -13,7 +13,6 @@ export class PrismaWorkspaceRepository implements WorkspaceRepository {
       where: { id: workspace.id },
       update: {
         name: workspace.name,
-        slug: workspace.slug,
         description: workspace.description,
         updatedAt: workspace.updatedAt,
       },
@@ -21,7 +20,6 @@ export class PrismaWorkspaceRepository implements WorkspaceRepository {
         id: workspace.id,
         orgId: workspace.orgId,
         name: workspace.name,
-        slug: workspace.slug,
         description: workspace.description,
         createdAt: workspace.createdAt,
         updatedAt: workspace.updatedAt,
@@ -32,18 +30,6 @@ export class PrismaWorkspaceRepository implements WorkspaceRepository {
   async findById(id: string): Promise<Workspace | null> {
     const workspace = await this.prisma.workspace.findUnique({
       where: { id },
-    });
-    return workspace ? WorkspaceMapper.toDomain(workspace) : null;
-  }
-
-  async findBySlug(slug: string, orgId: string): Promise<Workspace | null> {
-    const workspace = await this.prisma.workspace.findUnique({
-      where: {
-        orgId_slug: {
-          orgId,
-          slug,
-        },
-      },
     });
     return workspace ? WorkspaceMapper.toDomain(workspace) : null;
   }

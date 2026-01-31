@@ -35,7 +35,6 @@ export class WorkspaceRepositoryAdapter implements WorkspaceRepositoryPort {
       data.id,
       data.orgId,
       data.name,
-      data.slug,
       data.description,
       new Date(data.createdAt),
       new Date(data.updatedAt),

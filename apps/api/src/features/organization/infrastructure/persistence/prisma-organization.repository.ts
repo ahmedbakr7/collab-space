@@ -14,7 +14,6 @@ export class PrismaOrganizationRepository implements OrganizationRepository {
       where: { id: organization.id },
       update: {
         name: organization.name,
-        slug: organization.slug,
         description: organization.description,
         visibility: organization.visibility as PrismaVisibility,
         updatedAt: organization.updatedAt,
@@ -22,7 +21,6 @@ export class PrismaOrganizationRepository implements OrganizationRepository {
       create: {
         id: organization.id,
         name: organization.name,
-        slug: organization.slug,
         description: organization.description,
         visibility: organization.visibility as PrismaVisibility,
         createdAt: organization.createdAt,
@@ -34,13 +32,6 @@ export class PrismaOrganizationRepository implements OrganizationRepository {
   async findById(id: string): Promise<Organization | null> {
     const organization = await this.prisma.organization.findUnique({
       where: { id },
-    });
-    return organization ? OrganizationMapper.toDomain(organization) : null;
-  }
-
-  async findBySlug(slug: string): Promise<Organization | null> {
-    const organization = await this.prisma.organization.findUnique({
-      where: { slug },
     });
     return organization ? OrganizationMapper.toDomain(organization) : null;
   }

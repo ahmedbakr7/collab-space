@@ -22,7 +22,6 @@ export default async function DashboardLayout({
         id: w.id,
         orgId: w.orgId,
         name: w.name,
-        slug: w.slug,
         description: w.description,
         createdAt: w.createdAt,
         updatedAt: w.updatedAt,

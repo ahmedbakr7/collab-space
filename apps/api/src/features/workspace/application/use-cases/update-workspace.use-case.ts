@@ -19,7 +19,6 @@ export class UpdateWorkspaceUseCase {
       workspace.id,
       workspace.orgId,
       command.name ?? workspace.name,
-      workspace.slug,
       command.description ?? workspace.description,
       workspace.createdAt,
       new Date(),

@@ -62,18 +62,10 @@ async function main() {
   const org = await prisma.organization.create({
     data: {
       name: 'Acme Corp',
-      slug: 'acme-corp',
       description: 'A dummy organization for testing',
       visibility: Visibility.public,
       members: {
-        create: [
-          {
-            userId: alice.id,
-          },
-          {
-            userId: bob.id,
-          },
-        ],
+        create: [{ userId: alice.id }, { userId: bob.id }],
       },
       tags: {
         create: [
@@ -84,13 +76,12 @@ async function main() {
         ],
       },
     },
-    include: {
-      tags: true,
-    },
+    include: { tags: true },
   });
 
   console.log(`Created organization: ${org.name} (ID: ${org.id})`);
 
+  // tags are returned because of `include: { tags: true }`
   const frontendTag = org.tags.find((t) => t.name === 'frontend');
   const backendTag = org.tags.find((t) => t.name === 'backend');
 
@@ -99,7 +90,6 @@ async function main() {
     data: {
       orgId: org.id,
       name: 'Engineering',
-      slug: 'engineering',
       description: 'Engineering team workspace',
       members: {
         create: [{ userId: alice.id }, { userId: bob.id }],
@@ -114,7 +104,6 @@ async function main() {
     data: {
       workspaceId: workspace.id,
       name: 'Website Redesign',
-      slug: 'website-redesign',
       description: 'Overhaul of the company website',
     },
   });

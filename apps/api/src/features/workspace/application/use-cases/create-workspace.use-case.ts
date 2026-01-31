@@ -1,29 +1,18 @@
 import { Workspace } from '@repo/domain';
 import { WorkspaceRepository } from '../ports/workspace.repository.interface';
 import { CreateWorkspaceDto } from '../dtos/create-workspace.dto';
-import { WorkspaceAlreadyExistsError } from '../errors/workspace.errors';
 import { randomUUID } from 'crypto';
 
 export class CreateWorkspaceUseCase {
   constructor(private readonly workspaceRepository: WorkspaceRepository) {}
 
   async execute(command: CreateWorkspaceDto): Promise<Workspace> {
-    const existingWorkspace = await this.workspaceRepository.findBySlug(
-      command.slug,
-      command.orgId,
-    );
-
-    if (existingWorkspace) {
-      throw new WorkspaceAlreadyExistsError(command.slug);
-    }
-
     const now = new Date();
 
     const workspace = new Workspace(
       randomUUID(),
       command.orgId,
       command.name,
-      command.slug,
       command.description ?? null,
       now,
       now,

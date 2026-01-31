@@ -14,7 +14,6 @@ export class PrismaProjectRepository implements ProjectRepository {
       update: {
         workspaceId: project.workspaceId,
         name: project.name,
-        slug: project.slug,
         description: project.description,
         updatedAt: project.updatedAt,
       },
@@ -22,7 +21,6 @@ export class PrismaProjectRepository implements ProjectRepository {
         id: project.id,
         workspaceId: project.workspaceId,
         name: project.name,
-        slug: project.slug,
         description: project.description,
         createdAt: project.createdAt,
         updatedAt: project.updatedAt,
@@ -47,13 +45,6 @@ export class PrismaProjectRepository implements ProjectRepository {
       where: { workspaceId },
     });
     return projects.map(ProjectMapper.toDomain);
-  }
-
-  async findBySlug(workspaceId: string, slug: string): Promise<Project | null> {
-    const project = await this.prisma.project.findFirst({
-      where: { workspaceId, slug },
-    });
-    return project ? ProjectMapper.toDomain(project) : null;
   }
 
   async delete(id: string): Promise<void> {

@@ -8,7 +8,6 @@ export class ProjectMapper {
       prismaProject.workspaceId,
       prismaProject.name,
       prismaProject.description,
-      prismaProject.slug,
       prismaProject.createdAt,
       prismaProject.updatedAt,
     );

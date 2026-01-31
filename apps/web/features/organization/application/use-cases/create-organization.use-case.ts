@@ -4,9 +4,7 @@ import { ORGANIZATION_REPOSITORY_TOKEN } from '../ports/organization.repository.
 
 // Inline port interface to bypass Turbopack module resolution issue
 interface OrganizationRepositoryPort {
-  create(
-    data: CreateOrgValues,
-  ): Promise<{ id: string; name: string; slug: string }>;
+  create(data: CreateOrgValues): Promise<{ id: string; name: string }>;
   join(inviteCode: string): Promise<{ id: string; name: string }>;
 }
 
@@ -17,9 +15,7 @@ export class CreateOrganizationUseCase {
     private readonly repository: OrganizationRepositoryPort,
   ) {}
 
-  async execute(
-    data: CreateOrgValues,
-  ): Promise<{ id: string; name: string; slug: string }> {
+  async execute(data: CreateOrgValues): Promise<{ id: string; name: string }> {
     return this.repository.create(data);
   }
 }

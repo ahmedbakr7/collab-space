@@ -13,7 +13,6 @@ export const MOCK_WORKSPACES: Organization[] = [
   {
     id: '1',
     name: 'Product Team',
-    slug: 'product-team',
     description: 'Product management and design workspace',
     visibility: Visibility.PRIVATE,
     members: ['u1', 'u2', 'u3', 'u5', 'u7'],
@@ -23,7 +22,6 @@ export const MOCK_WORKSPACES: Organization[] = [
   {
     id: '2',
     name: 'Engineering',
-    slug: 'engineering',
     description: 'Software development and infrastructure',
     visibility: Visibility.PUBLIC,
     members: ['u2', 'u4', 'u6', 'u8'],
@@ -33,7 +31,6 @@ export const MOCK_WORKSPACES: Organization[] = [
   {
     id: '3',
     name: 'Marketing',
-    slug: 'marketing',
     description: 'Marketing campaigns and content',
     visibility: Visibility.PUBLIC,
     members: ['u1', 'u3', 'u5'],
@@ -48,7 +45,6 @@ export const MOCK_PROJECTS: Project[] = [
     workspaceId: '1', // Product Team
     name: 'Product Roadmap Q4',
     description: 'Q4 2024 feature planning and development roadmap',
-    slug: 'product-roadmap-q4',
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -57,7 +53,6 @@ export const MOCK_PROJECTS: Project[] = [
     workspaceId: '2', // Engineering
     name: 'Backend Migration',
     description: 'Migrating legacy services to microservices',
-    slug: 'backend-migration',
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -66,7 +61,6 @@ export const MOCK_PROJECTS: Project[] = [
     workspaceId: '1', // Product Team
     name: 'Website Redesign',
     description: 'New corporate website design',
-    slug: 'website-redesign',
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -122,7 +116,6 @@ MOCK_PROJECTS.push({
   workspaceId: '2', // Engineering
   name: 'Authentication System',
   description: 'Auth system overhaul',
-  slug: 'authentication-system',
   createdAt: new Date(),
   updatedAt: new Date(),
 });

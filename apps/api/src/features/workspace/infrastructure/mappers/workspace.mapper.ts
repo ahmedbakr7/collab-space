@@ -7,7 +7,6 @@ export class WorkspaceMapper {
       prismaWorkspace.id,
       prismaWorkspace.orgId,
       prismaWorkspace.name,
-      prismaWorkspace.slug,
       prismaWorkspace.description,
       prismaWorkspace.createdAt,
       prismaWorkspace.updatedAt,

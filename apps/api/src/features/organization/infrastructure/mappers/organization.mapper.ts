@@ -6,7 +6,6 @@ export class OrganizationMapper {
     return new Organization(
       prismaOrganization.id,
       prismaOrganization.name,
-      prismaOrganization.slug,
       prismaOrganization.description,
       prismaOrganization.visibility as Visibility,
       [], // members

@@ -196,8 +196,12 @@ export default function WorkspaceDetailPage() {
 
                   {/* Status and Due Date */}
                   <div className="flex items-center justify-between">
-                    <Badge variant={statusConfig[project.status].variant}>
-                      {statusConfig[project.status].label}
+                    <Badge
+                      variant={
+                        statusConfig[project.status]?.variant || 'default'
+                      }
+                    >
+                      {statusConfig[project.status]?.label || project.status}
                     </Badge>
                     <span className="text-xs text-muted-foreground">
                       {project.dueDate.toLocaleDateString()}

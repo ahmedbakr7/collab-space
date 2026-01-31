@@ -17,7 +17,6 @@ import { cn } from '@/shared/lib/utils'; // Assuming this exists, standard in sh
 interface PublicOrganization {
   id: string;
   name: string;
-  slug: string;
   description?: string;
   logo?: string;
   memberCount: number;
@@ -35,7 +34,6 @@ const MOCK_PUBLIC_ORGANIZATIONS: PublicOrganization[] = [
   {
     id: 'org-1',
     name: 'Acme Corp',
-    slug: 'acme-corp',
     description: 'Building the future of nothing in particular.',
     memberCount: 120,
     category: 'tech',
@@ -45,7 +43,6 @@ const MOCK_PUBLIC_ORGANIZATIONS: PublicOrganization[] = [
   {
     id: 'org-2',
     name: 'Open Source Collective',
-    slug: 'os-collective',
     description: 'A community of open source maintainers and contributors.',
     memberCount: 5430,
     category: 'community',
@@ -55,7 +52,6 @@ const MOCK_PUBLIC_ORGANIZATIONS: PublicOrganization[] = [
   {
     id: 'org-3',
     name: 'Designers Unite',
-    slug: 'designers-unite',
     description: 'Sharing design resources and feedback.',
     memberCount: 89,
     category: 'design',
@@ -64,7 +60,6 @@ const MOCK_PUBLIC_ORGANIZATIONS: PublicOrganization[] = [
   {
     id: 'org-4',
     name: 'Gaming Hub',
-    slug: 'gaming-hub',
     description: 'For all things gaming. Tournaments, reviews, and more.',
     memberCount: 1200,
     category: 'gaming',
@@ -73,7 +68,6 @@ const MOCK_PUBLIC_ORGANIZATIONS: PublicOrganization[] = [
   {
     id: 'org-5',
     name: 'Writers Block',
-    slug: 'writers-block',
     description: 'A place for writers to procrastinate together.',
     memberCount: 42,
     category: 'community',
@@ -104,8 +98,7 @@ export function PublicOrganizationsBrowser({
     const matchesSearch =
       searchQuery === '' ||
       org.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      org.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      org.slug.toLowerCase().includes(searchQuery.toLowerCase());
+      org.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesCategory =
       selectedCategory === 'all' || org.category === selectedCategory;
@@ -206,9 +199,7 @@ export function PublicOrganizationsBrowser({
                         <span>Public</span>
                       </div>
                     </div>
-                    <p className="text-xs text-muted-foreground mb-2">
-                      {org.slug}
-                    </p>
+
                     {org.description && (
                       <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                         {org.description}

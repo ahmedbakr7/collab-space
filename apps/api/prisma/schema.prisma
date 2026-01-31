@@ -49,7 +49,6 @@ model User {
 model Organization {
   id          String     @id @default(uuid())
   name        String
-  slug        String     @unique
   description String
   visibility  Visibility
   createdAt   DateTime   @default(now()) @map("created_at")
@@ -78,8 +77,8 @@ model Workspace {
   id          String   @id @default(uuid())
   orgId       String   @map("org_id")
   name        String
-  slug        String
   description String?
+
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -87,9 +86,7 @@ model Workspace {
   members      WorkspaceMember[]
   projects     Project[]
 
-  @@unique([orgId, slug])
   @@index([orgId])
-  @@index([slug])
   @@map("workspaces")
 }
 
@@ -110,16 +107,14 @@ model Project {
   workspaceId String   @map("workspace_id")
   name        String
   description String
-  slug        String
+
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   tasks     Task[]
 
-  @@unique([workspaceId, slug])
   @@index([workspaceId])
-  @@index([slug])
   @@map("projects")
 }
 

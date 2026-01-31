@@ -8,7 +8,6 @@ import { ScrollArea } from '@/shared/components/ui/scroll-area';
 interface Organization {
   id: string;
   name: string;
-  slug: string;
   role: string;
   logo?: string;
 }
@@ -22,19 +21,16 @@ const MOCK_USER_ORGANIZATIONS: Organization[] = [
   {
     id: 'org-1',
     name: 'Acme Corp',
-    slug: 'acme-corp',
     role: 'Admin',
   },
   {
     id: 'org-2',
     name: 'My Side Project',
-    slug: 'side-project',
     role: 'Owner',
   },
   {
     id: 'org-3',
     name: 'Community Group',
-    slug: 'community-group',
     role: 'Member',
   },
 ];
@@ -45,9 +41,9 @@ export function ExistingOrganizationsList({
   // In a real app, we would use a router here to navigate to the specific org dashboard
   // const router = useRouter();
 
-  const handleOrgClick = (orgSlug: string) => {
-    console.log(`Navigating to organization: ${orgSlug}`);
-    // router.push(ROUTES.DASHBOARD(orgSlug));
+  const handleOrgClick = (orgId: string) => {
+    console.log(`Navigating to organization: ${orgId}`);
+    // router.push(ROUTES.DASHBOARD(orgId));
   };
 
   return (
@@ -73,7 +69,7 @@ export function ExistingOrganizationsList({
             {MOCK_USER_ORGANIZATIONS.map((org) => (
               <button
                 key={org.id}
-                onClick={() => handleOrgClick(org.slug)}
+                onClick={() => handleOrgClick(org.id)}
                 className="w-full group relative overflow-hidden rounded-xl border border-border hover:border-primary transition-all p-4 bg-background hover:bg-accent/40 text-left"
               >
                 <div className="flex items-center gap-4">
@@ -95,9 +91,6 @@ export function ExistingOrganizationsList({
                         {org.role}
                       </span>
                     </div>
-                    <p className="text-sm text-muted-foreground truncate">
-                      /{org.slug}
-                    </p>
                   </div>
                   <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors opacity-0 group-hover:opacity-100" />
                 </div>
