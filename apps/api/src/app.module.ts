@@ -16,9 +16,14 @@ import { TagsModule } from './features/tag/presentation/tags.module';
 import { TasksModule } from './features/task/presentation/tasks.module';
 import { StorageModule } from './infrastructure/storage/storage.module';
 
+import { envSchema } from './env';
+
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate: (config) => envSchema.parse(config),
+    }),
     UsersModule,
     AuthModule,
     // Router Configuration
