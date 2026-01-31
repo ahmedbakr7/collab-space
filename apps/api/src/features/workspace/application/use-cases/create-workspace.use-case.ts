@@ -6,7 +6,9 @@ import { randomUUID } from 'crypto';
 export class CreateWorkspaceUseCase {
   constructor(private readonly workspaceRepository: WorkspaceRepository) {}
 
-  async execute(command: CreateWorkspaceDto): Promise<Workspace> {
+  async execute(
+    command: CreateWorkspaceDto & { orgId: string },
+  ): Promise<Workspace> {
     const now = new Date();
 
     const workspace = new Workspace(

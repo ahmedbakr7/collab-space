@@ -28,6 +28,40 @@ export class InMemoryTaskRepository implements TaskRepositoryPort {
         assignedToId: 'u1',
         createdAt: new Date(),
         updatedAt: new Date(),
+        tags: [
+          { id: 't1', name: 'design', orgId: 'o1' },
+          { id: 't2', name: 'ui', orgId: 'o1' },
+        ],
+        comments: [
+          {
+            id: 'c1',
+            taskId: '1',
+            userId: 'u2',
+            content: 'Looks good!',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            id: 'c2',
+            taskId: '1',
+            userId: 'u3',
+            content: 'Make it pop!',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+        attachments: [
+          {
+            id: 'a1',
+            taskId: '1',
+            uploadedById: 'u1',
+            fileName: 'mockup.png',
+            fileType: 'image/png',
+            fileSize: 1024,
+            url: 'http://example.com',
+            createdAt: new Date(),
+          },
+        ],
       },
       {
         id: '2',
@@ -41,6 +75,9 @@ export class InMemoryTaskRepository implements TaskRepositoryPort {
         assignedToId: 'u2',
         createdAt: new Date(),
         updatedAt: new Date(),
+        tags: [{ id: 't3', name: 'docs', orgId: 'o1' }],
+        comments: [],
+        attachments: [],
       },
       {
         id: '3',

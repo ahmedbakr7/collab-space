@@ -39,6 +39,11 @@ export class PrismaTaskRepository implements TaskRepository {
   async findById(id: string): Promise<Task | null> {
     const task = await this.prisma.task.findUnique({
       where: { id },
+      include: {
+        comments: true,
+        attachments: true,
+        tags: { include: { tag: true } },
+      },
     });
     return task ? TaskMapper.toDomain(task) : null;
   }
@@ -46,8 +51,13 @@ export class PrismaTaskRepository implements TaskRepository {
   async findByProjectId(projectId: string): Promise<Task[]> {
     const tasks = await this.prisma.task.findMany({
       where: { projectId },
+      include: {
+        comments: true,
+        attachments: true,
+        tags: { include: { tag: true } },
+      },
     });
-    return tasks.map(TaskMapper.toDomain);
+    return tasks.map((t) => TaskMapper.toDomain(t));
   }
 
   async delete(id: string): Promise<void> {

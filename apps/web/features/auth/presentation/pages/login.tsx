@@ -1,8 +1,9 @@
 'use client';
 
-import { FormComponent } from '../../shared/components/form/form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Form } from '@/shared/components/form/form';
 import { z } from 'zod';
-import InputField from '../../shared/components/Input/FormInput';
+import InputField from '@/shared/components/Input/FormInput';
 import {
   FormField,
   FormItem,
@@ -10,7 +11,7 @@ import {
   FormMessage,
 } from '@/shared/components/ui/form';
 import { Button } from '@/shared/components/ui/button';
-import useFormCtx from '../../shared/components/form/useFormContext';
+import useFormCtx from '@/shared/components/form/useFormContext';
 import Link from 'next/link';
 import { Checkbox } from '@/shared/components/ui/checkbox';
 import { ROUTES } from '@/shared/config/routes';
@@ -80,46 +81,47 @@ export default function Page() {
         <span className="text-muted-foreground text-sm">
           Sign in to your CollabSpace account
         </span>
-        <FormComponent<SignInFormValues>
-          formSchema={signInSchema}
+        <Form<SignInFormValues>
+          resolver={zodResolver(signInSchema)}
           defaultValues={{
             email: '',
             password: '',
             rememberMe: false,
           }}
-          onSubmitAction={handleSignIn}
+          onSubmit={handleSignIn}
           className="w-full max-w-sm space-y-4 mt-6"
         >
-          <InputField
-            name="email"
-            label="Email"
-            placeholder="you@example.com"
-            type="email"
-            // autoComplete="email"
-            required
-          />
+          {() => (
+            <>
+              <InputField
+                name="email"
+                label="Email"
+                placeholder="you@example.com"
+                type="email"
+                required
+              />
 
-          <InputField
-            name="password"
-            label="Password"
-            placeholder="Enter your password"
-            type="password"
-            // autoComplete="current-password"
-            // autoComplete="none"
-            required
-          />
+              <InputField
+                name="password"
+                label="Password"
+                placeholder="Enter your password"
+                type="password"
+                required
+              />
 
-          <div className="flex flex-row justify-between items-center">
-            <RememberMeField />
-            <span className="text-primary hover:underline cursor-pointer text-sm">
-              Forgot password?
-            </span>
-          </div>
+              <div className="flex flex-row justify-between items-center">
+                <RememberMeField />
+                <span className="text-primary hover:underline cursor-pointer text-sm">
+                  Forgot password?
+                </span>
+              </div>
 
-          <Button type="submit" className="cursor-pointer w-full">
-            Sign in
-          </Button>
-        </FormComponent>
+              <Button type="submit" className="cursor-pointer w-full">
+                Sign in
+              </Button>
+            </>
+          )}
+        </Form>
 
         <p>
           Don&apos;t have an account?{' '}
