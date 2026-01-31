@@ -1,3 +1,8 @@
+
+import { Tag } from '../../tag/entities/tag.entity';
+import { TaskComment } from './task-comment.entity';
+import { Attachment } from './attachment.entity';
+
 export enum TaskStatus {
   TODO = 'todo',
   IN_PROGRESS = 'in_progress',
@@ -23,5 +28,8 @@ export class Task {
     public readonly assignedToId: string | null,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
+    public readonly tags: Tag[] = [],
+    public readonly comments: TaskComment[] = [],
+    public readonly attachments: Attachment[] = [],
   ) {}
 }
