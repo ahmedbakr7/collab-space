@@ -10,7 +10,7 @@ import { PrismaService } from '../../../infrastructure/prisma/prisma.service';
 import { UserRepository } from '../application/ports/user.repository.interface';
 
 // Define the token for dependency injection
-const UserRepositoryToken = 'UserRepository';
+export const UserRepositoryToken = 'UserRepository';
 
 @Module({
   controllers: [UsersController],
@@ -51,6 +51,6 @@ const UserRepositoryToken = 'UserRepository';
       inject: [UserRepositoryToken],
     },
   ],
-  exports: [],
+  exports: [UserRepositoryToken],
 })
 export class UsersModule {}

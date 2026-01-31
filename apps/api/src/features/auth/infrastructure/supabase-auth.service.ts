@@ -2,13 +2,13 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { AuthSession, AuthUser } from '@repo/domain';
-import { LoginUserDto, RegisterUserDto } from '../../application/dto/auth.dto';
+import { LoginUserDto, RegisterUserDto } from '../application/dto/auth.dto';
 import {
   AuthProviderError,
   InvalidCredentialsError,
   UserAlreadyExistsError,
-} from '../../application/errors/auth.error';
-import { AuthServiceInterface } from '../../application/ports/auth.service.interface';
+} from '../application/errors/auth.error';
+import { AuthServiceInterface } from '../application/ports/auth.service.interface';
 
 @Injectable()
 export class SupabaseAuthService implements AuthServiceInterface {
@@ -21,6 +21,25 @@ export class SupabaseAuthService implements AuthServiceInterface {
     this.supabase = createClient(supabaseUrl, supabaseKey);
   }
 
+  async validateToken(token: string): Promise<AuthUser> {
+    const { data, error } = await this.supabase.auth.getUser(token);
+
+    if (error || !data.user) {
+      this.logger.error(
+        `Token validation failed: ${error?.message}`,
+        error?.stack,
+      );
+      throw new AuthProviderError('Invalid or expired token');
+    }
+
+    return new AuthUser(
+      data.user.id,
+      data.user.email!,
+      data.user.email_confirmed_at != null,
+      data.user.user_metadata,
+    );
+  }
+
   async register(
     dto: RegisterUserDto,
   ): Promise<{ user: AuthUser; session: AuthSession | null }> {
@@ -28,7 +47,11 @@ export class SupabaseAuthService implements AuthServiceInterface {
       email: dto.email,
       password: dto.password,
       options: {
-        data: dto.data,
+        data: {
+          ...dto.data,
+          name: dto.name,
+          avatar_url: dto.avatar,
+        },
       },
     });
 

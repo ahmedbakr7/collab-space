@@ -3,6 +3,8 @@ import { z } from 'zod';
 export const registerUserSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
+  name: z.string().optional(),
+  avatar: z.string().optional(),
   data: z.record(z.any()).optional(),
 });
 

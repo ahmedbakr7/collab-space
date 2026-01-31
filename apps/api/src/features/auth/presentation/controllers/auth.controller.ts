@@ -31,7 +31,13 @@ export class AuthController {
   @Post('register')
   @UsePipes(new ZodValidationPipe(registerUserSchema))
   async register(@Body() body: RegisterUserRequestDto) {
-    const dto = new RegisterUserDto(body.email, body.password, body.data);
+    const dto = new RegisterUserDto(
+      body.email,
+      body.password,
+      body.name,
+      body.avatar,
+      body.data,
+    );
     return this.registerUserUseCase.execute(dto);
   }
 

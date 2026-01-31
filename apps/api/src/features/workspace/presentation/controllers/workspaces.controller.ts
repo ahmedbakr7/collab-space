@@ -42,10 +42,11 @@ export class WorkspacesController {
 
   @Post()
   async create(
+    @Param('orgId', new ZodValidationPipe(orgIdSchema)) orgId: string,
     @Body(new ZodValidationPipe(createWorkspaceSchema))
     body: CreateWorkspaceDto,
   ) {
-    return this.createWorkspaceUseCase.execute(body);
+    return this.createWorkspaceUseCase.execute({ ...body, orgId });
   }
 
   @Get()

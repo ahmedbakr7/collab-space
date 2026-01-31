@@ -2,6 +2,8 @@ export class RegisterUserDto {
   constructor(
     public readonly email: string,
     public readonly password: string,
+    public readonly name?: string,
+    public readonly avatar?: string,
     public readonly data?: Record<string, any>,
   ) {}
 }
