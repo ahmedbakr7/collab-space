@@ -1,0 +1,36 @@
+{
+  "name": "@repo/supabase",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./client": "./dist/client.js",
+    "./server": "./dist/server.js",
+    "./proxy": "./dist/proxy.js",
+    "./service": "./dist/service.js",
+    "./types": "./dist/types.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint \"src/**/*.ts\"",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.8.0",
+    "@supabase/supabase-js": "^2.91.1"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "@types/node": "^22.19.0",
+    "eslint": "^9.0.0",
+    "next": "16.0.10",
+    "typescript": "5.5.4"
+  },
+  "peerDependencies": {
+    "next": "16.0.10"
+  }
+}

@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createServiceClient } from '@repo/supabase/service';
+import { SupabaseClient } from '@supabase/supabase-js';
 import { AuthSession, AuthUser } from '@repo/domain';
 import { LoginUserDto, RegisterUserDto } from '../application/dto/auth.dto';
 import {
@@ -18,7 +19,7 @@ export class SupabaseAuthService implements AuthServiceInterface {
   constructor(private readonly configService: ConfigService) {
     const supabaseUrl = this.configService.getOrThrow<string>('SUPABASE_URL');
     const supabaseKey = this.configService.getOrThrow<string>('SUPABASE_KEY');
-    this.supabase = createClient(supabaseUrl, supabaseKey);
+    this.supabase = createServiceClient(supabaseUrl, supabaseKey);
   }
 
   async validateToken(token: string): Promise<AuthUser> {
