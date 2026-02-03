@@ -7,6 +7,7 @@ export const envSchema = z.object({
   SUPABASE_URL: z.string().url(),
   SUPABASE_KEY: z.string().min(1),
   SUPABASE_PUBLISHABLE_DEFAULT_KEY: z.string().min(1),
+  SUPABASE_JWT_PUBLIC_KEY: z.string().min(1),
 });
 
 export const env = envSchema.parse({
@@ -16,4 +17,5 @@ export const env = envSchema.parse({
   SUPABASE_KEY: process.env.SUPABASE_KEY,
   SUPABASE_PUBLISHABLE_DEFAULT_KEY:
     process.env.SUPABASE_PUBLISHABLE_DEFAULT_KEY,
+  SUPABASE_JWT_PUBLIC_KEY: process.env.SUPABASE_JWT_PUBLIC_KEY,
 });

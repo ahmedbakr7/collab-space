@@ -1,4 +1,7 @@
 import { createBrowserClient } from '@supabase/ssr';
+import { extendSupabaseAuth } from './auth-extension';
+
+extendSupabaseAuth();
 
 export function createClient() {
   return createBrowserClient(

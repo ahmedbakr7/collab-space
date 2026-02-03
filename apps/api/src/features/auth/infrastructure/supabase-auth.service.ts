@@ -23,21 +23,22 @@ export class SupabaseAuthService implements AuthServiceInterface {
   }
 
   async validateToken(token: string): Promise<AuthUser> {
-    const { data, error } = await this.supabase.auth.getUser(token);
+    const { data, error } = await this.supabase.auth.getClaims(token);
 
-    if (error || !data.user) {
+    if (error || !data.claims) {
       this.logger.error(
-        `Token validation failed: ${error?.message}`,
-        error?.stack,
+        `Token validation failed: ${error?.message || 'No claims returned'}`,
       );
       throw new AuthProviderError('Invalid or expired token');
     }
 
+    const claims = data.claims;
+
     return new AuthUser(
-      data.user.id,
-      data.user.email!,
-      data.user.email_confirmed_at != null,
-      data.user.user_metadata,
+      claims.sub,
+      claims.email || '',
+      !!claims.email_confirmed_at,
+      claims.user_metadata || {},
     );
   }
 
