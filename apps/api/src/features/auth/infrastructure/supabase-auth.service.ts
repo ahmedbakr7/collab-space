@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createServiceClient } from '@repo/supabase/service';
+import { getClaims } from '@repo/supabase';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { AuthSession, AuthUser } from '@repo/domain';
 import { LoginUserDto, RegisterUserDto } from '../application/dto/auth.dto';
@@ -23,7 +24,8 @@ export class SupabaseAuthService implements AuthServiceInterface {
   }
 
   async validateToken(token: string): Promise<AuthUser> {
-    const { data, error } = await this.supabase.auth.getClaims(token);
+    const publicKey = this.configService.get<string>('SUPABASE_JWT_PUBLIC_KEY');
+    const { data, error } = await getClaims(token, publicKey);
 
     if (error || !data.claims) {
       this.logger.error(
@@ -38,6 +40,8 @@ export class SupabaseAuthService implements AuthServiceInterface {
       claims.sub,
       claims.email || '',
       !!claims.email_confirmed_at,
+      claims.user_metadata?.name,
+      claims.user_metadata?.avatar_url,
       claims.user_metadata || {},
     );
   }
@@ -75,6 +79,8 @@ export class SupabaseAuthService implements AuthServiceInterface {
       data.user.id,
       data.user.email!,
       data.user.email_confirmed_at != null,
+      data.user.user_metadata?.name,
+      data.user.user_metadata?.avatar_url,
       data.user.user_metadata,
     );
 
@@ -117,6 +123,8 @@ export class SupabaseAuthService implements AuthServiceInterface {
       data.user.id,
       data.user.email!,
       data.user.email_confirmed_at != null,
+      data.user.user_metadata?.name,
+      data.user.user_metadata?.avatar_url,
       data.user.user_metadata,
     );
 

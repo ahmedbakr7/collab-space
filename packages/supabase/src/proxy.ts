@@ -1,8 +1,5 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-import { extendSupabaseAuth } from './auth-extension';
-
-extendSupabaseAuth();
 
 export async function proxy(
   request: NextRequest,

@@ -1,8 +1,5 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { extendSupabaseAuth } from './auth-extension';
-
-extendSupabaseAuth();
 
 /**
  * If using Fluid compute: Don't put this client in a global variable. Always create a new client within each

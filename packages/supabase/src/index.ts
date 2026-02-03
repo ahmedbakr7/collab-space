@@ -1,2 +1,2 @@
 export * from './types';
-export * from './auth-extension';
+export * from './auth-utils';
