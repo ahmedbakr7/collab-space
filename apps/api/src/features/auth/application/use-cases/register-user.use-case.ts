@@ -30,7 +30,7 @@ export class RegisterUserUseCase {
         'EXTERNAL_AUTH', // Managed by Supabase
         new Date(),
         new Date(),
-        dto.avatar,
+        dto.avatarUrl,
       );
 
       await this.userRepository.save(newUser);

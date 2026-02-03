@@ -51,7 +51,7 @@ export class SupabaseAuthService implements AuthServiceInterface {
         data: {
           ...dto.data,
           name: dto.name,
-          avatar_url: dto.avatar,
+          avatar_url: dto.avatarUrl,
         },
       },
     });
@@ -137,6 +137,23 @@ export class SupabaseAuthService implements AuthServiceInterface {
       // However, Clean Architecture says we should probably let application decide.
       // For now, let's wrap it.
       this.logger.error(`Logout failed: ${error.message}`, error.stack);
+      throw new AuthProviderError(error.message);
+    }
+  }
+
+  async updateUserMetadata(
+    id: string,
+    metadata: Record<string, any>,
+  ): Promise<void> {
+    const { error } = await this.supabase.auth.admin.updateUserById(id, {
+      user_metadata: metadata,
+    });
+
+    if (error) {
+      this.logger.error(
+        `Failed to update user metadata for ${id}: ${error.message}`,
+        error.stack,
+      );
       throw new AuthProviderError(error.message);
     }
   }

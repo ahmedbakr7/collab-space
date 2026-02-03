@@ -12,9 +12,12 @@ export class SignupUseCase {
     name: string;
     company?: string;
   }): Promise<void> {
+    const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(params.email)}`;
+
     await this.authPort.signup(params.email, params.password, {
       full_name: params.name,
       company: params.company,
+      avatarUrl,
     });
   }
 }

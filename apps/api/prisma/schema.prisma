@@ -42,7 +42,7 @@ model User {
 
   organizations  OrganizationMember[]
   workspaces     WorkspaceMember[]
-  avatar         String?
+  avatarUrl      String?  @map("avatar_url")
 
   @@map("users")
 }

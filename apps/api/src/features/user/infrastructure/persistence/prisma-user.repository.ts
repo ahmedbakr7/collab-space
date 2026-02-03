@@ -14,7 +14,7 @@ export class PrismaUserRepository implements UserRepository {
       update: {
         email: user.email,
         name: user.name,
-        avatar: user.avatar,
+        avatarUrl: user.avatarUrl,
         passwordHash: user.passwordHash,
         updatedAt: user.updatedAt,
       },
@@ -22,7 +22,7 @@ export class PrismaUserRepository implements UserRepository {
         id: user.id,
         email: user.email,
         name: user.name,
-        avatar: user.avatar,
+        avatarUrl: user.avatarUrl,
         passwordHash: user.passwordHash,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,

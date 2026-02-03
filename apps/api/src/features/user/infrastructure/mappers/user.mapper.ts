@@ -10,7 +10,7 @@ export class UserMapper {
       prismaUser.passwordHash,
       prismaUser.createdAt,
       prismaUser.updatedAt,
-      prismaUser.avatar || undefined,
+      prismaUser.avatarUrl || undefined,
     );
   }
 }

@@ -37,6 +37,7 @@ async function main() {
       email: 'alice@example.com',
       name: 'Alice Admin',
       passwordHash: 'hashed_password_123', // In a real app, hash this properly
+      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alice',
     },
   });
 
@@ -45,6 +46,7 @@ async function main() {
       email: 'bob@example.com',
       name: 'Bob Builder',
       passwordHash: 'hashed_password_456',
+      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bob',
     },
   });
 
@@ -53,6 +55,7 @@ async function main() {
       email: 'charlie@example.com',
       name: 'Charlie Checker',
       passwordHash: 'hashed_password_789',
+      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie',
     },
   });
 
