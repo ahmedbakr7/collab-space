@@ -29,18 +29,18 @@ export class LoginUserUseCase {
         this.logger.log(`User ${user.id} not found in local DB, syncing...`);
         // We don't have the name here unless it's in metadata
         const name =
-          (user.metadata?.name as string) ||
-          (user.metadata?.full_name as string) ||
+          (user.userMetadata?.name as string) ||
+          (user.userMetadata?.full_name as string) ||
           user.email.split('@')[0];
 
         const newUser = new User(
           user.id,
           user.email,
           name,
+          new Date(),
+          new Date(),
+          user.userMetadata?.avatar_url as string | undefined,
           'EXTERNAL_AUTH',
-          new Date(),
-          new Date(),
-          user.metadata?.avatar_url as string | undefined,
         );
 
         await this.userRepository.save(newUser);

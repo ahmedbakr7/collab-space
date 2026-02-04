@@ -27,10 +27,10 @@ export class RegisterUserUseCase {
         user.id,
         user.email,
         dto.name || user.email.split('@')[0],
-        'EXTERNAL_AUTH', // Managed by Supabase
         new Date(),
         new Date(),
         dto.avatarUrl,
+        'EXTERNAL_AUTH', // Managed by Supabase
       );
 
       await this.userRepository.save(newUser);

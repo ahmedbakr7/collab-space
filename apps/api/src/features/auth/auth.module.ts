@@ -14,10 +14,13 @@ import { SupabaseAuthGuard } from './presentation/guards/supabase-auth.guard';
 import { SyncUserAvatarUseCase } from '../user/application/use-cases/sync-user-avatar.use-case';
 import { AvatarSyncInterceptor } from './presentation/interceptors/avatar-sync.interceptor';
 import { UserRepository } from '../user/application/ports/user.repository.interface';
+
 import { AuthServiceInterface } from './application/ports/auth.service.interface';
+import { PassportModule } from '@nestjs/passport';
+import { SupabaseJwtStrategy } from './infrastructure/supabase.strategy';
 
 @Module({
-  imports: [ConfigModule, UsersModule],
+  imports: [ConfigModule, UsersModule, PassportModule],
   controllers: [AuthController],
   providers: [
     {
@@ -37,6 +40,7 @@ import { AuthServiceInterface } from './application/ports/auth.service.interface
       useClass: AvatarSyncInterceptor,
     },
     SupabaseAuthGuard,
+    SupabaseJwtStrategy,
     RegisterUserUseCase,
     LoginUserUseCase,
     LogoutUserUseCase,

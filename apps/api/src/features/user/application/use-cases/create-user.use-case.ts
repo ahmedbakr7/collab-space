@@ -29,9 +29,10 @@ export class CreateUserUseCase {
       randomUUID(),
       command.email,
       command.name,
+      now,
+      now,
+      undefined,
       passwordHash,
-      now,
-      now,
     );
 
     await this.userRepository.save(user);

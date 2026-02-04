@@ -31,9 +31,10 @@ export class UpdateUserUseCase {
       user.id,
       command.email ?? user.email,
       command.name ?? user.name,
-      passwordHash,
       user.createdAt,
       new Date(),
+      user.avatarUrl,
+      passwordHash,
     );
 
     await this.userRepository.save(updatedUser);

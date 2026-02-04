@@ -3,9 +3,9 @@ export class User {
     public readonly id: string,
     public readonly email: string,
     public readonly name: string,
-    public readonly passwordHash: string,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
     public readonly avatarUrl?: string,
+    public readonly passwordHash?: string,
   ) {}
 }

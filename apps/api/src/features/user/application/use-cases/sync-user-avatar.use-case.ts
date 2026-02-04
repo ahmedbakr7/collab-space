@@ -35,7 +35,7 @@ export class SyncUserAvatarUseCase {
 
       // 3. Resolve avatar from metadata
       // user_metadata.avatarUrl (clean) > picture (google) > avatar_url (github)
-      const metadata = authUser.metadata || {};
+      const metadata = authUser.userMetadata || {};
       const resolvedAvatar =
         (metadata.avatarUrl as string) ||
         (metadata.picture as string) ||
@@ -51,40 +51,17 @@ export class SyncUserAvatarUseCase {
       // We need a repository method to update partial user or just save the full user with modification
       // Since Domain User is immutable, we create a new instance (or copyWith if exists)
       // Assuming no copyWith, using constructor
-      const updatedUser = {
-        ...localUser,
-        avatarUrl: resolvedAvatar,
-      };
-      // Note: Repository likely takes a Domain User. `localUser` is a Domain User.
-      // We need to re-instantiate it properly to avoid "Method not found" if using plain object
-      // But repo.save usually accepts the entity.
-      // Let's rely on standard spread if it works, or use constructor.
-      /*
-         constructor(
-           public readonly id: string,
-           public readonly email: string,
-           public readonly name: string,
-           public readonly passwordHash: string,
-           public readonly createdAt: Date,
-           public readonly updatedAt: Date,
-           public readonly avatarUrl?: string,
-         )
-      */
+      // 5. Save to local DB
       const newUser = new User(
         localUser.id,
         localUser.email,
         localUser.name,
-        localUser.passwordHash,
         localUser.createdAt,
         localUser.updatedAt,
         resolvedAvatar,
+        localUser.passwordHash,
       );
-
-      // Warning: 'new localUser.constructor' is risky if class is not what we think.
-      // Better to import User class.
-
-      // 5. Save to local DB
-      await this.userRepository.save(newUser as any); // Type assertion if needed, but should match
+      await this.userRepository.save(newUser);
 
       // 6. Sync back to Supabase metadata (Canonical source is now DB)
       // We want `avatarUrl` in metadata to match DB.
