@@ -16,12 +16,15 @@ export class SupabaseAuthAdapter implements AuthPort {
     }
   }
 
-  async signup(
-    email: string,
-    password: string,
-    data?: Record<string, any>,
-  ): Promise<void> {
-    const { error } = await this.supabase.auth.signUp({
+  async signup(params: {
+    email: string;
+    password: string;
+    full_name?: string;
+    company?: string;
+    avatarUrl?: string;
+  }): Promise<void> {
+    const { email, password, ...data } = params;
+    const { error, data: signupData } = await this.supabase.auth.signUp({
       email,
       password,
       options: {
@@ -31,6 +34,7 @@ export class SupabaseAuthAdapter implements AuthPort {
     if (error) {
       throw error;
     }
+    console.log(signupData);
   }
 
   async logout(): Promise<void> {
