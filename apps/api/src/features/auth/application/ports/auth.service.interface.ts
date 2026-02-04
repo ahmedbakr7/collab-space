@@ -7,6 +7,5 @@ export interface AuthServiceInterface {
   ): Promise<{ user: AuthUser; session: AuthSession | null }>;
   login(dto: LoginUserDto): Promise<{ user: AuthUser; session: AuthSession }>;
   logout(accessToken: string): Promise<void>;
-  validateToken(token: string): Promise<AuthUser>;
   updateUserMetadata(id: string, metadata: Record<string, any>): Promise<void>;
 }

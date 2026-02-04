@@ -1,5 +1,4 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import * as jwt from 'jsonwebtoken';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createServiceClient } from '@repo/supabase/service';
 import { SupabaseClient } from '@supabase/supabase-js';
@@ -21,41 +20,6 @@ export class SupabaseAuthService implements AuthServiceInterface {
     const supabaseUrl = this.configService.getOrThrow<string>('SUPABASE_URL');
     const supabaseKey = this.configService.getOrThrow<string>('SUPABASE_KEY');
     this.supabase = createServiceClient(supabaseUrl, supabaseKey);
-  }
-
-  async validateToken(token: string): Promise<AuthUser> {
-    try {
-      // 1. Check SUPABASE_KEY (likely the secret based on user input and typical misconfiguration/usage)
-      // 2. Check SUPABASE_JWT_SECRET (fallback)
-      const secret = process.env.SUPABASE_KEY?.startsWith('sb_secret')
-        ? process.env.SUPABASE_KEY
-        : process.env.SUPABASE_JWT_SECRET;
-
-      if (!secret) {
-        throw new Error('Missing Supabase JWT Secret');
-      }
-
-      // Verify token signature locally
-      const decoded = jwt.verify(token, secret) as any;
-
-      // Map claims to AuthUser
-      return new AuthUser(
-        decoded.sub,
-        decoded.email,
-        decoded.app_metadata || {},
-        decoded.user_metadata || {},
-        decoded.aal,
-        decoded.amr || [],
-        decoded.session_id,
-        decoded.is_anonymous,
-      );
-    } catch (error: any) {
-      this.logger.error(
-        `Token validation failed: ${error.message}`,
-        error.stack,
-      );
-      throw new AuthProviderError('Invalid or expired token');
-    }
   }
 
   async register(
