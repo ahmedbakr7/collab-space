@@ -22,8 +22,10 @@ export function SignUpForm() {
       await signup(values.email, values.password, values.name, values.company);
       toast.success('Account created successfully! Please check your email.');
       router.push(ROUTES.ONBOARDING);
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to create account');
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to create account',
+      );
     }
   };
 
@@ -43,7 +45,7 @@ export function SignUpForm() {
           email: '',
           company: '',
           password: '',
-          terms: undefined,
+          terms: false,
         }}
         resolver={zodResolver(signUpSchema)}
         fieldGroupClassName="gap-2"
