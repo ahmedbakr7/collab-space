@@ -1,6 +1,8 @@
 import { Sidebar } from '@/shared/components/layout/sidebar';
 import { Header } from '@/shared/components/layout/header';
-// import { useAuthGuard } from '@/features/auth/presentation/hooks/use-auth-guard';
+import { createClient } from '@repo/supabase/server';
+import { redirect } from 'next/navigation';
+import { ROUTES } from '@/shared/config/routes';
 import { serverContainer } from '@/shared/layers/di/server.container';
 import { GetAllWorkspacesUseCase } from '@/features/workspace/application/use-cases/get-all-workspaces.usecase';
 import { Suspense } from 'react';
@@ -33,9 +35,12 @@ export default async function DashboardLayout({
       return [];
     });
 
-  // if (!isAuthenticated) {
-  //   return null; // Will redirect in hook
-  // }
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+
+  if (!data?.claims) {
+    redirect(ROUTES.AUTH.LOGIN);
+  }
 
   return (
     <div className="flex h-dvh overflow-hidden bg-background">
