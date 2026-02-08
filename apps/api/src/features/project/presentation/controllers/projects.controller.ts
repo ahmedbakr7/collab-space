@@ -44,7 +44,10 @@ export class ProjectsController {
 
   @Get()
   async getAll(
-    @Param('workspaceId', new ZodValidationPipe(workspaceIdParamSchema))
+    @Param(
+      'workspaceId',
+      new ZodValidationPipe(workspaceIdParamSchema.optional()),
+    )
     workspaceId: string,
   ) {
     return this.getProjectsUseCase.execute(workspaceId);

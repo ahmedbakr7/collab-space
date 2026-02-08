@@ -45,7 +45,7 @@ export class TasksController {
 
   @Get()
   async getAll(
-    @Param('projectId', new ZodValidationPipe(projectIdParamSchema))
+    @Param('projectId', new ZodValidationPipe(projectIdParamSchema.optional()))
     projectId: string,
   ) {
     return this.getTasksUseCase.execute(projectId);

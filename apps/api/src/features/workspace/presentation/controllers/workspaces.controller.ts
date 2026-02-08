@@ -51,7 +51,8 @@ export class WorkspacesController {
 
   @Get()
   async getAll(
-    @Param('orgId', new ZodValidationPipe(orgIdSchema)) orgId: string,
+    @Param('orgId', new ZodValidationPipe(orgIdSchema.optional()))
+    orgId: string,
   ) {
     return this.getWorkspacesUseCase.execute({ orgId });
   }

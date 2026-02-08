@@ -48,6 +48,17 @@ export class PrismaTaskRepository implements TaskRepository {
     return task ? TaskMapper.toDomain(task) : null;
   }
 
+  async findAll(): Promise<Task[]> {
+    const tasks = await this.prisma.task.findMany({
+      include: {
+        comments: true,
+        attachments: true,
+        tags: { include: { tag: true } },
+      },
+    });
+    return tasks.map((t) => TaskMapper.toDomain(t));
+  }
+
   async findByProjectId(projectId: string): Promise<Task[]> {
     const tasks = await this.prisma.task.findMany({
       where: { projectId },
