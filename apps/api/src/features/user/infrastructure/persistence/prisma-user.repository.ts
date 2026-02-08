@@ -28,9 +28,24 @@ export class PrismaUserRepository implements UserRepository {
     });
   }
 
-  async findById(id: string): Promise<User | null> {
+  async findById(
+    id: string,
+    filter?: { userId?: string },
+  ): Promise<User | null> {
+    const where: any = { id };
+    if (filter?.userId && id !== filter.userId) {
+      where.organizations = {
+        some: {
+          organization: {
+            members: {
+              some: { userId: filter.userId },
+            },
+          },
+        },
+      };
+    }
     const user = await this.prisma.user.findUnique({
-      where: { id },
+      where,
     });
     return user ? UserMapper.toDomain(user) : null;
   }
@@ -42,8 +57,20 @@ export class PrismaUserRepository implements UserRepository {
     return user ? UserMapper.toDomain(user) : null;
   }
 
-  async findAll(): Promise<User[]> {
-    const users = await this.prisma.user.findMany();
+  async findAll(filter?: { userId?: string }): Promise<User[]> {
+    const where: any = {};
+    if (filter?.userId) {
+      where.organizations = {
+        some: {
+          organization: {
+            members: {
+              some: { userId: filter.userId },
+            },
+          },
+        },
+      };
+    }
+    const users = await this.prisma.user.findMany({ where });
     return users.map(UserMapper.toDomain);
   }
 

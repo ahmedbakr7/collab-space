@@ -6,7 +6,11 @@ import {
   Param,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthUser } from '@repo/domain';
+import { CurrentUser } from '../../../../features/auth/presentation/decorators/current-user.decorator';
+import { SupabaseAuthGuard } from '../../../../features/auth/presentation/guards/supabase-auth.guard';
 import { CreateTaskUseCase } from '../../application/use-cases/create-task.use-case';
 import { GetTaskUseCase } from '../../application/use-cases/get-task.use-case';
 import { GetTasksUseCase } from '../../application/use-cases/get-tasks.use-case';
@@ -44,16 +48,22 @@ export class TasksController {
   }
 
   @Get()
+  @UseGuards(SupabaseAuthGuard)
   async getAll(
     @Param('projectId', new ZodValidationPipe(projectIdParamSchema.optional()))
     projectId: string,
+    @CurrentUser() user: AuthUser,
   ) {
-    return this.getTasksUseCase.execute(projectId);
+    return this.getTasksUseCase.execute({ projectId, userId: user.id });
   }
 
   @Get(':id')
-  async get(@Param('id', new ZodValidationPipe(taskIdSchema)) id: string) {
-    return this.getTaskUseCase.execute(id);
+  @UseGuards(SupabaseAuthGuard)
+  async get(
+    @Param('id', new ZodValidationPipe(taskIdSchema)) id: string,
+    @CurrentUser() user: AuthUser,
+  ) {
+    return this.getTaskUseCase.execute(id, user.id);
   }
 
   @Put(':id')

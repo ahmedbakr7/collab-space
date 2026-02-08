@@ -29,15 +29,26 @@ export class PrismaOrganizationRepository implements OrganizationRepository {
     });
   }
 
-  async findById(id: string): Promise<Organization | null> {
+  async findById(
+    id: string,
+    filter?: { userId?: string },
+  ): Promise<Organization | null> {
+    const where: any = { id };
+    if (filter?.userId) {
+      where.members = { some: { userId: filter.userId } };
+    }
     const organization = await this.prisma.organization.findUnique({
-      where: { id },
+      where,
     });
     return organization ? OrganizationMapper.toDomain(organization) : null;
   }
 
-  async findAll(): Promise<Organization[]> {
-    const organizations = await this.prisma.organization.findMany();
+  async findAll(filter?: { userId?: string }): Promise<Organization[]> {
+    const where: any = {};
+    if (filter?.userId) {
+      where.members = { some: { userId: filter.userId } };
+    }
+    const organizations = await this.prisma.organization.findMany({ where });
     return organizations.map(OrganizationMapper.toDomain);
   }
 

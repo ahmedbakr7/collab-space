@@ -4,13 +4,16 @@ import { UserNotFoundError } from '../errors/user.errors';
 
 export interface GetUserCommand {
   id: string;
+  userId?: string;
 }
 
 export class GetUserUseCase {
   constructor(private readonly userRepository: UserRepository) {}
 
   async execute(command: GetUserCommand): Promise<User> {
-    const user = await this.userRepository.findById(command.id);
+    const user = await this.userRepository.findById(command.id, {
+      userId: command.userId,
+    });
     if (!user) {
       throw new UserNotFoundError(command.id);
     }

@@ -6,7 +6,7 @@ export class GetOrganizationsUseCase {
     private readonly organizationRepository: OrganizationRepository,
   ) {}
 
-  async execute(): Promise<Organization[]> {
-    return this.organizationRepository.findAll();
+  async execute(userId?: string): Promise<Organization[]> {
+    return this.organizationRepository.findAll({ userId });
   }
 }

@@ -7,8 +7,10 @@ export class GetOrganizationUseCase {
     private readonly organizationRepository: OrganizationRepository,
   ) {}
 
-  async execute(id: string): Promise<Organization> {
-    const organization = await this.organizationRepository.findById(id);
+  async execute(id: string, userId?: string): Promise<Organization> {
+    const organization = await this.organizationRepository.findById(id, {
+      userId,
+    });
 
     if (!organization) {
       throw new OrganizationNotFoundError(id);

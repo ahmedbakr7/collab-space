@@ -36,9 +36,19 @@ export class PrismaTaskRepository implements TaskRepository {
     });
   }
 
-  async findById(id: string): Promise<Task | null> {
+  async findById(
+    id: string,
+    filter?: { userId?: string },
+  ): Promise<Task | null> {
+    const where: any = { id };
+    if (filter?.userId) {
+      where.project = {
+        workspace: { members: { some: { userId: filter.userId } } },
+      };
+    }
+
     const task = await this.prisma.task.findUnique({
-      where: { id },
+      where,
       include: {
         comments: true,
         attachments: true,
@@ -48,8 +58,22 @@ export class PrismaTaskRepository implements TaskRepository {
     return task ? TaskMapper.toDomain(task) : null;
   }
 
-  async findAll(): Promise<Task[]> {
+  async findAll(filter?: {
+    projectId?: string;
+    userId?: string;
+  }): Promise<Task[]> {
+    const where: any = {};
+    if (filter?.projectId) {
+      where.projectId = filter.projectId;
+    }
+    if (filter?.userId) {
+      where.project = {
+        workspace: { members: { some: { userId: filter.userId } } },
+      };
+    }
+
     const tasks = await this.prisma.task.findMany({
+      where,
       include: {
         comments: true,
         attachments: true,

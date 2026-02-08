@@ -6,7 +6,11 @@ import {
   Param,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthUser } from '@repo/domain';
+import { CurrentUser } from '../../../auth/presentation/decorators/current-user.decorator';
+import { SupabaseAuthGuard } from '../../../auth/presentation/guards/supabase-auth.guard';
 import { CreateUserUseCase } from '../../application/use-cases/create-user.use-case';
 import { GetUserUseCase } from '../../application/use-cases/get-user.use-case';
 import { GetUsersUseCase } from '../../application/use-cases/get-users.use-case';
@@ -35,13 +39,18 @@ export class UsersController {
   }
 
   @Get()
-  async getAll() {
-    return this.getUsersUseCase.execute();
+  @UseGuards(SupabaseAuthGuard)
+  async getAll(@CurrentUser() user: AuthUser) {
+    return this.getUsersUseCase.execute(user.id);
   }
 
   @Get(':id')
-  async get(@Param('id', new ZodValidationPipe(userIdSchema)) id: string) {
-    return this.getUserUseCase.execute({ id });
+  @UseGuards(SupabaseAuthGuard)
+  async get(
+    @Param('id', new ZodValidationPipe(userIdSchema)) id: string,
+    @CurrentUser() user: AuthUser,
+  ) {
+    return this.getUserUseCase.execute({ id, userId: user.id });
   }
 
   @Put(':id')

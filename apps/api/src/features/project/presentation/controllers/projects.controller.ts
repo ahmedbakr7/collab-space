@@ -6,7 +6,11 @@ import {
   Param,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthUser } from '@repo/domain';
+import { CurrentUser } from '../../../../features/auth/presentation/decorators/current-user.decorator';
+import { SupabaseAuthGuard } from '../../../../features/auth/presentation/guards/supabase-auth.guard';
 import { CreateProjectUseCase } from '../../application/use-cases/create-project.use-case';
 import { GetProjectUseCase } from '../../application/use-cases/get-project.use-case';
 import { GetProjectsUseCase } from '../../application/use-cases/get-projects.use-case';
@@ -43,19 +47,25 @@ export class ProjectsController {
   }
 
   @Get()
+  @UseGuards(SupabaseAuthGuard)
   async getAll(
     @Param(
       'workspaceId',
       new ZodValidationPipe(workspaceIdParamSchema.optional()),
     )
     workspaceId: string,
+    @CurrentUser() user: AuthUser,
   ) {
-    return this.getProjectsUseCase.execute(workspaceId);
+    return this.getProjectsUseCase.execute({ workspaceId, userId: user.id });
   }
 
   @Get(':id')
-  async get(@Param('id', new ZodValidationPipe(projectIdSchema)) id: string) {
-    return this.getProjectUseCase.execute(id);
+  @UseGuards(SupabaseAuthGuard)
+  async get(
+    @Param('id', new ZodValidationPipe(projectIdSchema)) id: string,
+    @CurrentUser() user: AuthUser,
+  ) {
+    return this.getProjectUseCase.execute(id, user.id);
   }
 
   @Put(':id')

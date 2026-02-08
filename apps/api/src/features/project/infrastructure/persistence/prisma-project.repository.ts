@@ -28,15 +28,32 @@ export class PrismaProjectRepository implements ProjectRepository {
     });
   }
 
-  async findById(id: string): Promise<Project | null> {
+  async findById(
+    id: string,
+    filter?: { userId?: string },
+  ): Promise<Project | null> {
+    const where: any = { id };
+    if (filter?.userId) {
+      where.workspace = { members: { some: { userId: filter.userId } } };
+    }
     const project = await this.prisma.project.findUnique({
-      where: { id },
+      where,
     });
     return project ? ProjectMapper.toDomain(project) : null;
   }
 
-  async findAll(): Promise<Project[]> {
-    const projects = await this.prisma.project.findMany();
+  async findAll(filter?: {
+    workspaceId?: string;
+    userId?: string;
+  }): Promise<Project[]> {
+    const where: any = {};
+    if (filter?.workspaceId) {
+      where.workspaceId = filter.workspaceId;
+    }
+    if (filter?.userId) {
+      where.workspace = { members: { some: { userId: filter.userId } } };
+    }
+    const projects = await this.prisma.project.findMany({ where });
     return projects.map(ProjectMapper.toDomain);
   }
 

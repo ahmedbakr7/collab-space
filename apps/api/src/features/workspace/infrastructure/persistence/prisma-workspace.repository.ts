@@ -27,18 +27,33 @@ export class PrismaWorkspaceRepository implements WorkspaceRepository {
     });
   }
 
-  async findById(id: string): Promise<Workspace | null> {
+  async findById(
+    id: string,
+    filter?: { userId?: string },
+  ): Promise<Workspace | null> {
+    const where: any = { id };
+    if (filter?.userId) {
+      where.members = { some: { userId: filter.userId } };
+    }
     const workspace = await this.prisma.workspace.findUnique({
-      where: { id },
+      where,
     });
     return workspace ? WorkspaceMapper.toDomain(workspace) : null;
   }
 
-  async findAll(filter?: { orgId?: string }): Promise<Workspace[]> {
+  async findAll(filter?: {
+    orgId?: string;
+    userId?: string;
+  }): Promise<Workspace[]> {
+    const where: any = {};
+    if (filter?.orgId) {
+      where.orgId = filter.orgId;
+    }
+    if (filter?.userId) {
+      where.members = { some: { userId: filter.userId } };
+    }
     const workspaces = await this.prisma.workspace.findMany({
-      where: {
-        orgId: filter?.orgId,
-      },
+      where,
     });
     return workspaces.map(WorkspaceMapper.toDomain);
   }

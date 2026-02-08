@@ -4,10 +4,10 @@ import { ProjectRepository } from '../ports/project.repository.interface';
 export class GetProjectsUseCase {
   constructor(private readonly projectRepository: ProjectRepository) {}
 
-  async execute(workspaceId?: string): Promise<Project[]> {
-    if (workspaceId) {
-      return this.projectRepository.findByWorkspaceId(workspaceId);
-    }
-    return this.projectRepository.findAll();
+  async execute(filter?: {
+    workspaceId?: string;
+    userId?: string;
+  }): Promise<Project[]> {
+    return this.projectRepository.findAll(filter);
   }
 }
