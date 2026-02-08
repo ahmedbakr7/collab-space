@@ -71,6 +71,7 @@ export default function Dashboard() {
           </p>
         </div>
         <Button
+          nativeButton={false}
           render={
             <Link href={ROUTES.WORKSPACES.CREATE}>
               <Plus className="w-4 h-4 mr-2" />

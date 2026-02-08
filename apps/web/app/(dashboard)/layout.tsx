@@ -13,12 +13,19 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+
+  if (!data?.claims) {
+    redirect(ROUTES.AUTH.LOGIN);
+  }
+
   const getAllWorkspacesUseCase = serverContainer.resolve(
     GetAllWorkspacesUseCase,
   );
-  // TODO: Get actual orgId from context/auth
+
   const workspacesPromise = getAllWorkspacesUseCase
-    .execute('f2b55893-288b-4468-972f-a5175cc312ef')
+    .execute('a8bbbe9b-fa1d-42a6-a66b-a4b9381f5ee1')
     .then((workspaces) =>
       workspaces.map((w) => ({
         id: w.id,
@@ -34,13 +41,6 @@ export default async function DashboardLayout({
       // Return empty array to avoid crashing the client if fetch fails
       return [];
     });
-
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getClaims();
-
-  if (!data?.claims) {
-    redirect(ROUTES.AUTH.LOGIN);
-  }
 
   return (
     <div className="flex h-dvh overflow-hidden bg-background">
