@@ -1,12 +1,11 @@
 import { User } from '@repo/domain';
 import { UserRepository } from '../ports/user.repository.interface';
 import { UserAlreadyExistsError } from '../errors/user.errors';
-import { createHash, randomUUID } from 'crypto';
+import { randomUUID } from 'crypto';
 
 export interface CreateUserCommand {
   email: string;
   name: string;
-  password: string;
 }
 
 export class CreateUserUseCase {
@@ -19,10 +18,6 @@ export class CreateUserUseCase {
       throw new UserAlreadyExistsError(command.email);
     }
 
-    const passwordHash = createHash('sha256')
-      .update(command.password)
-      .digest('hex');
-
     const now = new Date();
 
     const user = new User(
@@ -32,7 +27,6 @@ export class CreateUserUseCase {
       now,
       now,
       undefined,
-      passwordHash,
     );
 
     await this.userRepository.save(user);

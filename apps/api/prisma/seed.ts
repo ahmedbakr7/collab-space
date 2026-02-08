@@ -4,6 +4,7 @@ import {
   TaskPriority,
   Visibility,
 } from '@prisma/client';
+import { randomUUID } from 'crypto';
 
 const prisma = new PrismaClient();
 
@@ -34,27 +35,27 @@ async function main() {
   // 1. Create Users
   const alice = await prisma.user.create({
     data: {
+      id: randomUUID(),
       email: 'alice@example.com',
       name: 'Alice Admin',
-      passwordHash: 'hashed_password_123', // In a real app, hash this properly
       avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alice',
     },
   });
 
   const bob = await prisma.user.create({
     data: {
+      id: randomUUID(),
       email: 'bob@example.com',
       name: 'Bob Builder',
-      passwordHash: 'hashed_password_456',
       avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bob',
     },
   });
 
   const charlie = await prisma.user.create({
     data: {
+      id: randomUUID(),
       email: 'charlie@example.com',
       name: 'Charlie Checker',
-      passwordHash: 'hashed_password_789',
       avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie',
     },
   });

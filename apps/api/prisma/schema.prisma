@@ -28,24 +28,25 @@ enum TaskPriority {
 
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  name         String
-  passwordHash String   @map("password_hash")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  id        String   @id @db.Uuid
+  email     String   @unique
+  name      String
+  avatarUrl String?  @map("avatar_url")
 
-  createdTasks   Task[]        @relation("CreatedTasks")
-  assignedTasks  Task[]        @relation("AssignedTasks")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  createdTasks   Task[] @relation("CreatedTasks")
+  assignedTasks  Task[] @relation("AssignedTasks")
   comments       TaskComment[]
   attachments    Attachment[]
 
   organizations  OrganizationMember[]
   workspaces     WorkspaceMember[]
-  avatarUrl      String?  @map("avatar_url")
 
   @@map("users")
 }
+
 
 model Organization {
   id          String     @id @default(uuid())
@@ -64,7 +65,7 @@ model Organization {
 
 model OrganizationMember {
   orgId  String @map("org_id")
-  userId String @map("user_id")
+  userId String @map("user_id") @db.Uuid
 
   organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
   user         User         @relation(fields: [userId], references: [id])
@@ -93,7 +94,7 @@ model Workspace {
 
 model WorkspaceMember {
   workspaceId String @map("workspace_id")
-  userId      String @map("user_id")
+  userId      String @map("user_id") @db.Uuid
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   user      User      @relation(fields: [userId], references: [id])
@@ -127,8 +128,8 @@ model Task {
   status        TaskStatus
   priority      TaskPriority
   dueDate       DateTime?    @map("due_date")
-  createdById   String       @map("created_by")
-  assignedToId  String?      @map("assigned_to")
+  createdById   String       @map("created_by") @db.Uuid
+  assignedToId  String?      @map("assigned_to") @db.Uuid
   createdAt     DateTime     @default(now()) @map("created_at")
   updatedAt     DateTime     @updatedAt @map("updated_at")
 
@@ -148,7 +149,7 @@ model Task {
 model TaskComment {
   id        String   @id @default(uuid())
   taskId    String   @map("task_id")
-  userId    String   @map("user_id")
+  userId    String   @map("user_id") @db.Uuid
   content   String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -162,7 +163,7 @@ model TaskComment {
 model Attachment {
   id           String   @id @default(uuid())
   taskId       String   @map("task_id")
-  uploadedById String   @map("uploaded_by")
+  uploadedById String   @map("uploaded_by") @db.Uuid
 
   fileName     String   @map("file_name")
   fileType     String   @map("file_type")
