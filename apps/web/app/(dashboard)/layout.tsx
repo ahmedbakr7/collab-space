@@ -8,7 +8,7 @@ import { GetAllWorkspacesUseCase } from '@/features/workspace/application/use-ca
 import { Suspense } from 'react';
 import { Skeleton } from '@/shared/components/ui/skeleton';
 
-export default async function DashboardLayout({
+async function DashboardLayoutContent({
   children,
 }: {
   children: React.ReactNode;
@@ -54,5 +54,17 @@ export default async function DashboardLayout({
         <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
     </div>
+  );
+}
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <Suspense fallback={null}>
+      <DashboardLayoutContent>{children}</DashboardLayoutContent>
+    </Suspense>
   );
 }
