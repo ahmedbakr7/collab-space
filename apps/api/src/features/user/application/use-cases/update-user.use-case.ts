@@ -20,12 +20,7 @@ export class UpdateUserUseCase {
       throw new UserNotFoundError(command.id);
     }
 
-    let passwordHash = user.passwordHash;
-    if (command.password) {
-      passwordHash = createHash('sha256')
-        .update(command.password)
-        .digest('hex');
-    }
+    // Password update logic removed as we don't store passwordHash anymore
 
     const updatedUser = new User(
       user.id,
@@ -34,7 +29,6 @@ export class UpdateUserUseCase {
       user.createdAt,
       new Date(),
       user.avatarUrl,
-      passwordHash,
     );
 
     await this.userRepository.save(updatedUser);

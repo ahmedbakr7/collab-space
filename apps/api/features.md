@@ -9,6 +9,7 @@
 - [x] Infrastructure Layer (In-Memory -> Prisma WIP)
 - [x] Presentation Layer
 - [x] Architecture Compliance: Strictly follows async/await + AppError patterns (v2 rules).
+- [x] Authentication/Authorization integration: Supabase Auth + Local User Lookup.
 
 ### Use Cases
 
@@ -39,7 +40,6 @@
 ### Missing
 
 - Real database persistence (currently using In-Memory adapter).
-- Authentication/Authorization integration.
 
 ## Organization Feature
 
