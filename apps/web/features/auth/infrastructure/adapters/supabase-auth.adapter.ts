@@ -24,17 +24,25 @@ export class SupabaseAuthAdapter implements AuthPort {
     avatarUrl?: string;
   }): Promise<void> {
     const { email, password, ...data } = params;
-    const { error, data: signupData } = await this.supabase.auth.signUp({
+    const { error } = await this.supabase.auth.signUp({
       email,
       password,
       options: {
         data,
       },
     });
+
     if (error) {
+      // If user is already registered, we can treat it as a success or throw a specific error
+      if (error.message === 'User already registered') {
+        // Option 1: Silent success (idempotent)
+        // return;
+
+        // Option 2: Informative error
+        throw new Error('An account with this email already exists.');
+      }
       throw error;
     }
-    console.log(signupData);
   }
 
   async logout(): Promise<void> {
@@ -45,9 +53,26 @@ export class SupabaseAuthAdapter implements AuthPort {
   }
 
   async getUser(): Promise<any> {
-    const {
-      data: { user },
-    } = await this.supabase.auth.getUser();
-    return user;
+    try {
+      const {
+        data: { user },
+        error,
+      } = await this.supabase.auth.getUser();
+
+      if (error) {
+        if (error.message.includes('Invalid Refresh Token')) {
+          // Clear invalid session
+          await this.supabase.auth.signOut();
+          return null;
+        }
+        // For other errors, we might want to log them but return null to avoid blocking UI
+        console.warn('Auth check failed:', error.message);
+        return null;
+      }
+      return user;
+    } catch (error) {
+      console.warn('Auth check exception:', error);
+      return null;
+    }
   }
 }
