@@ -115,10 +115,10 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton
               render={
-                <a href="#">
+                <Link href={ROUTES.SETTINGS.ROOT}>
                   <SettingsIcon size={15} />
-                  <span className="text-muted-foreground">Settings</span>
-                </a>
+                  <span>Settings</span>
+                </Link>
               }
             />
           </SidebarMenuItem>
