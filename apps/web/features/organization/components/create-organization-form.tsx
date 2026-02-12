@@ -1,5 +1,3 @@
-'use client';
-
 import { createOrgSchema, CreateOrgValues } from '@repo/shared-schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/shared/components/ui/button';
@@ -9,6 +7,8 @@ import { Building2 } from 'lucide-react';
 import { useCreateOrganization } from '../presentation/hooks/use-create-organization';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/shared/config/routes';
+import { FormTextarea } from '@/shared/components/form/textarea';
+import { FormSelect } from '@/shared/components/form/select';
 
 interface CreateOrganizationFormProps {
   onCreateOrganization?: (values: CreateOrgValues) => void;
@@ -37,6 +37,8 @@ export function CreateOrganizationForm({
       onSubmit={handleSubmit}
       defaultValues={{
         name: '',
+        description: '',
+        visibility: 'private',
       }}
       resolver={zodResolver(createOrgSchema)}
       fieldGroupClassName="gap-2"
@@ -52,6 +54,26 @@ export function CreateOrganizationForm({
               <Building2 className="w-5 h-5 text-muted-foreground" />
             }
             className="space-y-1"
+          />
+
+          <FormTextarea
+            control={form.control}
+            name="description"
+            label="Description"
+            placeholder="A brief description of your organization"
+            className="space-y-1"
+          />
+
+          <FormSelect
+            control={form.control}
+            name="visibility"
+            label="Visibility"
+            placeholder="Select visibility"
+            className="space-y-1"
+            options={[
+              { label: 'Private', value: 'private' },
+              { label: 'Public', value: 'public' },
+            ]}
           />
 
           <Button type="submit" className="w-full" disabled={isLoading}>

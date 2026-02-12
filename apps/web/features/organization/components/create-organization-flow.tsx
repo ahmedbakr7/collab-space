@@ -1,5 +1,3 @@
-'use client';
-
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { CreateOrganizationForm } from './create-organization-form';

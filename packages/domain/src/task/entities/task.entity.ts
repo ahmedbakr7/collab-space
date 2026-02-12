@@ -1,4 +1,3 @@
-
 import { Tag } from '../../tag/entities/tag.entity';
 import { TaskComment } from './task-comment.entity';
 import { Attachment } from './attachment.entity';
@@ -6,6 +5,7 @@ import { Attachment } from './attachment.entity';
 export enum TaskStatus {
   TODO = 'todo',
   IN_PROGRESS = 'in_progress',
+  REVIEW = 'review',
   DONE = 'done',
 }
 

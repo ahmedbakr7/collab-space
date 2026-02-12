@@ -4,13 +4,13 @@ import { Visibility } from '@repo/domain';
 export const createOrganizationSchema = z
   .object({
     name: z.string().min(1),
-    description: z.string(),
+    description: z.string().optional(),
     visibility: z.nativeEnum(Visibility),
   })
   .required();
 
 export interface CreateOrganizationDto {
   name: string;
-  description: string;
+  description?: string;
   visibility: Visibility;
 }

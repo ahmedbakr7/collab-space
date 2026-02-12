@@ -4,7 +4,7 @@ import { randomUUID } from 'crypto';
 
 export interface CreateOrganizationCommand {
   name: string;
-  description: string;
+  description?: string;
   visibility: Visibility;
 }
 
@@ -19,7 +19,7 @@ export class CreateOrganizationUseCase {
     const organization = new Organization(
       randomUUID(),
       command.name,
-      command.description,
+      command.description ?? '',
       command.visibility,
       [],
       now,

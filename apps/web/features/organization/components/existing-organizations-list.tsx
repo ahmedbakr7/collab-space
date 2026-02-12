@@ -1,50 +1,33 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { ArrowRight, Building2, ArrowLeft } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { ScrollArea } from '@/shared/components/ui/scroll-area';
-// import { ROUTES } from '@/shared/config/routes'; // Assuming this exists or using simple strings for now
-
-interface Organization {
-  id: string;
-  name: string;
-  role: string;
-  logo?: string;
-}
+import { ROUTES } from '@/shared/config/routes';
+import { useOrganizations } from '../presentation/hooks/use-organizations';
 
 interface ExistingOrganizationsListProps {
   onBack: () => void;
 }
 
-// Mock Data
-const MOCK_USER_ORGANIZATIONS: Organization[] = [
-  {
-    id: 'org-1',
-    name: 'Acme Corp',
-    role: 'Admin',
-  },
-  {
-    id: 'org-2',
-    name: 'My Side Project',
-    role: 'Owner',
-  },
-  {
-    id: 'org-3',
-    name: 'Community Group',
-    role: 'Member',
-  },
-];
-
 export function ExistingOrganizationsList({
   onBack,
 }: ExistingOrganizationsListProps) {
-  // In a real app, we would use a router here to navigate to the specific org dashboard
-  // const router = useRouter();
+  const router = useRouter();
+  const { organizations, isLoading } = useOrganizations();
 
   const handleOrgClick = (orgId: string) => {
-    console.log(`Navigating to organization: ${orgId}`);
-    // router.push(ROUTES.DASHBOARD(orgId));
+    router.push(ROUTES.ORGANIZATION.DASHBOARD(orgId));
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="animate-in fade-in slide-in-from-right-4 duration-300">
@@ -54,7 +37,7 @@ export function ExistingOrganizationsList({
       </Button>
 
       <ScrollArea className="max-h-[400px] pr-4">
-        {MOCK_USER_ORGANIZATIONS.length === 0 ? (
+        {organizations.length === 0 ? (
           <div className="text-center py-12">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-muted mb-4">
               <Building2 className="h-8 w-8 text-muted-foreground" />
@@ -66,7 +49,7 @@ export function ExistingOrganizationsList({
           </div>
         ) : (
           <div className="space-y-3">
-            {MOCK_USER_ORGANIZATIONS.map((org) => (
+            {organizations.map((org) => (
               <button
                 key={org.id}
                 onClick={() => handleOrgClick(org.id)}
@@ -74,21 +57,13 @@ export function ExistingOrganizationsList({
               >
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors shrink-0">
-                    {org.logo ? (
-                      <img
-                        src={org.logo}
-                        alt={org.name}
-                        className="w-full h-full object-cover rounded-xl"
-                      />
-                    ) : (
-                      <Building2 className="h-6 w-6 text-primary" />
-                    )}
+                    <Building2 className="h-6 w-6 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
                       <h3 className="font-semibold truncate">{org.name}</h3>
                       <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                        {org.role}
+                        Member
                       </span>
                     </div>
                   </div>

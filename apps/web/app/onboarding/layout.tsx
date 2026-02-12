@@ -49,8 +49,7 @@ export default function OnboardingLayout({
         {mode === 'onboarding' && (
           <div className="mt-4 text-center">
             <p className="text-sm text-muted-foreground">
-              You can switch organizations or create additional ones later from
-              your settings
+              You can switch organizations or create additional ones later.
             </p>
           </div>
         )}

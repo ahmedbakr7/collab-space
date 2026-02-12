@@ -16,6 +16,7 @@ enum Visibility {
 enum TaskStatus {
   todo
   in_progress
+  review
   done
 }
 
