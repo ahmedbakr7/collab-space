@@ -8,13 +8,14 @@ import { DeleteWorkspaceUseCase } from '../application/use-cases/delete-workspac
 import { PrismaWorkspaceRepository } from '../infrastructure/persistence/prisma-workspace.repository';
 import { PrismaService } from '../../../infrastructure/prisma/prisma.service';
 import { WorkspaceRepository } from '../application/ports/workspace.repository.interface';
+import { AuthModule } from '../../auth/auth.module';
 
 const WorkspaceRepositoryToken = 'WorkspaceRepository';
 
 import { OrganizationsModule } from '../../organization/presentation/organizations.module';
 
 @Module({
-  imports: [OrganizationsModule],
+  imports: [AuthModule, OrganizationsModule],
   controllers: [WorkspacesController],
   providers: [
     PrismaService,

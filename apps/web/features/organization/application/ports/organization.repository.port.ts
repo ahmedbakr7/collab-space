@@ -7,4 +7,6 @@ export interface OrganizationRepositoryPort {
   create(data: CreateOrgValues): Promise<{ id: string; name: string }>;
   join(inviteCode: string): Promise<{ id: string; name: string }>;
   getOrganizations(): Promise<Organization[]>;
+  getPublicOrganizations(): Promise<Organization[]>;
+  joinPublicOrganization(organizationId: string): Promise<void>;
 }

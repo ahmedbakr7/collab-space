@@ -8,10 +8,12 @@ import { DeleteProjectUseCase } from '../application/use-cases/delete-project.us
 import { PrismaProjectRepository } from '../infrastructure/persistence/prisma-project.repository';
 import { PrismaService } from '../../../infrastructure/prisma/prisma.service';
 import { ProjectRepository } from '../application/ports/project.repository.interface';
+import { AuthModule } from '../../auth/auth.module';
 
 const ProjectRepositoryToken = 'ProjectRepository';
 
 @Module({
+  imports: [AuthModule],
   controllers: [ProjectsController],
   providers: [
     PrismaService,

@@ -1,8 +1,5 @@
 import { Sidebar } from '@/shared/components/layout/sidebar';
 import { Header } from '@/shared/components/layout/header';
-import { createClient } from '@repo/supabase/server';
-import { redirect } from 'next/navigation';
-import { ROUTES } from '@/shared/config/routes';
 import { serverContainer } from '@/shared/layers/di/server.container';
 import { GetAllWorkspacesUseCase } from '@/features/workspace/application/use-cases/get-all-workspaces.usecase';
 import { Suspense } from 'react';
@@ -13,16 +10,6 @@ async function DashboardLayoutContent({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-  const session = await supabase.auth.getSession();
-
-  const { data } = await supabase.auth.getClaims();
-  console.log(session);
-
-  if (!data?.claims) {
-    redirect(ROUTES.AUTH.LOGIN);
-  }
-
   const getAllWorkspacesUseCase = serverContainer.resolve(
     GetAllWorkspacesUseCase,
   );

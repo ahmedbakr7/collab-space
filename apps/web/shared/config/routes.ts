@@ -1,8 +1,8 @@
 export const ROUTES = {
   ROOT: '/',
   ONBOARDING: '/onboarding',
-  // TERMS: '/terms',
-  // PRIVACY: '/privacy',
+  TERMS: '/terms',
+  PRIVACY: '/privacy',
 
   AUTH: {
     LOGIN: '/login',

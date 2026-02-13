@@ -37,6 +37,18 @@ const ORGS = [
     visibility: Visibility.private,
     tags: ['Finance', 'Logistics'],
   },
+  {
+    name: 'Umbrella Corp',
+    description: 'Pharmaceutical and biotechnology company',
+    visibility: Visibility.public,
+    tags: ['Biotech', 'Health'],
+  },
+  {
+    name: 'Cyberdyne Systems',
+    description: 'High-tech computer systems and robotics',
+    visibility: Visibility.public,
+    tags: ['AI', 'Robotics'],
+  },
 ];
 
 async function main() {

@@ -32,18 +32,8 @@ export class PrismaUserRepository implements UserRepository {
     id: string,
     filter?: { userId?: string },
   ): Promise<User | null> {
-    const where: any = { id };
-    if (filter?.userId && id !== filter.userId) {
-      where.organizations = {
-        some: {
-          organization: {
-            members: {
-              some: { userId: filter.userId },
-            },
-          },
-        },
-      };
-    }
+    const where = { id };
+
     const user = await this.prisma.user.findUnique({
       where,
     });

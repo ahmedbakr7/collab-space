@@ -19,4 +19,12 @@ export class OrganizationRepositoryAdapter implements OrganizationRepositoryPort
   async getOrganizations(): Promise<Organization[]> {
     return apiClient.get<Organization[]>('/organizations');
   }
+
+  async getPublicOrganizations(): Promise<Organization[]> {
+    return apiClient.get<Organization[]>('/organizations/public');
+  }
+
+  async joinPublicOrganization(organizationId: string): Promise<void> {
+    return apiClient.post<void>(`/organizations/${organizationId}/join`, {});
+  }
 }

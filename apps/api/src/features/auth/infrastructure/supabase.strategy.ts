@@ -2,16 +2,22 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AuthUser } from '@repo/domain';
+import { createJwksSecretProvider } from './jwks.service';
 
 @Injectable()
 export class SupabaseJwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
+    const supabaseUrl = process.env.SUPABASE_URL;
+
+    if (!supabaseUrl) {
+      throw new Error('SUPABASE_URL environment variable is required');
+    }
+
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.SUPABASE_KEY?.startsWith('sb_secret')
-        ? process.env.SUPABASE_KEY
-        : process.env.SUPABASE_JWT_SECRET,
+      secretOrKeyProvider: createJwksSecretProvider(supabaseUrl),
+      algorithms: ['ES256'],
     });
   }
 

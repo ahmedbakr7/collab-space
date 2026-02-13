@@ -52,6 +52,24 @@ export class PrismaOrganizationRepository implements OrganizationRepository {
     return organizations.map(OrganizationMapper.toDomain);
   }
 
+  async findPublic(): Promise<Organization[]> {
+    const organizations = await this.prisma.organization.findMany({
+      where: {
+        visibility: PrismaVisibility.public,
+      },
+    });
+    return organizations.map((org) => OrganizationMapper.toDomain(org));
+  }
+
+  async addMember(organizationId: string, userId: string): Promise<void> {
+    await this.prisma.organizationMember.create({
+      data: {
+        orgId: organizationId,
+        userId: userId,
+      },
+    });
+  }
+
   async delete(id: string): Promise<void> {
     await this.prisma.organization.delete({
       where: { id },

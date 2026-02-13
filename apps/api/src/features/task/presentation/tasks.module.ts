@@ -8,10 +8,12 @@ import { DeleteTaskUseCase } from '../application/use-cases/delete-task.use-case
 import { PrismaTaskRepository } from '../infrastructure/persistence/prisma-task.repository';
 import { PrismaService } from '../../../infrastructure/prisma/prisma.service';
 import { TaskRepository } from '../application/ports/task.repository.interface';
+import { AuthModule } from '../../auth/auth.module';
 
 const TaskRepositoryToken = 'TaskRepository';
 
 @Module({
+  imports: [AuthModule],
   controllers: [TasksController],
   providers: [
     PrismaService,

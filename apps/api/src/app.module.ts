@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { RouterModule } from '@nestjs/core';
 
@@ -17,6 +17,7 @@ import { TasksModule } from './features/task/presentation/tasks.module';
 import { StorageModule } from './infrastructure/storage/storage.module';
 
 import { envSchema } from './env';
+import { RequestLoggerMiddleware } from './shared/middleware/request-logger.middleware';
 
 @Module({
   imports: [
@@ -83,4 +84,8 @@ import { envSchema } from './env';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestLoggerMiddleware).forRoutes('*');
+  }
+}

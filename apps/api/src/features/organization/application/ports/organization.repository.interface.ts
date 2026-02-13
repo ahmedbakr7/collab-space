@@ -7,5 +7,7 @@ export interface OrganizationRepository {
     filter?: { userId?: string },
   ): Promise<Organization | null>;
   findAll(filter?: { userId?: string }): Promise<Organization[]>;
+  findPublic(): Promise<Organization[]>;
+  addMember(organizationId: string, userId: string): Promise<void>;
   delete(id: string): Promise<void>;
 }

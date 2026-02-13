@@ -16,6 +16,8 @@ import { GetOrganizationUseCase } from '../../application/use-cases/get-organiza
 import { GetOrganizationsUseCase } from '../../application/use-cases/get-organizations.use-case';
 import { UpdateOrganizationUseCase } from '../../application/use-cases/update-organization.use-case';
 import { DeleteOrganizationUseCase } from '../../application/use-cases/delete-organization.use-case';
+import { GetPublicOrganizationsUseCase } from '../../application/use-cases/get-public-organizations.use-case';
+import { JoinPublicOrganizationUseCase } from '../../application/use-cases/join-public-organization.use-case';
 import {
   CreateOrganizationDto,
   createOrganizationSchema,
@@ -35,6 +37,8 @@ export class OrganizationsController {
     private readonly getOrganizationsUseCase: GetOrganizationsUseCase,
     private readonly updateOrganizationUseCase: UpdateOrganizationUseCase,
     private readonly deleteOrganizationUseCase: DeleteOrganizationUseCase,
+    private readonly getPublicOrganizationsUseCase: GetPublicOrganizationsUseCase,
+    private readonly joinPublicOrganizationUseCase: JoinPublicOrganizationUseCase,
   ) {}
 
   @Post()
@@ -43,6 +47,21 @@ export class OrganizationsController {
     body: CreateOrganizationDto,
   ) {
     return this.createOrganizationUseCase.execute(body);
+  }
+
+  @Get('public')
+  @UseGuards(SupabaseAuthGuard)
+  async getPublic() {
+    return this.getPublicOrganizationsUseCase.execute();
+  }
+
+  @Post(':id/join')
+  @UseGuards(SupabaseAuthGuard)
+  async join(
+    @Param('id', new ZodValidationPipe(organizationIdSchema)) id: string,
+    @CurrentUser() user: AuthUser,
+  ) {
+    return this.joinPublicOrganizationUseCase.execute(id, user.id);
   }
 
   @Get()
