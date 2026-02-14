@@ -2,14 +2,12 @@ import { Sidebar } from '@/shared/components/layout/sidebar';
 import { Header } from '@/shared/components/layout/header';
 import { serverContainer } from '@/shared/layers/di/server.container';
 import { GetAllWorkspacesUseCase } from '@/features/workspace/application/use-cases/get-all-workspaces.usecase';
-import { Suspense } from 'react';
+import { PropsWithChildren, Suspense } from 'react';
 import { Skeleton } from '@/shared/components/ui/skeleton';
 
 async function DashboardLayoutContent({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: PropsWithChildren) {
   const getAllWorkspacesUseCase = serverContainer.resolve(
     GetAllWorkspacesUseCase,
   );
@@ -28,7 +26,6 @@ async function DashboardLayoutContent({
     )
     .catch((err) => {
       console.error('Failed to fetch workspaces:', err);
-      // Return empty array to avoid crashing the client if fetch fails
       return [];
     });
 
@@ -49,9 +46,7 @@ async function DashboardLayoutContent({
 
 export default function DashboardLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: PropsWithChildren) {
   return (
     <Suspense fallback={null}>
       <DashboardLayoutContent>{children}</DashboardLayoutContent>

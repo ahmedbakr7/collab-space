@@ -19,7 +19,7 @@ export function SignUpForm() {
 
   const handleSubmit = async (values: SignUpValues) => {
     try {
-      await signup(values.email, values.password, values.name, values.company);
+      await signup(values.email, values.password, values.name);
       toast.success('Account created successfully! Please check your email.');
       router.push(ROUTES.ONBOARDING);
     } catch (error) {
@@ -43,7 +43,6 @@ export function SignUpForm() {
         defaultValues={{
           name: '',
           email: '',
-          company: '',
           password: '',
           terms: false,
         }}
@@ -73,18 +72,6 @@ export function SignUpForm() {
                 placeholder="you@company.com"
                 startContent={
                   <Mail className="w-5 h-5 text-muted-foreground" />
-                }
-                className="space-y-1"
-              />
-
-              <FormInput
-                control={form.control}
-                name="company"
-                label="Company name"
-                type="text"
-                placeholder="Acme Inc."
-                startContent={
-                  <Briefcase className="w-5 h-5 text-muted-foreground" />
                 }
                 className="space-y-1"
               />

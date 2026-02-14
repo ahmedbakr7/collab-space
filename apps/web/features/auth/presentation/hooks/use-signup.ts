@@ -9,14 +9,9 @@ export function useSignup() {
   );
 
   return {
-    signup: async (
-      email: string,
-      password: string,
-      name: string,
-      company?: string,
-    ) => {
+    signup: async (email: string, password: string, name: string) => {
       try {
-        await signupUseCase.execute({ email, password, name, company });
+        await signupUseCase.execute({ email, password, name });
       } catch (error) {
         console.error('Signup failed:', error);
         throw error;

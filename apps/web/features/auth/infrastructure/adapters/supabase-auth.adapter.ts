@@ -20,7 +20,6 @@ export class SupabaseAuthAdapter implements AuthPort {
     email: string;
     password: string;
     full_name?: string;
-    company?: string;
     avatarUrl?: string;
   }): Promise<void> {
     const { email, password, ...data } = params;
@@ -33,12 +32,7 @@ export class SupabaseAuthAdapter implements AuthPort {
     });
 
     if (error) {
-      // If user is already registered, we can treat it as a success or throw a specific error
       if (error.message === 'User already registered') {
-        // Option 1: Silent success (idempotent)
-        // return;
-
-        // Option 2: Informative error
         throw new Error('An account with this email already exists.');
       }
       throw error;

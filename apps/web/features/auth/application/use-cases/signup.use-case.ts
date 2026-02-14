@@ -18,7 +18,6 @@ export class SignupUseCase {
       email: params.email,
       password: params.password,
       full_name: params.name,
-      company: params.company,
       avatarUrl,
     });
   }
