@@ -20,6 +20,14 @@ Status of features in `apps/web/features` following Clean Architecture.
 - **Layers**:
   - `presentation`: Components and Pages (Refactored)
 
+### `organization`
+
+- **Location**: `src/features/organization`
+- **Layers**:
+  - `presentation`: Components, Hooks (`useOrganizations`)
+  - `application`: Use Cases (`GetOrganizationsUseCase`, `CreateOrganizationUseCase`, `JoinOrganizationUseCase`) and Ports (`OrganizationRepositoryPort`)
+  - `infrastructure`: Adapters (`OrganizationRepositoryAdapter`) registered in both Server and Client Containers
+
 ### `project`
 
 - **Location**: `src/features/project`
@@ -47,7 +55,7 @@ Status of features in `apps/web/features` following Clean Architecture.
 - **Location**: `src/features/workspace`
 - **Layers**:
   - `presentation`: Components (Refactored, Sidebar connected)
-  - `application`: Use Cases (`GetAllWorkspacesUseCase`) integrated in Sidebar
+  - `application`: Use Cases (`GetAllWorkspacesUseCase`) fetches by orgId from route params
   - `infrastructure`: Adapters (`WorkspaceRepositoryAdapter`) registered in Server Container
 
 ## Next Steps

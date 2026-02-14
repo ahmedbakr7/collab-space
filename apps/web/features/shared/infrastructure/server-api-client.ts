@@ -1,17 +1,17 @@
 import { injectable } from 'tsyringe';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { createClient } from '@/shared/lib/supabase/client';
-import type { ApiClientPort } from '../application/ports/api-client.port';
+import { createClient } from '@repo/supabase/server';
+import type { ApiClientPort } from '@/features/shared/application/ports/api-client.port';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:3000';
 
 @injectable()
-export class ApiClient implements ApiClientPort {
+export class ServerApiClient implements ApiClientPort {
   private client: AxiosInstance;
 
-  constructor(baseURL: string = API_URL) {
+  constructor() {
     this.client = axios.create({
-      baseURL,
+      baseURL: API_URL,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -24,8 +24,7 @@ export class ApiClient implements ApiClientPort {
     this.client.interceptors.request.use(
       async (config) => {
         try {
-          // Get the session from Supabase client
-          const supabase = createClient();
+          const supabase = await createClient();
           const {
             data: { session },
           } = await supabase.auth.getSession();
@@ -34,7 +33,7 @@ export class ApiClient implements ApiClientPort {
             config.headers.Authorization = `Bearer ${session.access_token}`;
           }
         } catch (error) {
-          console.warn('Failed to attach auth token', error);
+          console.warn('Failed to attach auth token (server)', error);
         }
         return config;
       },
@@ -50,7 +49,6 @@ export class ApiClient implements ApiClientPort {
           error.response?.data?.message ||
           error.message ||
           'An unexpected error occurred';
-        // You can also handle 401 redirects here if needed
         return Promise.reject(new Error(message));
       },
     );
@@ -88,5 +86,3 @@ export class ApiClient implements ApiClientPort {
     return response.data;
   }
 }
-
-export const apiClient = new ApiClient(API_URL);

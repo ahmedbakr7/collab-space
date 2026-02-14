@@ -1,30 +1,46 @@
-import { injectable } from 'tsyringe';
+import { injectable, inject } from 'tsyringe';
 import { Organization } from '@repo/domain';
 import { CreateOrgValues } from '@repo/shared-schemas';
 import { OrganizationRepositoryPort } from '../../application/ports/organization.repository.port';
-import { apiClient } from '@/features/shared/infrastructure/api-client';
+import {
+  API_CLIENT_TOKEN,
+  type ApiClientPort,
+} from '@/features/shared/application/ports/api-client.port';
 
 @injectable()
 export class OrganizationRepositoryAdapter implements OrganizationRepositoryPort {
+  constructor(
+    @inject(API_CLIENT_TOKEN) private readonly apiClient: ApiClientPort,
+  ) {}
+
   async create(data: CreateOrgValues): Promise<{ id: string; name: string }> {
-    return apiClient.post<{ id: string; name: string }>('/organizations', data);
+    return this.apiClient.post<{ id: string; name: string }>(
+      '/organizations',
+      data,
+    );
   }
 
   async join(inviteCode: string): Promise<{ id: string; name: string }> {
-    return apiClient.post<{ id: string; name: string }>('/organizations/join', {
-      inviteCode,
-    });
+    return this.apiClient.post<{ id: string; name: string }>(
+      '/organizations/join',
+      {
+        inviteCode,
+      },
+    );
   }
 
   async getOrganizations(): Promise<Organization[]> {
-    return apiClient.get<Organization[]>('/organizations');
+    return this.apiClient.get<Organization[]>('/organizations');
   }
 
   async getPublicOrganizations(): Promise<Organization[]> {
-    return apiClient.get<Organization[]>('/organizations/public');
+    return this.apiClient.get<Organization[]>('/organizations/public');
   }
 
   async joinPublicOrganization(organizationId: string): Promise<void> {
-    return apiClient.post<void>(`/organizations/${organizationId}/join`, {});
+    return this.apiClient.post<void>(
+      `/organizations/${organizationId}/join`,
+      {},
+    );
   }
 }

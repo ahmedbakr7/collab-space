@@ -5,15 +5,22 @@ import { GetAllWorkspacesUseCase } from '@/features/workspace/application/use-ca
 import { PropsWithChildren, Suspense } from 'react';
 import { Skeleton } from '@/shared/components/ui/skeleton';
 
+interface DashboardLayoutProps extends PropsWithChildren {
+  params: Promise<{ dashboardId: string }>;
+}
+
 async function DashboardLayoutContent({
   children,
-}: PropsWithChildren) {
+  params,
+}: DashboardLayoutProps) {
+  const { dashboardId } = await params;
+
   const getAllWorkspacesUseCase = serverContainer.resolve(
     GetAllWorkspacesUseCase,
   );
 
   const workspacesPromise = getAllWorkspacesUseCase
-    .execute('a8bbbe9b-fa1d-42a6-a66b-a4b9381f5ee1')
+    .execute(dashboardId)
     .then((workspaces) =>
       workspaces.map((w) => ({
         id: w.id,
@@ -46,10 +53,13 @@ async function DashboardLayoutContent({
 
 export default function DashboardLayout({
   children,
-}: PropsWithChildren) {
+  params,
+}: DashboardLayoutProps) {
   return (
     <Suspense fallback={null}>
-      <DashboardLayoutContent>{children}</DashboardLayoutContent>
+      <DashboardLayoutContent params={params}>
+        {children}
+      </DashboardLayoutContent>
     </Suspense>
   );
 }

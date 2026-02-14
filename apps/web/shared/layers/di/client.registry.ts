@@ -1,6 +1,10 @@
 import { DependencyContainer } from 'tsyringe';
 import { TYPES } from './types';
 
+// Shared
+import { API_CLIENT_TOKEN } from '@/features/shared/application/ports/api-client.port';
+import { ApiClient } from '../../../features/shared/infrastructure/api-client';
+
 // Auth
 import { SupabaseAuthAdapter } from '../../../features/auth/infrastructure/adapters/supabase-auth.adapter';
 import { LoginUseCase } from '../../../features/auth/application/use-cases/login.use-case';
@@ -17,6 +21,9 @@ import { InMemoryTaskRepository } from '../../../features/task/infrastructure/re
 import { GetTasksUseCase } from '../../../features/task/application/use-cases/get-tasks.usecase';
 
 export function registerClientDependencies(container: DependencyContainer) {
+  // Shared - Browser API client (uses browser Supabase session for auth tokens)
+  container.register(API_CLIENT_TOKEN, { useClass: ApiClient });
+
   // Auth
   container.register(TYPES.IAuthRepository, { useClass: SupabaseAuthAdapter });
   container.register(TYPES.ILoginUseCase, { useClass: LoginUseCase });
