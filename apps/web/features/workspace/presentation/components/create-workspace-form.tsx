@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 
 import { Button } from '@/shared/components/ui/button';
 import { Form } from '@/shared/components/form/form';
+import { ROUTES } from '@/shared/config/routes';
 import FormInput from '@/shared/components/form/input';
 import { FormTextarea } from '@/shared/components/form/textarea';
 
@@ -25,7 +26,7 @@ export function CreateWorkspaceForm() {
 
       if (workspace) {
         toast.success('Workspace created successfully!');
-        router.push(`/workspaces/${workspace.id}`);
+        router.push(ROUTES.DASHBOARD.HOME(workspace.id));
       }
     } catch (error) {
       toast.error('Failed to create workspace. Please try again.');

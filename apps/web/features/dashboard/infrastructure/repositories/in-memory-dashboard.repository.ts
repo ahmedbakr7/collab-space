@@ -11,11 +11,20 @@ import {
 import { TaskStatus } from '@repo/domain/src/task/entities/task.entity';
 
 export class InMemoryDashboardRepository implements DashboardRepositoryPort {
-  async getDashboardData(): Promise<DashboardData> {
+  async getDashboardData(dashboardId: string): Promise<DashboardData> {
     const workspaces = await this.getWorkspaces();
 
-    const totalTasks = MOCK_TASKS.length;
-    const completedTasks = MOCK_TASKS.filter(
+    // Filter data by dashboardId (treating it as workspaceId)
+    const dashboardProjects = MOCK_PROJECTS.filter(
+      (p) => p.workspaceId === dashboardId,
+    );
+    const projectIds = dashboardProjects.map((p) => p.id);
+    const dashboardTasks = MOCK_TASKS.filter(
+      (t) => t.projectId && projectIds.includes(t.projectId),
+    );
+
+    const totalTasks = dashboardTasks.length;
+    const completedTasks = dashboardTasks.filter(
       (t) => t.status === TaskStatus.DONE,
     ).length;
     const completionRateVal =
@@ -24,12 +33,13 @@ export class InMemoryDashboardRepository implements DashboardRepositoryPort {
     return {
       stats: {
         totalProjects: {
-          value: MOCK_PROJECTS.length,
+          value: dashboardProjects.length,
           change: '+12% from last month',
         },
         activeTasks: {
-          value: MOCK_TASKS.filter((t) => t.status === TaskStatus.IN_PROGRESS)
-            .length,
+          value: dashboardTasks.filter(
+            (t) => t.status === TaskStatus.IN_PROGRESS,
+          ).length,
           change: '+8% from last week',
         },
         teamMembers: { value: 12, change: '+3 new this month' },

@@ -18,9 +18,13 @@ import { useDashboard } from '@/features/dashboard/presentation/hooks/use-dashbo
 import { Skeleton } from '@/shared/components/ui/skeleton';
 import Link from 'next/link';
 
-export default function Dashboard() {
+interface DashboardProps {
+  dashboardId: string;
+}
+
+export default function Dashboard({ dashboardId }: DashboardProps) {
   const router = useRouter();
-  const { data, loading } = useDashboard();
+  const { data, loading } = useDashboard(dashboardId);
   const { stats, workspaces } = data || {};
 
   if (loading || !data || !stats || !workspaces) {
@@ -73,7 +77,7 @@ export default function Dashboard() {
         <Button
           nativeButton={false}
           render={
-            <Link href={ROUTES.WORKSPACES.CREATE}>
+            <Link href={ROUTES.DASHBOARD.WORKSPACES.CREATE(dashboardId)}>
               <Plus className="w-4 h-4 mr-2" />
               New workspace
             </Link>
@@ -125,11 +129,7 @@ export default function Dashboard() {
               {...workspace}
               members={workspace.membersCount}
               projects={workspace.projectsCount}
-              onClick={() =>
-                router.push(
-                  `/workspaces/${workspace.name.toLowerCase().replace(' ', '-')}`,
-                )
-              }
+              onClick={() => router.push(ROUTES.DASHBOARD.HOME(workspace.id))}
             />
           ))}
         </div>

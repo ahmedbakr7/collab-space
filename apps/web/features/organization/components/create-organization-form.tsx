@@ -24,7 +24,7 @@ export function CreateOrganizationForm({
     try {
       await createOrganization(values);
       // Navigate to dashboard after successful creation
-      router.push(ROUTES.ROOT);
+      router.push(ROUTES.DASHBOARD.ROOT);
       onCreateOrganization?.(values);
     } catch (error) {
       // Error is already handled by the hook with toast
@@ -38,7 +38,7 @@ export function CreateOrganizationForm({
       defaultValues={{
         name: '',
         description: '',
-        visibility: 'private',
+        visibility: 'private' as 'private' | 'public',
       }}
       resolver={zodResolver(createOrgSchema)}
       fieldGroupClassName="gap-2"

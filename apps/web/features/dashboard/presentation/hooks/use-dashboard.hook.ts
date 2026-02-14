@@ -3,7 +3,7 @@ import { GetDashboardDataUseCase } from '../../application/use-cases/get-dashboa
 import { InMemoryDashboardRepository } from '../../infrastructure/repositories/in-memory-dashboard.repository';
 import { DashboardData } from '../../domain/models/dashboard-data';
 
-export function useDashboard() {
+export function useDashboard(dashboardId: string) {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -13,7 +13,7 @@ export function useDashboard() {
 
     async function fetchData() {
       try {
-        const result = await useCase.execute();
+        const result = await useCase.execute(dashboardId);
         setData(result);
       } catch (error) {
         console.error('Failed to fetch dashboard data', error);
@@ -23,7 +23,7 @@ export function useDashboard() {
     }
 
     fetchData();
-  }, []);
+  }, [dashboardId]);
 
   return { data, loading };
 }

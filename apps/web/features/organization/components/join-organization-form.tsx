@@ -24,7 +24,7 @@ export function JoinOrganizationForm({
     try {
       await joinOrganization(values);
       // Navigate to dashboard after successful join
-      router.push(ROUTES.ROOT);
+      router.push(ROUTES.DASHBOARD.ROOT);
       onJoinOrganization?.(values);
     } catch (error) {
       // Error is already handled by the hook with toast

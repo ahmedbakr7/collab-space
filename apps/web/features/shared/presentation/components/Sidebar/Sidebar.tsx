@@ -32,9 +32,9 @@ import { ROUTES } from '@/shared/config/routes';
 
 // Menu items.
 const items = [
-  { title: 'Dashboard', url: ROUTES.ROOT, icon: Home },
-  { title: 'Projects', url: ROUTES.PROJECTS.ROOT, icon: FolderKanban },
-  { title: 'Tasks', url: ROUTES.TASKS.ROOT, icon: CheckSquare },
+  { title: 'Dashboard', url: ROUTES.DASHBOARD.ROOT, icon: Home },
+  { title: 'Projects', url: ROUTES.DASHBOARD.ROOT, icon: FolderKanban }, // TODO: Update when dashboardId is available
+  { title: 'Tasks', url: ROUTES.DASHBOARD.ROOT, icon: CheckSquare }, // TODO: Update when dashboardId is available
 ];
 
 export function AppSidebar() {
@@ -115,7 +115,7 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton
               render={
-                <Link href={ROUTES.SETTINGS.ROOT}>
+                <Link href={ROUTES.DASHBOARD.SETTINGS.ROOT('demo')}>
                   <SettingsIcon size={15} />
                   <span>Settings</span>
                 </Link>

@@ -10,35 +10,42 @@ export const ROUTES = {
     FORGOT_PASSWORD: '/forgot-password',
   },
 
-  PROJECTS: {
-    ROOT: '/projects',
-    CREATE: '/projects/create',
-    VIEW: (id: string) => `/projects/${id}`,
-    UPDATE: (id: string) => `/projects/${id}/edit`,
-  },
-
-  TASKS: {
-    ROOT: '/tasks',
-    CREATE: '/tasks/create',
-    VIEW: (id: string) => `/tasks/${id}`,
-    UPDATE: (id: string) => `/tasks/${id}/edit`,
-  },
-
-  WORKSPACES: {
-    ROOT: '/workspaces',
-    CREATE: '/workspaces/create',
-    VIEW: (id: string) => `/workspaces/${id}`,
-    UPDATE: (id: string) => `/workspaces/${id}/edit`,
-  },
-
-  SETTINGS: {
-    ROOT: '/settings',
-    PROFILE: '/settings/profile',
-    SECURITY: '/settings/security',
-  },
-
-  ORGANIZATION: {
-    DASHBOARD: (orgId: string) => `/dashboard/${orgId}`,
+  DASHBOARD: {
+    ROOT: '/dashboard',
+    HOME: (dashboardId: string) => `/dashboard/${dashboardId}`,
+    PROJECTS: {
+      ROOT: (dashboardId: string) => `/dashboard/${dashboardId}/projects`,
+      CREATE: (dashboardId: string) =>
+        `/dashboard/${dashboardId}/projects/create`,
+      VIEW: (dashboardId: string, projectId: string) =>
+        `/dashboard/${dashboardId}/projects/${projectId}`,
+      UPDATE: (dashboardId: string, projectId: string) =>
+        `/dashboard/${dashboardId}/projects/${projectId}/edit`,
+    },
+    TASKS: {
+      ROOT: (dashboardId: string) => `/dashboard/${dashboardId}/tasks`,
+      CREATE: (dashboardId: string) => `/dashboard/${dashboardId}/tasks/create`,
+      VIEW: (dashboardId: string, taskId: string) =>
+        `/dashboard/${dashboardId}/tasks/${taskId}`,
+      UPDATE: (dashboardId: string, taskId: string) =>
+        `/dashboard/${dashboardId}/tasks/${taskId}/edit`,
+    },
+    WORKSPACES: {
+      ROOT: (dashboardId: string) => `/dashboard/${dashboardId}/workspaces`,
+      CREATE: (dashboardId: string) =>
+        `/dashboard/${dashboardId}/workspaces/create`,
+      VIEW: (dashboardId: string, workspaceId: string) =>
+        `/dashboard/${dashboardId}/workspaces/${workspaceId}`,
+      UPDATE: (dashboardId: string, workspaceId: string) =>
+        `/dashboard/${dashboardId}/workspaces/${workspaceId}/edit`,
+    },
+    SETTINGS: {
+      ROOT: (dashboardId: string) => `/dashboard/${dashboardId}/settings`,
+      PROFILE: (dashboardId: string) =>
+        `/dashboard/${dashboardId}/settings/profile`,
+      SECURITY: (dashboardId: string) =>
+        `/dashboard/${dashboardId}/settings/security`,
+    },
   },
 } as const;
 

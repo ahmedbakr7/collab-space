@@ -17,16 +17,10 @@ import {
 } from '@/shared/components/ui/avatar';
 import { useState, use } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import { cn } from '@/shared/lib/utils';
 import { Workspace } from '@repo/domain/src/workspace/entities/workspace.entity';
 import { ROUTES } from '@/shared/config/routes';
-
-const navigation = [
-  { name: 'Dashboard', icon: Home, href: ROUTES.ROOT },
-  { name: 'Projects', icon: FolderKanban, href: ROUTES.PROJECTS.ROOT },
-  { name: 'Tasks', icon: CheckSquare, href: ROUTES.TASKS.ROOT },
-];
 
 interface SidebarProps {
   workspacesPromise: Promise<Workspace[]>;
@@ -37,6 +31,31 @@ export function Sidebar(props: SidebarProps) {
   const workspaces = use(workspacesPromise);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
+  const params = useParams<{ dashboardId: string }>();
+  const dashboardId = params.dashboardId;
+
+  // If we are not in a dashboard context (e.g. root redirection), accessing these routes might be invalid.
+  // But Sidebar should typically be used within [dashboardId] layout.
+  // Fallback to empty string or handle gracefully?
+  // Given the layout structure, we should have dashboardId.
+
+  const navigation = [
+    {
+      name: 'Dashboard',
+      icon: Home,
+      href: dashboardId ? ROUTES.DASHBOARD.HOME(dashboardId) : '#',
+    },
+    {
+      name: 'Projects',
+      icon: FolderKanban,
+      href: dashboardId ? ROUTES.DASHBOARD.PROJECTS.ROOT(dashboardId) : '#',
+    },
+    {
+      name: 'Tasks',
+      icon: CheckSquare,
+      href: dashboardId ? ROUTES.DASHBOARD.TASKS.ROOT(dashboardId) : '#',
+    },
+  ];
 
   return (
     <div
@@ -84,7 +103,7 @@ export function Sidebar(props: SidebarProps) {
                   : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
               )}
             >
-              <item.icon className="w-5 h-5 flex-shrink-0" />
+              <item.icon className="w-5 h-5 shrink-0" />
               {!isCollapsed && <span>{item.name}</span>}
             </Link>
           );
@@ -106,12 +125,12 @@ export function Sidebar(props: SidebarProps) {
             {workspaces.map((workspace) => (
               <Link
                 key={workspace.id}
-                href={ROUTES.WORKSPACES.VIEW(workspace.id)}
+                href={ROUTES.DASHBOARD.HOME(workspace.id)}
                 className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
               >
                 <div
                   className={cn(
-                    'w-5 h-5 rounded flex-shrink-0',
+                    'w-5 h-5 rounded shrink-0',
                     'bg-blue-500', // Default color as entity doesn't have one
                   )}
                 />
@@ -125,15 +144,16 @@ export function Sidebar(props: SidebarProps) {
       {/* Bottom section */}
       <div className="p-3 border-t border-border space-y-1">
         <Link
-          href={ROUTES.SETTINGS.ROOT}
+          href={dashboardId ? ROUTES.DASHBOARD.SETTINGS.ROOT(dashboardId) : '#'}
           className={cn(
             'w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors',
-            pathname === ROUTES.SETTINGS.ROOT
+            pathname ===
+              (dashboardId ? ROUTES.DASHBOARD.SETTINGS.ROOT(dashboardId) : '')
               ? 'bg-primary text-primary-foreground'
               : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
           )}
         >
-          <Settings className="w-5 h-5 flex-shrink-0" />
+          <Settings className="w-5 h-5 shrink-0" />
           {!isCollapsed && <span>Settings</span>}
         </Link>
 

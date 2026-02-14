@@ -18,7 +18,7 @@ export function ExistingOrganizationsList({
   const { organizations, isLoading } = useOrganizations();
 
   const handleOrgClick = (orgId: string) => {
-    router.push(ROUTES.ORGANIZATION.DASHBOARD(orgId));
+    router.push(ROUTES.DASHBOARD.HOME(orgId));
   };
 
   if (isLoading) {

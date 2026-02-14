@@ -4,6 +4,6 @@ import {
 } from '../../domain/models/dashboard-data';
 
 export interface DashboardRepositoryPort {
-  getDashboardData(): Promise<DashboardData>;
+  getDashboardData(dashboardId: string): Promise<DashboardData>;
   getWorkspaces(): Promise<DashboardWorkspace[]>;
 }
