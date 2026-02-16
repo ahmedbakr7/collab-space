@@ -43,7 +43,6 @@ model User {
   attachments    Attachment[]
 
   organizations  OrganizationMember[]
-  workspaces     WorkspaceMember[]
 
   @@map("users")
 }
@@ -86,24 +85,12 @@ model Workspace {
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  members      WorkspaceMember[]
   projects     Project[]
 
   @@index([orgId])
   @@map("workspaces")
 }
 
-model WorkspaceMember {
-  workspaceId String @map("workspace_id")
-  userId      String @map("user_id") @db.Uuid
-
-  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  user      User      @relation(fields: [userId], references: [id])
-
-
-  @@id([workspaceId, userId])
-  @@map("workspace_members")
-}
 
 model Project {
   id          String   @id @default(uuid())

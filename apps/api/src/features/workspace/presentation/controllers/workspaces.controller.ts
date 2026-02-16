@@ -9,8 +9,6 @@ import {
   UseInterceptors,
   UseGuards,
 } from '@nestjs/common';
-import { AuthUser } from '@repo/domain';
-import { CurrentUser } from '../../../../features/auth/presentation/decorators/current-user.decorator';
 import { SupabaseAuthGuard } from '../../../../features/auth/presentation/guards/supabase-auth.guard';
 import { CreateWorkspaceUseCase } from '../../application/use-cases/create-workspace.use-case';
 import { GetWorkspaceUseCase } from '../../application/use-cases/get-workspace.use-case';
@@ -45,6 +43,7 @@ export class WorkspacesController {
   ) {}
 
   @Post()
+  @UseGuards(SupabaseAuthGuard)
   async create(
     @Param('orgId', new ZodValidationPipe(orgIdSchema)) orgId: string,
     @Body(new ZodValidationPipe(createWorkspaceSchema))
@@ -58,21 +57,18 @@ export class WorkspacesController {
   async getAll(
     @Param('orgId', new ZodValidationPipe(orgIdSchema.optional()))
     orgId: string,
-    @CurrentUser() user: AuthUser,
   ) {
-    return this.getWorkspacesUseCase.execute({ orgId, userId: user.id });
+    return this.getWorkspacesUseCase.execute({ orgId });
   }
 
   @Get(':id')
   @UseGuards(SupabaseAuthGuard)
-  async get(
-    @Param('id', new ZodValidationPipe(workspaceIdSchema)) id: string,
-    @CurrentUser() user: AuthUser,
-  ) {
-    return this.getWorkspaceUseCase.execute(id, user.id);
+  async get(@Param('id', new ZodValidationPipe(workspaceIdSchema)) id: string) {
+    return this.getWorkspaceUseCase.execute(id);
   }
 
   @Put(':id')
+  @UseGuards(SupabaseAuthGuard)
   async update(
     @Param('id', new ZodValidationPipe(workspaceIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateWorkspaceSchema))
@@ -82,6 +78,7 @@ export class WorkspacesController {
   }
 
   @Delete(':id')
+  @UseGuards(SupabaseAuthGuard)
   async delete(
     @Param('id', new ZodValidationPipe(workspaceIdSchema)) id: string,
   ) {

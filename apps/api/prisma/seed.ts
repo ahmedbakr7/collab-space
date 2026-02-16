@@ -64,7 +64,6 @@ async function main() {
     await prisma.task.deleteMany();
     await prisma.project.deleteMany();
 
-    await prisma.workspaceMember.deleteMany();
     await prisma.workspace.deleteMany();
     await prisma.organizationMember.deleteMany();
     await prisma.organization.deleteMany();
@@ -117,9 +116,6 @@ async function main() {
           orgId: org.id,
           name: `${org.name} Workspace ${i}`,
           description: `Workspace ${i} for ${org.name}`,
-          members: {
-            create: users.map((u) => ({ userId: u.id })),
-          },
         },
       });
       console.log(`  Created workspace: ${workspace.name}`);

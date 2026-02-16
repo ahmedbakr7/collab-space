@@ -44,7 +44,7 @@ export function OrganizationModePicker({
           </div>
           <div className="flex-1">
             <h3 className="font-semibold mb-1 text-foreground whitespace-normal text-left">
-              Join an existing organization
+              Join an organization
             </h3>
             <p className="text-sm text-muted-foreground whitespace-normal text-left font-normal">
               Have an invite code? Join your team&apos;s organization to start
