@@ -40,7 +40,7 @@ export class SupabaseAuthGuard
     const request = context.switchToHttp().getRequest();
     const authUser = request.user as AuthUser;
 
-    this.logger.log(`Validating user from token: ${authUser.id}`);
+    this.logger.log(`Validating user from token: ${authUser}`);
 
     if (!this.userRepository) {
       this.userRepository = await this.moduleRef.get(UserRepositoryToken, {

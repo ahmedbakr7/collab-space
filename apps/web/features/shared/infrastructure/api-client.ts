@@ -9,9 +9,9 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:3000';
 export class ApiClient implements ApiClientPort {
   private client: AxiosInstance;
 
-  constructor(baseURL: string = API_URL) {
+  constructor() {
     this.client = axios.create({
-      baseURL,
+      baseURL: API_URL,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -89,4 +89,4 @@ export class ApiClient implements ApiClientPort {
   }
 }
 
-export const apiClient = new ApiClient(API_URL);
+export const apiClient = new ApiClient();

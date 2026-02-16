@@ -6,6 +6,13 @@ import { TYPES } from '@/shared/layers/di/types';
 import { WorkspaceRepositoryAdapter } from '@/features/workspace/infrastructure/adapters/workspace.repository.adapter';
 import { ProjectRepositoryAdapter } from '@/features/project/infrastructure/adapters/project.repository.adapter';
 import { TaskRepositoryAdapter } from '@/features/task/infrastructure/adapters/task.repository.adapter';
+import { API_CLIENT_TOKEN } from '@/features/shared/application/ports/api-client.port';
+import { ServerApiClient } from '@/features/shared/infrastructure/server-api-client';
+
+// Register API client (server - uses cookies for auth tokens)
+container.register(API_CLIENT_TOKEN, {
+  useClass: ServerApiClient,
+});
 
 // Register Organization feature dependencies
 container.register(ORGANIZATION_REPOSITORY_TOKEN, {
