@@ -1,5 +1,4 @@
 'use client';
-
 import {
   Home,
   FolderKanban,
@@ -10,17 +9,14 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '@/shared/components/ui/avatar';
-import { useState, use } from 'react';
+import { useState, use, Suspense } from 'react';
 import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
 import { cn } from '@/shared/lib/utils';
 import { Workspace } from '@repo/domain/src/workspace/entities/workspace.entity';
 import { ROUTES } from '@/shared/config/routes';
+import { UserNav } from './user-nav';
+import { Skeleton } from '../ui/skeleton';
 
 interface SidebarProps {
   workspacesPromise: Promise<Workspace[]>;
@@ -122,21 +118,37 @@ export function Sidebar(props: SidebarProps) {
               </div>
             </div>
 
-            {workspaces.map((workspace) => (
-              <Link
-                key={workspace.id}
-                href={ROUTES.DASHBOARD.HOME(workspace.id)}
-                className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
-              >
-                <div
-                  className={cn(
-                    'w-5 h-5 rounded shrink-0',
-                    'bg-blue-500', // Default color as entity doesn't have one
-                  )}
-                />
-                <span className="truncate">{workspace.name}</span>
-              </Link>
-            ))}
+            <Suspense
+              fallback={
+                <div className="space-y-1">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="w-full flex items-center space-x-3 px-3 py-2"
+                    >
+                      <Skeleton className="w-5 h-5 rounded" />
+                      <Skeleton className="h-4 w-full" />
+                    </div>
+                  ))}
+                </div>
+              }
+            >
+              {workspaces.map((workspace) => (
+                <Link
+                  key={workspace.id}
+                  href={ROUTES.DASHBOARD.HOME(workspace.id)}
+                  className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                >
+                  <div
+                    className={cn(
+                      'w-5 h-5 rounded shrink-0',
+                      'bg-blue-500', // Default color as entity doesn't have one
+                    )}
+                  />
+                  <span className="truncate">{workspace.name}</span>
+                </Link>
+              ))}
+            </Suspense>
           </>
         )}
       </nav>
@@ -157,20 +169,7 @@ export function Sidebar(props: SidebarProps) {
           {!isCollapsed && <span>Settings</span>}
         </Link>
 
-        {!isCollapsed && (
-          <div className="flex items-center space-x-3 px-3 py-2 mt-2">
-            <Avatar className="w-8 h-8">
-              <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" />
-              <AvatarFallback>SA</AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm truncate">Sarah Anderson</p>
-              <p className="text-xs text-muted-foreground truncate">
-                sarah@company.com
-              </p>
-            </div>
-          </div>
-        )}
+        {!isCollapsed && <UserNav />}
       </div>
     </div>
   );

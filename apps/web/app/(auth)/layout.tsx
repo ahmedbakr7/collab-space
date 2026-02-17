@@ -6,8 +6,8 @@ export default function AuthLayout({
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary via-primary to-primary p-12 flex-col justify-between relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid-primary-foreground/[0.05] bg-[size:32px_32px]" />
+      <div className="hidden lg:flex lg:w-1/2 bg-linear-to-br from-primary via-primary to-primary p-12 flex-col justify-between relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-primary-foreground/[0.05] bg-size-[32px_32px]" />
         <div className="relative z-10">
           <div className="flex items-center space-x-3 mb-12">
             <div className="w-12 h-12 rounded-xl bg-primary-foreground/20 backdrop-blur-sm flex items-center justify-center">

@@ -38,11 +38,7 @@ async function DashboardLayoutContent({
 
   return (
     <div className="flex h-dvh overflow-hidden bg-background">
-      <Suspense
-        fallback={<Skeleton className="w-64 h-full rounded-none border-r" />}
-      >
-        <Sidebar workspacesPromise={workspacesPromise} />
-      </Suspense>
+      <Sidebar workspacesPromise={workspacesPromise} />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
         <main className="flex-1 overflow-y-auto">{children}</main>
