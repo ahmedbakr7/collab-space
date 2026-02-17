@@ -8,10 +8,6 @@ import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
-// import { StoreProvider } from "@/features/shared/store-provider";
-
-// export const metadata: Metadata = {};
-
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <>

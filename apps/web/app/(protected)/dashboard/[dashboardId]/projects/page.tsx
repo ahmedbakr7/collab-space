@@ -1,5 +1,4 @@
 'use client';
-
 import { useParams } from 'next/navigation';
 import { Plus, FolderKanban } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
@@ -8,8 +7,6 @@ import { Badge } from '@/shared/components/ui/badge';
 import { Skeleton } from '@/shared/components/ui/skeleton';
 import { ROUTES } from '@/shared/config/routes';
 import { useProjects } from '@/features/project/presentation/hooks/use-projects.hook';
-import { Workspace } from '@repo/domain/src/workspace/entities/workspace.entity';
-import { Project } from '@repo/domain/src/project/entities/project.entity';
 import Link from 'next/link';
 import { useDashboard } from '@/features/dashboard/presentation/hooks/use-dashboard.hook';
 

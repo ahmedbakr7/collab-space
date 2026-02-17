@@ -1,4 +1,7 @@
-import { Sidebar } from '@/shared/components/layout/sidebar';
+import {
+  AppSidebar,
+  SidebarProvider,
+} from '@/shared/components/layout/sidebar';
 import { Header } from '@/shared/components/layout/header';
 import { serverContainer } from '@/shared/layers/di/server.container';
 import { GetAllWorkspacesUseCase } from '@/features/workspace/application/use-cases/get-all-workspaces.usecase';
@@ -36,13 +39,15 @@ async function DashboardLayoutContent({
     });
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-background">
-      <Sidebar workspacesPromise={workspacesPromise} />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header />
-        <main className="flex-1 overflow-y-auto">{children}</main>
+    <SidebarProvider>
+      <div className="flex h-dvh overflow-hidden bg-background">
+        <AppSidebar workspacesPromise={workspacesPromise} />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <Header />
+          <main className="flex-1 overflow-y-auto">{children}</main>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }
 
