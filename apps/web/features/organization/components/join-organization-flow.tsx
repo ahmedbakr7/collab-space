@@ -10,11 +10,6 @@ interface JoinOrganizationFlowProps {
 }
 
 export function JoinOrganizationFlow({ onBack }: JoinOrganizationFlowProps) {
-  const handleJoinPublic = (organizationId: string) => {
-    // TODO: Implement actual join logic
-    console.log('Joining public organization:', organizationId);
-  };
-
   return (
     <div className="animate-in fade-in slide-in-from-right-4 duration-300 space-y-8">
       <div>
@@ -44,7 +39,7 @@ export function JoinOrganizationFlow({ onBack }: JoinOrganizationFlowProps) {
         </div>
       </div>
 
-      <PublicOrganizationsBrowser onJoinOrganization={handleJoinPublic} />
+      <PublicOrganizationsBrowser />
     </div>
   );
 }

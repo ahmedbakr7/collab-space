@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 export function usePublicOrganizations() {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isJoining, setIsJoining] = useState<string | null>(null);
+  const [joiningOrganizationId, setJoiningOrganizationId] = useState<string | null>(null);
 
   const repository = useMemo(
     () =>
@@ -34,19 +34,16 @@ export function usePublicOrganizations() {
   }, [repository]);
 
   const joinOrganization = async (organizationId: string) => {
-    setIsJoining(organizationId);
+    setJoiningOrganizationId(organizationId);
     try {
       await repository.joinPublicOrganization(organizationId);
       toast.success('Successfully joined organization');
-      // Optionally refresh list or handle success (e.g. redirect)
-      // For now, maybe just refresh or let the updated user state handle it?
-      // User state update might need a separate mechanism or reload.
-      window.location.href = '/'; // Simple redirect to dashboard to refresh user context
     } catch (error) {
       console.error('Failed to join organization:', error);
       toast.error('Failed to join organization');
+      throw error; // Re-throw so component knows it failed
     } finally {
-      setIsJoining(null);
+      setJoiningOrganizationId(null);
     }
   };
 
@@ -57,7 +54,7 @@ export function usePublicOrganizations() {
   return {
     organizations,
     isLoading,
-    isJoining,
+    joiningOrganizationId,
     joinOrganization,
     refresh: fetchOrganizations,
   };

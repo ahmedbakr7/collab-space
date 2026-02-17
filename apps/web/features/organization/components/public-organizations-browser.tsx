@@ -7,14 +7,8 @@ import { Button } from '@/shared/components/ui/button';
 import { ScrollArea } from '@/shared/components/ui/scroll-area';
 import { usePublicOrganizations } from '../presentation/hooks/use-public-organizations';
 
-interface PublicOrganizationsBrowserProps {
-  onJoinOrganization?: (organizationId: string) => void;
-}
-
-export function PublicOrganizationsBrowser({
-  onJoinOrganization,
-}: PublicOrganizationsBrowserProps) {
-  const { organizations, isLoading, isJoining, joinOrganization } =
+export function PublicOrganizationsBrowser() {
+  const { organizations, isLoading, joinOrganization, joiningOrganizationId } =
     usePublicOrganizations();
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -30,7 +24,6 @@ export function PublicOrganizationsBrowser({
 
   const handleJoin = async (orgId: string) => {
     await joinOrganization(orgId);
-    onJoinOrganization?.(orgId);
   };
 
   return (
@@ -127,10 +120,10 @@ export function PublicOrganizationsBrowser({
                       <Button
                         size="sm"
                         onClick={() => handleJoin(org.id)}
-                        disabled={isJoining === org.id}
+                        disabled={joiningOrganizationId === org.id}
                         className="gap-2"
                       >
-                        {isJoining === org.id ? (
+                        {joiningOrganizationId === org.id ? (
                           'Joining...'
                         ) : (
                           <>
