@@ -6,13 +6,14 @@ import {
   Param,
   Put,
   Delete,
-  UseInterceptors,
   UseGuards,
 } from '@nestjs/common';
 import { AuthUser } from '@repo/domain';
 import { CurrentUser } from '../../../../features/auth/presentation/decorators/current-user.decorator';
+import { CheckPolicy } from '../../../../features/auth/presentation/decorators/check-policy.decorator';
 import { SupabaseAuthGuard } from '../../../../features/auth/presentation/guards/supabase-auth.guard';
-import { OrgMemberGuard } from '../../../../features/auth/presentation/guards/org-member.guard';
+import { PolicyGuard } from '../../../../features/auth/presentation/guards/policy.guard';
+import { ResourceType } from '../../../../features/auth/presentation/guards/resource-type.enum';
 import { CreateWorkspaceUseCase } from '../../application/use-cases/create-workspace.use-case';
 import { GetWorkspaceUseCase } from '../../application/use-cases/get-workspace.use-case';
 import { GetWorkspacesUseCase } from '../../application/use-cases/get-workspaces.use-case';
@@ -30,12 +31,9 @@ import { workspaceIdSchema } from '../../application/dtos/workspace-id.dto';
 import { ZodValidationPipe } from '../../../../shared/pipes/zod-validation.pipe';
 import { z } from 'zod';
 
-import { OrganizationExistsInterceptor } from '../../../../features/organization/presentation/interceptors/organization-exists.interceptor';
-
 const orgIdSchema = z.string().uuid();
 
 @Controller()
-@UseInterceptors(OrganizationExistsInterceptor)
 export class WorkspacesController {
   constructor(
     private readonly createWorkspaceUseCase: CreateWorkspaceUseCase,
@@ -46,18 +44,19 @@ export class WorkspacesController {
   ) {}
 
   @Post()
-  @UseGuards(SupabaseAuthGuard, OrgMemberGuard)
+  @UseGuards(SupabaseAuthGuard, PolicyGuard)
+  @CheckPolicy(ResourceType.ORGANIZATION, 'orgId')
   async create(
     @Param('orgId', new ZodValidationPipe(orgIdSchema)) orgId: string,
     @Body(new ZodValidationPipe(createWorkspaceSchema))
     body: CreateWorkspaceDto,
-    @CurrentUser() user: AuthUser,
   ) {
     return this.createWorkspaceUseCase.execute({ ...body, orgId });
   }
 
   @Get()
-  @UseGuards(SupabaseAuthGuard, OrgMemberGuard)
+  @UseGuards(SupabaseAuthGuard, PolicyGuard)
+  @CheckPolicy(ResourceType.ORGANIZATION, 'orgId')
   async getAll(
     @Param('orgId', new ZodValidationPipe(orgIdSchema.optional()))
     orgId: string,
@@ -67,7 +66,8 @@ export class WorkspacesController {
   }
 
   @Get(':id')
-  @UseGuards(SupabaseAuthGuard, OrgMemberGuard)
+  @UseGuards(SupabaseAuthGuard, PolicyGuard)
+  @CheckPolicy(ResourceType.WORKSPACE, 'id')
   async get(
     @Param('id', new ZodValidationPipe(workspaceIdSchema)) id: string,
     @CurrentUser() user: AuthUser,
@@ -76,21 +76,21 @@ export class WorkspacesController {
   }
 
   @Put(':id')
-  @UseGuards(SupabaseAuthGuard, OrgMemberGuard)
+  @UseGuards(SupabaseAuthGuard, PolicyGuard)
+  @CheckPolicy(ResourceType.WORKSPACE, 'id')
   async update(
     @Param('id', new ZodValidationPipe(workspaceIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateWorkspaceSchema))
     body: UpdateWorkspaceDto,
-    @CurrentUser() user: AuthUser,
   ) {
     return this.updateWorkspaceUseCase.execute({ id, ...body });
   }
 
   @Delete(':id')
-  @UseGuards(SupabaseAuthGuard, OrgMemberGuard)
+  @UseGuards(SupabaseAuthGuard, PolicyGuard)
+  @CheckPolicy(ResourceType.WORKSPACE, 'id')
   async delete(
     @Param('id', new ZodValidationPipe(workspaceIdSchema)) id: string,
-    @CurrentUser() user: AuthUser,
   ) {
     return this.deleteWorkspaceUseCase.execute(id);
   }

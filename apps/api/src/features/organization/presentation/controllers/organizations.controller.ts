@@ -10,8 +10,10 @@ import {
 } from '@nestjs/common';
 import { AuthUser } from '@repo/domain';
 import { CurrentUser } from '../../../auth/presentation/decorators/current-user.decorator';
+import { CheckPolicy } from '../../../auth/presentation/decorators/check-policy.decorator';
 import { SupabaseAuthGuard } from '../../../auth/presentation/guards/supabase-auth.guard';
-import { OrgMemberGuard } from '../../../auth/presentation/guards/org-member.guard';
+import { PolicyGuard } from '../../../auth/presentation/guards/policy.guard';
+import { ResourceType } from '../../../auth/presentation/guards/resource-type.enum';
 import { CreateOrganizationUseCase } from '../../application/use-cases/create-organization.use-case';
 import { GetOrganizationUseCase } from '../../application/use-cases/get-organization.use-case';
 import { GetOrganizationsUseCase } from '../../application/use-cases/get-organizations.use-case';
@@ -74,7 +76,8 @@ export class OrganizationsController {
   }
 
   @Get(':id')
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(SupabaseAuthGuard, PolicyGuard)
+  @CheckPolicy(ResourceType.ORGANIZATION, 'id')
   async get(
     @Param('id', new ZodValidationPipe(organizationIdSchema)) id: string,
     @CurrentUser() user: AuthUser,
@@ -83,21 +86,21 @@ export class OrganizationsController {
   }
 
   @Put(':id')
-  @UseGuards(SupabaseAuthGuard, OrgMemberGuard)
+  @UseGuards(SupabaseAuthGuard, PolicyGuard)
+  @CheckPolicy(ResourceType.ORGANIZATION, 'id')
   async update(
     @Param('id', new ZodValidationPipe(organizationIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateOrganizationSchema))
     body: UpdateOrganizationDto,
-    @CurrentUser() user: AuthUser,
   ) {
     return this.updateOrganizationUseCase.execute({ id, ...body });
   }
 
   @Delete(':id')
-  @UseGuards(SupabaseAuthGuard, OrgMemberGuard)
+  @UseGuards(SupabaseAuthGuard, PolicyGuard)
+  @CheckPolicy(ResourceType.ORGANIZATION, 'id')
   async delete(
     @Param('id', new ZodValidationPipe(organizationIdSchema)) id: string,
-    @CurrentUser() user: AuthUser,
   ) {
     return this.deleteOrganizationUseCase.execute(id);
   }

@@ -8,7 +8,7 @@ export function useLogin() {
   return {
     login: async (email: string, password: string) => {
       try {
-        // await loginUseCase.execute({ email, password });
+        await loginUseCase.execute({ email, password });
         return
       } catch (error) {
         console.error('Login failed:', error);

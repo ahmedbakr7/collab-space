@@ -31,7 +31,16 @@ export class SupabaseAuthGuard
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const active = await super.canActivate(context);
+    let active: boolean;
+    try {
+      active = (await super.canActivate(context)) as boolean;
+    } catch (err: any) {
+      this.logger.warn(
+        `SupabaseAuthGuard: JWT validation failed: ${err?.message}`,
+      );
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+
     if (!active) {
       this.logger.warn('SupabaseAuthGuard: super.canActivate returned false');
       return false;
@@ -68,7 +77,7 @@ export class SupabaseAuthGuard
         `Authentication failed: ${err?.message || 'User not found'}`,
         err?.stack,
       );
-      throw err || new UnauthorizedException();
+      throw new UnauthorizedException(err?.message || 'Unauthorized');
     }
     return user;
   }

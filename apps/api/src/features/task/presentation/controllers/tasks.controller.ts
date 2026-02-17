@@ -10,7 +10,10 @@ import {
 } from '@nestjs/common';
 import { AuthUser } from '@repo/domain';
 import { CurrentUser } from '../../../../features/auth/presentation/decorators/current-user.decorator';
+import { CheckPolicy } from '../../../../features/auth/presentation/decorators/check-policy.decorator';
 import { SupabaseAuthGuard } from '../../../../features/auth/presentation/guards/supabase-auth.guard';
+import { PolicyGuard } from '../../../../features/auth/presentation/guards/policy.guard';
+import { ResourceType } from '../../../../features/auth/presentation/guards/resource-type.enum';
 import { CreateTaskUseCase } from '../../application/use-cases/create-task.use-case';
 import { GetTaskUseCase } from '../../application/use-cases/get-task.use-case';
 import { GetTasksUseCase } from '../../application/use-cases/get-tasks.use-case';
@@ -35,7 +38,8 @@ export class TasksController {
   ) {}
 
   @Post()
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(SupabaseAuthGuard, PolicyGuard)
+  @CheckPolicy(ResourceType.PROJECT, 'projectId')
   async create(
     @Param('projectId', new ZodValidationPipe(projectIdParamSchema))
     projectId: string,
@@ -51,7 +55,8 @@ export class TasksController {
   }
 
   @Get()
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(SupabaseAuthGuard, PolicyGuard)
+  @CheckPolicy(ResourceType.PROJECT, 'projectId')
   async getAll(
     @Param('projectId', new ZodValidationPipe(projectIdParamSchema.optional()))
     projectId: string,
@@ -61,7 +66,8 @@ export class TasksController {
   }
 
   @Get(':id')
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(SupabaseAuthGuard, PolicyGuard)
+  @CheckPolicy(ResourceType.TASK, 'id')
   async get(
     @Param('id', new ZodValidationPipe(taskIdSchema)) id: string,
     @CurrentUser() user: AuthUser,
@@ -70,7 +76,8 @@ export class TasksController {
   }
 
   @Put(':id')
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(SupabaseAuthGuard, PolicyGuard)
+  @CheckPolicy(ResourceType.TASK, 'id')
   async update(
     @Param('id', new ZodValidationPipe(taskIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateTaskSchema)) body: UpdateTaskDto,
@@ -92,7 +99,8 @@ export class TasksController {
   }
 
   @Delete(':id')
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(SupabaseAuthGuard, PolicyGuard)
+  @CheckPolicy(ResourceType.TASK, 'id')
   async delete(
     @Param('id', new ZodValidationPipe(taskIdSchema)) id: string,
     @CurrentUser() user: AuthUser,

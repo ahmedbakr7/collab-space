@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { UsersModule } from '../user/presentation/users.module';
 import { SupabaseAuthGuard } from './presentation/guards/supabase-auth.guard';
-import { OrgMemberGuard } from './presentation/guards/org-member.guard';
+import { PolicyGuard } from './presentation/guards/policy.guard';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service';
 
 import { PassportModule } from '@nestjs/passport';
@@ -16,8 +16,8 @@ import { SupabaseJwtStrategy } from './infrastructure/supabase.strategy';
     PrismaService,
     SupabaseAuthGuard,
     SupabaseJwtStrategy,
-    OrgMemberGuard,
+    PolicyGuard,
   ],
-  exports: [SupabaseAuthGuard, OrgMemberGuard],
+  exports: [SupabaseAuthGuard, PolicyGuard],
 })
 export class AuthModule {}

@@ -1,0 +1,7 @@
+export enum ResourceType {
+  ORGANIZATION = 'ORGANIZATION',
+  WORKSPACE = 'WORKSPACE',
+  PROJECT = 'PROJECT',
+  TASK = 'TASK',
+  COMMENT = 'COMMENT',
+}
