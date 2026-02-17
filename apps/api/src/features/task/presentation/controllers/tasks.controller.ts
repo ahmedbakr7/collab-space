@@ -35,14 +35,17 @@ export class TasksController {
   ) {}
 
   @Post()
+  @UseGuards(SupabaseAuthGuard)
   async create(
     @Param('projectId', new ZodValidationPipe(projectIdParamSchema))
     projectId: string,
     @Body(new ZodValidationPipe(createTaskSchema)) body: CreateTaskDto,
+    @CurrentUser() user: AuthUser,
   ) {
     return this.createTaskUseCase.execute({
       ...body,
       projectId,
+      createdById: user.id,
       dueDate: body.dueDate ? new Date(body.dueDate) : undefined,
     });
   }
@@ -67,24 +70,33 @@ export class TasksController {
   }
 
   @Put(':id')
+  @UseGuards(SupabaseAuthGuard)
   async update(
     @Param('id', new ZodValidationPipe(taskIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateTaskSchema)) body: UpdateTaskDto,
+    @CurrentUser() user: AuthUser,
   ) {
-    return this.updateTaskUseCase.execute({
-      id,
-      ...body,
-      dueDate:
-        body.dueDate === null
-          ? null
-          : body.dueDate
-            ? new Date(body.dueDate)
-            : undefined,
-    });
+    return this.updateTaskUseCase.execute(
+      {
+        id,
+        ...body,
+        dueDate:
+          body.dueDate === null
+            ? null
+            : body.dueDate
+              ? new Date(body.dueDate)
+              : undefined,
+      },
+      user.id,
+    );
   }
 
   @Delete(':id')
-  async delete(@Param('id', new ZodValidationPipe(taskIdSchema)) id: string) {
-    return this.deleteTaskUseCase.execute(id);
+  @UseGuards(SupabaseAuthGuard)
+  async delete(
+    @Param('id', new ZodValidationPipe(taskIdSchema)) id: string,
+    @CurrentUser() user: AuthUser,
+  ) {
+    return this.deleteTaskUseCase.execute(id, user.id);
   }
 }

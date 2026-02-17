@@ -4,8 +4,11 @@ import { ProjectNotFoundError } from '../errors/project.errors';
 export class DeleteProjectUseCase {
   constructor(private readonly projectRepository: ProjectRepository) {}
 
-  async execute(id: string): Promise<void> {
-    const project = await this.projectRepository.findById(id);
+  async execute(id: string, userId?: string): Promise<void> {
+    const project = await this.projectRepository.findById(
+      id,
+      userId ? { userId } : undefined,
+    );
 
     if (!project) {
       throw new ProjectNotFoundError(id);

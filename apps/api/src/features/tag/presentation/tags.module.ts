@@ -6,10 +6,12 @@ import { DeleteTagUseCase } from '../application/use-cases/delete-tag.use-case';
 import { PrismaTagRepository } from '../infrastructure/persistence/prisma-tag.repository';
 import { PrismaService } from '../../../infrastructure/prisma/prisma.service';
 import { TagRepository } from '../application/ports/tag.repository.interface';
+import { AuthModule } from '../../auth/auth.module';
 
 const TagRepositoryToken = 'TagRepository';
 
 @Module({
+  imports: [AuthModule],
   controllers: [TagsController],
   providers: [
     PrismaService,

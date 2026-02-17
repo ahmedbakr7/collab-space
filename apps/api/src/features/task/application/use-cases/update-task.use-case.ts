@@ -15,8 +15,11 @@ export interface UpdateTaskCommand {
 export class UpdateTaskUseCase {
   constructor(private readonly taskRepository: TaskRepository) {}
 
-  async execute(command: UpdateTaskCommand): Promise<Task> {
-    const task = await this.taskRepository.findById(command.id);
+  async execute(command: UpdateTaskCommand, userId?: string): Promise<Task> {
+    const task = await this.taskRepository.findById(
+      command.id,
+      userId ? { userId } : undefined,
+    );
 
     if (!task) {
       throw new TaskNotFoundError(command.id);

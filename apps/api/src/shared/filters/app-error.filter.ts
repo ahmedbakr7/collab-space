@@ -43,6 +43,9 @@ export class AppErrorFilter implements ExceptionFilter {
       case 'WORKSPACE_NOT_FOUND':
         status = HttpStatus.NOT_FOUND;
         break;
+      case 'ACCESS_DENIED':
+        status = HttpStatus.FORBIDDEN;
+        break;
       case 'ORGANIZATION_ALREADY_EXISTS':
       case 'PROJECT_ALREADY_EXISTS':
       case 'TAG_ALREADY_EXISTS':

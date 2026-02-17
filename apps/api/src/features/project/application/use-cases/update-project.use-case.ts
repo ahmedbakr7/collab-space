@@ -11,8 +11,14 @@ export interface UpdateProjectCommand {
 export class UpdateProjectUseCase {
   constructor(private readonly projectRepository: ProjectRepository) {}
 
-  async execute(command: UpdateProjectCommand): Promise<Project> {
-    const project = await this.projectRepository.findById(command.id);
+  async execute(
+    command: UpdateProjectCommand,
+    userId?: string,
+  ): Promise<Project> {
+    const project = await this.projectRepository.findById(
+      command.id,
+      userId ? { userId } : undefined,
+    );
 
     if (!project) {
       throw new ProjectNotFoundError(command.id);

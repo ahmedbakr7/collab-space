@@ -43,7 +43,9 @@ export class PrismaTaskRepository implements TaskRepository {
     const where: any = { id };
     if (filter?.userId) {
       where.project = {
-        workspace: { members: { some: { userId: filter.userId } } },
+        workspace: {
+          organization: { members: { some: { userId: filter.userId } } },
+        },
       };
     }
 
@@ -68,7 +70,9 @@ export class PrismaTaskRepository implements TaskRepository {
     }
     if (filter?.userId) {
       where.project = {
-        workspace: { members: { some: { userId: filter.userId } } },
+        workspace: {
+          organization: { members: { some: { userId: filter.userId } } },
+        },
       };
     }
 

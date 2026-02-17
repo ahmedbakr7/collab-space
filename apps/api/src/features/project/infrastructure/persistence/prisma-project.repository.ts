@@ -34,7 +34,9 @@ export class PrismaProjectRepository implements ProjectRepository {
   ): Promise<Project | null> {
     const where: any = { id };
     if (filter?.userId) {
-      where.workspace = { members: { some: { userId: filter.userId } } };
+      where.workspace = {
+        organization: { members: { some: { userId: filter.userId } } },
+      };
     }
     const project = await this.prisma.project.findUnique({
       where,
@@ -51,7 +53,9 @@ export class PrismaProjectRepository implements ProjectRepository {
       where.workspaceId = filter.workspaceId;
     }
     if (filter?.userId) {
-      where.workspace = { members: { some: { userId: filter.userId } } };
+      where.workspace = {
+        organization: { members: { some: { userId: filter.userId } } },
+      };
     }
     const projects = await this.prisma.project.findMany({ where });
     return projects.map(ProjectMapper.toDomain);

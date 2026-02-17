@@ -4,8 +4,11 @@ import { TaskNotFoundError } from '../errors/task.errors';
 export class DeleteTaskUseCase {
   constructor(private readonly taskRepository: TaskRepository) {}
 
-  async execute(id: string): Promise<void> {
-    const task = await this.taskRepository.findById(id);
+  async execute(id: string, userId?: string): Promise<void> {
+    const task = await this.taskRepository.findById(
+      id,
+      userId ? { userId } : undefined,
+    );
 
     if (!task) {
       throw new TaskNotFoundError(id);

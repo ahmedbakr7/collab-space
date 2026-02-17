@@ -11,6 +11,7 @@ import {
 import { AuthUser } from '@repo/domain';
 import { CurrentUser } from '../../../auth/presentation/decorators/current-user.decorator';
 import { SupabaseAuthGuard } from '../../../auth/presentation/guards/supabase-auth.guard';
+import { OrgMemberGuard } from '../../../auth/presentation/guards/org-member.guard';
 import { CreateOrganizationUseCase } from '../../application/use-cases/create-organization.use-case';
 import { GetOrganizationUseCase } from '../../application/use-cases/get-organization.use-case';
 import { GetOrganizationsUseCase } from '../../application/use-cases/get-organizations.use-case';
@@ -42,11 +43,13 @@ export class OrganizationsController {
   ) {}
 
   @Post()
+  @UseGuards(SupabaseAuthGuard)
   async create(
     @Body(new ZodValidationPipe(createOrganizationSchema))
     body: CreateOrganizationDto,
+    @CurrentUser() user: AuthUser,
   ) {
-    return this.createOrganizationUseCase.execute(body);
+    return this.createOrganizationUseCase.execute(body, user.id);
   }
 
   @Get('public')
@@ -80,17 +83,21 @@ export class OrganizationsController {
   }
 
   @Put(':id')
+  @UseGuards(SupabaseAuthGuard, OrgMemberGuard)
   async update(
     @Param('id', new ZodValidationPipe(organizationIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateOrganizationSchema))
     body: UpdateOrganizationDto,
+    @CurrentUser() user: AuthUser,
   ) {
     return this.updateOrganizationUseCase.execute({ id, ...body });
   }
 
   @Delete(':id')
+  @UseGuards(SupabaseAuthGuard, OrgMemberGuard)
   async delete(
     @Param('id', new ZodValidationPipe(organizationIdSchema)) id: string,
+    @CurrentUser() user: AuthUser,
   ) {
     return this.deleteOrganizationUseCase.execute(id);
   }

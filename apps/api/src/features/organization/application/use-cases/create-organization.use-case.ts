@@ -13,7 +13,10 @@ export class CreateOrganizationUseCase {
     private readonly organizationRepository: OrganizationRepository,
   ) {}
 
-  async execute(command: CreateOrganizationCommand): Promise<Organization> {
+  async execute(
+    command: CreateOrganizationCommand,
+    userId: string,
+  ): Promise<Organization> {
     const now = new Date();
 
     const organization = new Organization(
@@ -27,6 +30,7 @@ export class CreateOrganizationUseCase {
     );
 
     await this.organizationRepository.save(organization);
+    await this.organizationRepository.addMember(organization.id, userId);
 
     return organization;
   }

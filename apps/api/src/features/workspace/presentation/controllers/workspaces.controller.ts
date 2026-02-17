@@ -9,7 +9,10 @@ import {
   UseInterceptors,
   UseGuards,
 } from '@nestjs/common';
+import { AuthUser } from '@repo/domain';
+import { CurrentUser } from '../../../../features/auth/presentation/decorators/current-user.decorator';
 import { SupabaseAuthGuard } from '../../../../features/auth/presentation/guards/supabase-auth.guard';
+import { OrgMemberGuard } from '../../../../features/auth/presentation/guards/org-member.guard';
 import { CreateWorkspaceUseCase } from '../../application/use-cases/create-workspace.use-case';
 import { GetWorkspaceUseCase } from '../../application/use-cases/get-workspace.use-case';
 import { GetWorkspacesUseCase } from '../../application/use-cases/get-workspaces.use-case';
@@ -43,44 +46,51 @@ export class WorkspacesController {
   ) {}
 
   @Post()
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(SupabaseAuthGuard, OrgMemberGuard)
   async create(
     @Param('orgId', new ZodValidationPipe(orgIdSchema)) orgId: string,
     @Body(new ZodValidationPipe(createWorkspaceSchema))
     body: CreateWorkspaceDto,
+    @CurrentUser() user: AuthUser,
   ) {
     return this.createWorkspaceUseCase.execute({ ...body, orgId });
   }
 
   @Get()
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(SupabaseAuthGuard, OrgMemberGuard)
   async getAll(
     @Param('orgId', new ZodValidationPipe(orgIdSchema.optional()))
     orgId: string,
+    @CurrentUser() user: AuthUser,
   ) {
-    return this.getWorkspacesUseCase.execute({ orgId });
+    return this.getWorkspacesUseCase.execute({ orgId, userId: user.id });
   }
 
   @Get(':id')
-  @UseGuards(SupabaseAuthGuard)
-  async get(@Param('id', new ZodValidationPipe(workspaceIdSchema)) id: string) {
-    return this.getWorkspaceUseCase.execute(id);
+  @UseGuards(SupabaseAuthGuard, OrgMemberGuard)
+  async get(
+    @Param('id', new ZodValidationPipe(workspaceIdSchema)) id: string,
+    @CurrentUser() user: AuthUser,
+  ) {
+    return this.getWorkspaceUseCase.execute(id, user.id);
   }
 
   @Put(':id')
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(SupabaseAuthGuard, OrgMemberGuard)
   async update(
     @Param('id', new ZodValidationPipe(workspaceIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateWorkspaceSchema))
     body: UpdateWorkspaceDto,
+    @CurrentUser() user: AuthUser,
   ) {
     return this.updateWorkspaceUseCase.execute({ id, ...body });
   }
 
   @Delete(':id')
-  @UseGuards(SupabaseAuthGuard)
+  @UseGuards(SupabaseAuthGuard, OrgMemberGuard)
   async delete(
     @Param('id', new ZodValidationPipe(workspaceIdSchema)) id: string,
+    @CurrentUser() user: AuthUser,
   ) {
     return this.deleteWorkspaceUseCase.execute(id);
   }

@@ -6,7 +6,9 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { SupabaseAuthGuard } from '../../../../features/auth/presentation/guards/supabase-auth.guard';
 import { CreateTagUseCase } from '../../application/use-cases/create-tag.use-case';
 import { GetTagsUseCase } from '../../application/use-cases/get-tags.use-case';
 import { DeleteTagUseCase } from '../../application/use-cases/delete-tag.use-case';
@@ -26,6 +28,7 @@ export class TagsController {
   ) {}
 
   @Post()
+  @UseGuards(SupabaseAuthGuard)
   async create(
     @Body(new ZodValidationPipe(createTagSchema)) body: CreateTagDto,
   ) {
@@ -33,6 +36,7 @@ export class TagsController {
   }
 
   @Get()
+  @UseGuards(SupabaseAuthGuard)
   async getAll(
     @Query('orgId', new ZodValidationPipe(orgIdQuerySchema)) orgId: string,
   ) {
@@ -40,6 +44,7 @@ export class TagsController {
   }
 
   @Delete(':id')
+  @UseGuards(SupabaseAuthGuard)
   async delete(@Param('id', new ZodValidationPipe(tagIdSchema)) id: string) {
     return this.deleteTagUseCase.execute(id);
   }

@@ -40,8 +40,10 @@ export class ProjectsController {
   ) {}
 
   @Post()
+  @UseGuards(SupabaseAuthGuard)
   async create(
     @Body(new ZodValidationPipe(createProjectSchema)) body: CreateProjectDto,
+    @CurrentUser() user: AuthUser,
   ) {
     return this.createProjectUseCase.execute(body);
   }
@@ -69,17 +71,21 @@ export class ProjectsController {
   }
 
   @Put(':id')
+  @UseGuards(SupabaseAuthGuard)
   async update(
     @Param('id', new ZodValidationPipe(projectIdSchema)) id: string,
     @Body(new ZodValidationPipe(updateProjectSchema)) body: UpdateProjectDto,
+    @CurrentUser() user: AuthUser,
   ) {
-    return this.updateProjectUseCase.execute({ id, ...body });
+    return this.updateProjectUseCase.execute({ id, ...body }, user.id);
   }
 
   @Delete(':id')
+  @UseGuards(SupabaseAuthGuard)
   async delete(
     @Param('id', new ZodValidationPipe(projectIdSchema)) id: string,
+    @CurrentUser() user: AuthUser,
   ) {
-    return this.deleteProjectUseCase.execute(id);
+    return this.deleteProjectUseCase.execute(id, user.id);
   }
 }
