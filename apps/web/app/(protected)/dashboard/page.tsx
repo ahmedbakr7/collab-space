@@ -13,6 +13,6 @@ export default async function DashboardRootPage() {
   if (organizations.length > 0) {
     redirect(ROUTES.DASHBOARD.HOME(organizations[0]!.id));
   } else {
-    redirect(ROUTES.ONBOARDING);
+    redirect(ROUTES.ONBOARDING.ROOT);
   }
 }

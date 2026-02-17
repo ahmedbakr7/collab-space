@@ -1,3 +1,6 @@
+import Link from 'next/link';
+import { Button, buttonVariants } from '@/shared/components/ui/button';
+import { ROUTES } from '@/shared/config/routes';
 import { LogoutButton } from '@/features/settings/presentation/components/logout-button';
 
 export default function SettingsPage() {
@@ -10,7 +13,19 @@ export default function SettingsPage() {
             Manage your account and preferences
           </p>
         </div>
-        <LogoutButton />
+
+        <div className="flex items-center gap-2">
+          <Button
+            nativeButton={false}
+            variant="default"
+            render={
+              <Link href={ROUTES.ONBOARDING.ROOT}>
+                Switch Organization
+              </Link>
+            }
+          ></Button>
+          <LogoutButton />
+        </div>
       </div>
 
       <div className="mt-8 p-6 border rounded-lg bg-card">

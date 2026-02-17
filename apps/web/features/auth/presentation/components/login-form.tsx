@@ -28,7 +28,7 @@ export function LoginForm() {
 
     try {
       await loginPromise;
-      router.push(ROUTES.ONBOARDING);
+      router.push(ROUTES.ONBOARDING.ROOT);
     } catch (error) {
       console.error(error);
     }

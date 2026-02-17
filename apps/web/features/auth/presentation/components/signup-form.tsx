@@ -21,7 +21,7 @@ export function SignUpForm() {
     try {
       await signup(values.email, values.password, values.name);
       toast.success('Account created successfully! Please check your email.');
-      router.push(ROUTES.ONBOARDING);
+      router.push(ROUTES.ONBOARDING.ROOT);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : 'Failed to create account',

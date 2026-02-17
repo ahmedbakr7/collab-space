@@ -1,6 +1,11 @@
 export const ROUTES = {
   ROOT: '/',
-  ONBOARDING: '/onboarding',
+  ONBOARDING: {
+    ROOT: '/onboarding',
+    JOIN: '/onboarding/join',
+    CREATE: '/onboarding/create',
+    EXISTING: '/onboarding/existing',
+  },
   TERMS: '/terms',
   PRIVACY: '/privacy',
 

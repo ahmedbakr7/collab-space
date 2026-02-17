@@ -3,7 +3,6 @@ import { Header } from '@/shared/components/layout/header';
 import { serverContainer } from '@/shared/layers/di/server.container';
 import { GetAllWorkspacesUseCase } from '@/features/workspace/application/use-cases/get-all-workspaces.usecase';
 import { PropsWithChildren, Suspense } from 'react';
-import { Skeleton } from '@/shared/components/ui/skeleton';
 
 interface DashboardLayoutProps extends PropsWithChildren {
   params: Promise<{ dashboardId: string }>;

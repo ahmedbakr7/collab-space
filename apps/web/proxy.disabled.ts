@@ -5,7 +5,7 @@ import { ROUTES } from '@/shared/config/routes';
 
 export async function middleware(request: NextRequest) {
   const protectedPaths = [
-    ROUTES.ONBOARDING,
+    ROUTES.ONBOARDING.ROOT,
     ROUTES.PROJECTS.ROOT,
     ROUTES.TASKS.ROOT,
     ROUTES.WORKSPACES.ROOT,
