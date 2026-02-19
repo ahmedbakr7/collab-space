@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback, useEffect } from 'react';
-import { clientContainer } from '@/infrastructure/di/client.container';
+import { clientContainer } from '@/shared/layers/di/client.container';
 import { InjectionToken } from 'tsyringe';
 
 export interface UseCase<TInput, TOutput> {

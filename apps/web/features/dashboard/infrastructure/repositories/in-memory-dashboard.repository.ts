@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+import { injectable } from 'tsyringe';
 import { DashboardRepositoryPort } from '../../application/ports/dashboard.repository.port';
 import {
   DashboardData,
@@ -10,6 +12,7 @@ import {
 } from '@/features/shared/data/mock-data';
 import { TaskStatus } from '@repo/domain/src/task/entities/task.entity';
 
+@injectable()
 export class InMemoryDashboardRepository implements DashboardRepositoryPort {
   async getDashboardData(dashboardId: string): Promise<DashboardData> {
     const workspaces = await this.getWorkspaces();
