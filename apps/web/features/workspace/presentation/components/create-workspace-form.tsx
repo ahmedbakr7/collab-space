@@ -2,7 +2,7 @@
 
 import { createOrgSchema, CreateOrgValues } from '@repo/shared-schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { Button } from '@/shared/components/ui/button';
@@ -15,6 +15,8 @@ import { useCreateWorkspace } from '../hooks/use-create-workspace';
 
 export function CreateWorkspaceForm() {
   const router = useRouter();
+  const params = useParams();
+  const organizationId = params.dashboardId as string;
   const { createWorkspace, isLoading } = useCreateWorkspace();
 
   async function onSubmit(data: CreateOrgValues) {
@@ -22,6 +24,7 @@ export function CreateWorkspaceForm() {
       const workspace = await createWorkspace({
         name: data.name,
         description: data.description,
+        organizationId,
       });
 
       if (workspace) {

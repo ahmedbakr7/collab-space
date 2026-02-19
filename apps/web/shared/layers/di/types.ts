@@ -21,10 +21,15 @@ export const TYPES = {
 
   // Workspace Feature
   IWorkspaceRepository: Symbol.for('IWorkspaceRepository'),
+  IGetAllWorkspacesUseCase: Symbol.for('IGetAllWorkspacesUseCase'),
 
   // Task Feature
   ITaskRepository: Symbol.for('ITaskRepository'),
   IGetTasksUseCase: Symbol.for('IGetTasksUseCase'),
+
+  // Dashboard Feature
+  IDashboardRepository: Symbol.for('IDashboardRepository'),
+  IGetDashboardDataUseCase: Symbol.for('IGetDashboardDataUseCase'),
 } as const;
 
 export type DITypes = typeof TYPES;

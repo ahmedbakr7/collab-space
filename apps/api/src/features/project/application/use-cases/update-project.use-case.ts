@@ -29,6 +29,7 @@ export class UpdateProjectUseCase {
       project.workspaceId,
       command.name ?? project.name,
       command.description ?? project.description,
+      project.status,
       project.createdAt,
       new Date(),
     );

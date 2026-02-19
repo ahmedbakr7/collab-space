@@ -1,6 +1,9 @@
 import { injectable } from 'tsyringe';
 import { ProjectRepositoryPort } from '../../application/ports/project.repository.port';
-import { Project } from '@repo/domain/src/project/entities/project.entity';
+import {
+  Project,
+  ProjectStatus,
+} from '@repo/domain/src/project/entities/project.entity';
 import { apiClient } from '@/features/shared/infrastructure/api-client';
 
 @injectable()
@@ -27,6 +30,7 @@ export class ProjectRepositoryAdapter implements ProjectRepositoryPort {
       data.workspaceId,
       data.name,
       data.description,
+      (data.status as ProjectStatus) || 'active',
       new Date(data.createdAt),
       new Date(data.updatedAt),
     );

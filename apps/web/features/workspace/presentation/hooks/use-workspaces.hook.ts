@@ -1,29 +1,12 @@
-import { useState, useEffect } from 'react';
+import 'reflect-metadata';
 import { GetAllWorkspacesUseCase } from '../../application/use-cases/get-all-workspaces.usecase';
-import { InMemoryWorkspaceRepository } from '../../infrastructure/repositories/in-memory-workspace.repository';
-import { Organization } from '@repo/domain/src/organization/entities/organization.entity';
+import { useUseCase } from '@/shared/hooks/use-use-case';
 
-export function useWorkspaces() {
-  const [workspaces, setWorkspaces] = useState<Organization[]>([]);
-  const [loading, setLoading] = useState(true);
+export function useWorkspaces(orgId: string) {
+  const { data, loading } = useUseCase(GetAllWorkspacesUseCase, {
+    initialInput: orgId,
+    skip: !orgId,
+  });
 
-  useEffect(() => {
-    const repository = new InMemoryWorkspaceRepository();
-    const useCase = new GetAllWorkspacesUseCase(repository);
-
-    async function fetchWorkspaces() {
-      try {
-        const data = await useCase.execute();
-        setWorkspaces(data);
-      } catch (error) {
-        console.error('Failed to fetch workspaces', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchWorkspaces();
-  }, []);
-
-  return { workspaces, loading };
+  return { workspaces: data || [], loading };
 }

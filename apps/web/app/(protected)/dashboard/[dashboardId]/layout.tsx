@@ -39,13 +39,11 @@ async function DashboardLayoutContent({
     });
 
   return (
-    <SidebarProvider>
-      <div className="flex h-dvh overflow-hidden bg-background">
-        <AppSidebar workspacesPromise={workspacesPromise} />
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <Header />
-          <main className="flex-1 overflow-y-auto">{children}</main>
-        </div>
+    <SidebarProvider className="h-dvh overflow-hidden bg-background">
+      <AppSidebar workspacesPromise={workspacesPromise} />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <Header />
+        <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
     </SidebarProvider>
   );

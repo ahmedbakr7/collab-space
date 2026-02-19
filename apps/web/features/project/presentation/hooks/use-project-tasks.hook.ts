@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo } from 'react';
-import { clientContainer } from '@/shared/layers/di/client.container';
 import { TYPES } from '@/shared/layers/di/types';
-import { GetTasksUseCase } from '@/features/task/application/use-cases/get-tasks.usecase';
 import { Task, TaskStatus } from '@repo/domain/src/task/entities/task.entity';
+import 'reflect-metadata';
+import { useUseCase } from '@/shared/hooks/use-use-case';
+import { TaskFilter } from '@/features/task/application/ports/task.repository.port';
 
 export interface KanbanColumn {
   id: string;
@@ -12,29 +12,15 @@ export interface KanbanColumn {
 }
 
 export function useProjectTasks(projectId: string) {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Resolve Use Case from DI Container
-  const useCase = useMemo(
-    () => clientContainer.resolve<GetTasksUseCase>(TYPES.IGetTasksUseCase),
-    [],
+  const { data, loading } = useUseCase<TaskFilter | undefined, Task[]>(
+    TYPES.IGetTasksUseCase,
+    {
+      initialInput: { projectId },
+      skip: !projectId,
+    },
   );
 
-  useEffect(() => {
-    async function fetchTasks() {
-      try {
-        const data = await useCase.execute({ projectId });
-        setTasks(data);
-      } catch (error) {
-        console.error('Failed to fetch project tasks', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchTasks();
-  }, [projectId, useCase]);
+  const tasks = data || [];
 
   const columns: KanbanColumn[] = [
     {

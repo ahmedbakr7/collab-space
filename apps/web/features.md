@@ -32,9 +32,9 @@ Status of features in `apps/web/features` following Clean Architecture.
 
 - **Location**: `src/features/project`
 - **Layers**:
-  - `presentation`: Components and Hooks (`useProjects`) refactored to use DI
-  - `application`: Use Cases (`GetProjectsByWorkspaceUseCase`) and Ports (`ProjectRepositoryPort`) DI-ready
-  - `infrastructure`: Adapters (`InMemoryProjectRepository`) registered in DI
+  - `presentation`: Components (`ProjectsView`, `ProjectsList`, `ProjectCard`) and Hooks (`useProjects`) refactored to use DI. Uses `ProjectUI` model and `ProjectUIMapper`.
+  - `application`: Use Cases (`GetProjectsByWorkspaceUseCase`) and Ports (`ProjectRepositoryPort`) DI-ready.
+  - `infrastructure`: Adapters (`ProjectRepositoryAdapter`) registered in DI. Repository and Entities updated to support `status`.
 
 ### `shared`
 

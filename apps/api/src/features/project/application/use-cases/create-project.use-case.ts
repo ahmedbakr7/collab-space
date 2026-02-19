@@ -19,6 +19,7 @@ export class CreateProjectUseCase {
       command.workspaceId,
       command.name,
       command.description,
+      'active',
       now,
       now,
     );

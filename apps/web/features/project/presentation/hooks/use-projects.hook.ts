@@ -1,35 +1,23 @@
-import { useState, useEffect, useMemo } from 'react';
-import { clientContainer } from '@/shared/layers/di/client.container';
-import { TYPES } from '@/shared/layers/di/types';
+import 'reflect-metadata';
+import { useMemo } from 'react';
 import { GetProjectsByWorkspaceUseCase } from '../../application/use-cases/get-projects-by-workspace.usecase';
-import { Project } from '@repo/domain/src/project/entities/project.entity';
+import { ProjectUIMapper } from '../mappers/project-ui.mapper';
+import { useUseCase } from '@/shared/hooks/use-use-case';
 
 export function useProjects(workspaceId: string) {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    data,
+    loading,
+    execute: refetch,
+  } = useUseCase(GetProjectsByWorkspaceUseCase, {
+    initialInput: workspaceId,
+    skip: !workspaceId,
+  });
 
-  // Resolve Use Case from DI Container
-  const useCase = useMemo(
-    () => clientContainer.resolve(GetProjectsByWorkspaceUseCase),
-    [],
+  const projects = useMemo(
+    () => (data ? data.map(ProjectUIMapper.toUI) : []),
+    [data],
   );
 
-  useEffect(() => {
-    if (!workspaceId) return;
-
-    async function fetchProjects() {
-      try {
-        const data = await useCase.execute(workspaceId);
-        setProjects(data);
-      } catch (error) {
-        console.error('Failed to fetch projects', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchProjects();
-  }, [workspaceId, useCase]);
-
-  return { projects, loading };
+  return { projects, loading, refetch };
 }
