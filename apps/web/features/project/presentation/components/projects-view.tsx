@@ -1,18 +1,12 @@
 import { useState } from 'react';
 import { ProjectUI } from '../models/project-ui.model';
 import { ProjectsList } from './projects-list';
-import { Input } from '@/shared/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/shared/components/ui/select';
+import { SearchInput } from '@/shared/components/search-input';
+import { SimpleSelect } from '@/shared/components/form/select';
 import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { Card, CardContent } from '@/shared/components/ui/card';
 import { Skeleton } from '@/shared/components/ui/skeleton';
-import { Search, Grid3x3, List, FolderKanban } from 'lucide-react';
+import { Grid3x3, List, FolderKanban } from 'lucide-react';
 import { Workspace } from '@repo/domain/src/workspace/entities/workspace.entity';
 import { ProjectStatus } from '@repo/domain/src/project/entities/project.entity';
 
@@ -87,48 +81,35 @@ export function ProjectsView({
 
       {/* Filters */}
       <div className="flex flex-col items-center sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search projects..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
-          />
-        </div>
+        <SearchInput
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Search projects..."
+          className="flex-1"
+          delay={300}
+        />
 
-        <Select
+        <SimpleSelect
           value={selectedWorkspaceId}
           onValueChange={(value) => value && onWorkspaceChange(value)}
-        >
-          <SelectTrigger className="w-full sm:w-48">
-            <SelectValue placeholder="Select Workspace" />
-          </SelectTrigger>
-          <SelectContent>
-            {workspaces.map((ws) => (
-              <SelectItem key={ws.id} value={ws.id}>
-                {ws.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          options={workspaces.map((ws) => ({ value: ws.id, label: ws.name }))}
+          placeholder="Select Workspace"
+          selectClassName="w-full sm:w-48"
+        />
 
-        <Select
+        <SimpleSelect
           value={selectedStatus}
           onValueChange={(value) => value && setSelectedStatus(value)}
-        >
-          <SelectTrigger className="w-full sm:w-48">
-            <SelectValue placeholder="All Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            {PROJECT_STATUSES.map((status) => (
-              <SelectItem key={status} value={status}>
-                {status.charAt(0).toUpperCase() + status.slice(1)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          options={[
+            { value: 'all', label: 'All Status' },
+            ...PROJECT_STATUSES.map((status) => ({
+              value: status,
+              label: status.charAt(0).toUpperCase() + status.slice(1),
+            })),
+          ]}
+          placeholder="All Status"
+          selectClassName="w-full sm:w-48"
+        />
 
         <Tabs
           value={viewMode}

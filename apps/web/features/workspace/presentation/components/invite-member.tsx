@@ -11,13 +11,7 @@ import {
   CardTitle,
   CardDescription,
 } from '@/shared/components/ui/card';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/shared/components/ui/select';
+import { SimpleSelect } from '@/shared/components/form/select';
 import { Mail, UserPlus, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -70,19 +64,21 @@ export function InviteMember() {
 
             <div className="space-y-2">
               <Label htmlFor="role">Role</Label>
-              <Select value={role} onValueChange={setRole}>
-                <SelectTrigger id="role">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="member">
-                    Member - Can view and edit tasks
-                  </SelectItem>
-                  <SelectItem value="admin">
-                    Admin - Can manage workspace settings
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+              <SimpleSelect
+                value={role}
+                onValueChange={setRole}
+                id="role"
+                options={[
+                  {
+                    value: 'member',
+                    label: 'Member - Can view and edit tasks',
+                  },
+                  {
+                    value: 'admin',
+                    label: 'Admin - Can manage workspace settings',
+                  },
+                ]}
+              />
             </div>
 
             <Button type="submit" className="w-full">

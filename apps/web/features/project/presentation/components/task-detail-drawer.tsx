@@ -14,16 +14,9 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/shared/components/ui/tabs';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/shared/components/ui/select';
+import { SimpleSelect } from '@/shared/components/form/select';
 import { Task } from '@repo/domain/src/task/entities/task.entity';
 import { Badge } from '@/shared/components/ui/badge';
-import { cn } from '@/shared/lib/utils';
 
 interface TaskDetailDrawerProps {
   task: Task;
@@ -127,17 +120,16 @@ export function TaskDetailDrawer({ task, onClose }: TaskDetailDrawerProps) {
                 <Flag className="w-4 h-4" />
                 <span>Priority</span>
               </label>
-              <Select defaultValue={task.priority}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="urgent">Urgent</SelectItem>
-                </SelectContent>
-              </Select>
+              <SimpleSelect
+                value={task.priority}
+                onValueChange={() => {}}
+                options={[
+                  { value: 'low', label: 'Low' },
+                  { value: 'medium', label: 'Medium' },
+                  { value: 'high', label: 'High' },
+                  { value: 'urgent', label: 'Urgent' },
+                ]}
+              />
             </div>
 
             <div className="space-y-2">
@@ -145,17 +137,16 @@ export function TaskDetailDrawer({ task, onClose }: TaskDetailDrawerProps) {
                 <Tag className="w-4 h-4" />
                 <span>Status</span>
               </label>
-              <Select defaultValue={task.status || 'in-progress'}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="todo">To Do</SelectItem>
-                  <SelectItem value="in-progress">In Progress</SelectItem>
-                  <SelectItem value="review">Review</SelectItem>
-                  <SelectItem value="done">Done</SelectItem>
-                </SelectContent>
-              </Select>
+              <SimpleSelect
+                value={task.status || 'in-progress'}
+                onValueChange={() => {}}
+                options={[
+                  { value: 'todo', label: 'To Do' },
+                  { value: 'in-progress', label: 'In Progress' },
+                  { value: 'review', label: 'Review' },
+                  { value: 'done', label: 'Done' },
+                ]}
+              />
             </div>
           </div>
 

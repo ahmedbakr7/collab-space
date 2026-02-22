@@ -116,6 +116,61 @@ export function FormSelect<
   );
 }
 
+export interface SimpleSelectProps {
+  value: string;
+  onValueChange: (value: string) => void;
+  options: FormSelectOption[];
+  placeholder?: string;
+  disabled?: boolean;
+  className?: string;
+  selectClassName?: string;
+  label?: string;
+  id?: string;
+}
+
+export function SimpleSelect({
+  value,
+  onValueChange,
+  options,
+  placeholder = '',
+  disabled,
+  className,
+  selectClassName,
+  label,
+  id,
+}: SimpleSelectProps) {
+  return (
+    <div className={cn(className)}>
+      {label && (
+        <label
+          htmlFor={id}
+          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          {label}
+        </label>
+      )}
+      <Select
+        value={value}
+        onValueChange={(val) => {
+          if (val !== null) onValueChange(val);
+        }}
+        disabled={disabled}
+      >
+        <SelectTrigger id={id} className={cn(selectClassName)}>
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
 export function HorizontalSelect({
   label = '',
   description = '',

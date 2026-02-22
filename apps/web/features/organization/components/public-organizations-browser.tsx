@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Globe, Building2, ArrowRight } from 'lucide-react';
-import { Input } from '@/shared/components/ui/input';
+import { Globe, Building2, ArrowRight } from 'lucide-react';
+import { SearchInput } from '@/shared/components/search-input';
 import { Button } from '@/shared/components/ui/button';
 import { ScrollArea } from '@/shared/components/ui/scroll-area';
 import { usePublicOrganizations } from '../presentation/hooks/use-public-organizations';
@@ -38,15 +38,12 @@ export function PublicOrganizationsBrowser() {
       </div>
 
       {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Search organizations..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10"
-        />
-      </div>
+      <SearchInput
+        value={searchQuery}
+        onChange={setSearchQuery}
+        placeholder="Search organizations..."
+        delay={300}
+      />
 
       {/* Results count */}
       <div className="text-sm text-muted-foreground">
