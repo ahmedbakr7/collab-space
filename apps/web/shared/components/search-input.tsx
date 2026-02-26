@@ -13,6 +13,7 @@ interface SearchInputProps extends Omit<
   value?: string;
   onChange: (value: string) => void;
   delay?: number;
+  containerClassName?: string;
 }
 
 export function SearchInput({
@@ -20,6 +21,7 @@ export function SearchInput({
   onChange,
   delay = 500,
   className,
+  containerClassName,
   placeholder = 'Search...',
   ...props
 }: SearchInputProps) {
@@ -43,7 +45,7 @@ export function SearchInput({
   }, [debouncedValue]);
 
   return (
-    <div className="relative">
+    <div className={cn('relative', containerClassName)}>
       <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
       <Input
         {...props}

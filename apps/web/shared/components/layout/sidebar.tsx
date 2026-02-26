@@ -27,7 +27,7 @@ interface SidebarContentProps {
 
 function SidebarInner({ workspacesPromise }: SidebarContentProps) {
   const workspaces = use(workspacesPromise);
-  const { state, toggleSidebar } = useSidebar();
+  const { state, setOpen } = useSidebar();
   const isCollapsed = state === 'collapsed';
   const pathname = usePathname();
   const params = useParams<{ dashboardId: string }>();
@@ -73,7 +73,7 @@ function SidebarInner({ workspacesPromise }: SidebarContentProps) {
         <Button
           variant="ghost"
           size="icon"
-          onClick={toggleSidebar}
+          onClick={() => setOpen(state === 'collapsed')}
           className="shrink-0"
         >
           {isCollapsed ? (

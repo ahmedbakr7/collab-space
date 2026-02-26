@@ -39,7 +39,7 @@ export default function TasksPage({ params }: TasksPageProps) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="mb-1 text-2xl font-semibold">All Tasks</h1>
-          <p className="text-muted-foreground">
+          <div className="text-muted-foreground">
             {loading ? (
               <Skeleton className="h-4 w-48" />
             ) : (
@@ -48,7 +48,7 @@ export default function TasksPage({ params }: TasksPageProps) {
                 workspaces
               </>
             )}
-          </p>
+          </div>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline">

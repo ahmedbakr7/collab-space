@@ -41,7 +41,8 @@ export function ProjectsView({
       project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       project.description?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesWorkspace =
-      selectedWorkspaceId === 'all' || project.workspaceId === selectedWorkspaceId;
+      selectedWorkspaceId === 'all' ||
+      project.workspaceId === selectedWorkspaceId;
     const matchesStatus =
       selectedStatus === 'all' || project.status === selectedStatus;
     return matchesSearch && matchesWorkspace && matchesStatus;
@@ -79,12 +80,13 @@ export function ProjectsView({
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col items-center sm:flex-row gap-4">
+      <div className="flex flex-col flex-wrap md:flex-row items-center gap-4">
         <SearchInput
           value={searchQuery}
           onChange={setSearchQuery}
           placeholder="Search projects..."
           className="flex-1"
+          containerClassName="flex-1 w-full"
           delay={300}
         />
 
