@@ -91,7 +91,7 @@ export function FormSelect<
             </SelectTrigger>
             <SelectContent>
               {options.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
+                <SelectItem key={option.value} value={option.value} label={option.label}>
                   {option.label}
                 </SelectItem>
               ))}
@@ -139,8 +139,6 @@ export function SimpleSelect({
   label,
   id,
 }: SimpleSelectProps) {
-  const selectedLabel = options.find((o) => o.value === value)?.label;
-
   return (
     <div className={cn(className)}>
       {label && (
@@ -159,13 +157,11 @@ export function SimpleSelect({
         disabled={disabled}
       >
         <SelectTrigger id={id} className={cn(selectClassName)}>
-          <SelectValue placeholder={placeholder}>
-            {selectedLabel ?? placeholder}
-          </SelectValue>
+          <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
+            <SelectItem key={option.value} value={option.value} label={option.label}>
               {option.label}
             </SelectItem>
           ))}
