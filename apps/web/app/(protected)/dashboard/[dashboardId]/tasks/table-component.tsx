@@ -1,7 +1,11 @@
 'use client';
 
 import * as React from 'react';
-import type { ColumnDef } from '@tanstack/react-table';
+import type {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+} from '@tanstack/react-table';
 import {
   getCoreRowModel,
   getFilteredRowModel,
@@ -110,6 +114,12 @@ function getColumns(onRowClick: (task: Task) => void): ColumnDef<Task>[] {
       },
       enableColumnFilter: true,
       enableSorting: true,
+      filterFn: (row, id, value) => {
+        const rowValue = row.getValue(id) as string;
+        return rowValue
+          ? rowValue.toLowerCase().includes(String(value).toLowerCase())
+          : false;
+      },
     },
     {
       id: 'workspace',
@@ -132,6 +142,12 @@ function getColumns(onRowClick: (task: Task) => void): ColumnDef<Task>[] {
       },
       enableColumnFilter: true,
       enableSorting: true,
+      filterFn: (row, id, value) => {
+        const rowValue = row.getValue(id) as string;
+        return rowValue
+          ? rowValue.toLowerCase().includes(String(value).toLowerCase())
+          : false;
+      },
     },
     {
       id: 'project',
@@ -154,6 +170,12 @@ function getColumns(onRowClick: (task: Task) => void): ColumnDef<Task>[] {
       },
       enableColumnFilter: true,
       enableSorting: true,
+      filterFn: (row, id, value) => {
+        const rowValue = row.getValue(id) as string;
+        return rowValue
+          ? rowValue.toLowerCase().includes(String(value).toLowerCase())
+          : false;
+      },
     },
     {
       id: 'status',
@@ -184,6 +206,11 @@ function getColumns(onRowClick: (task: Task) => void): ColumnDef<Task>[] {
       },
       enableColumnFilter: true,
       enableSorting: true,
+      filterFn: (row, id, value) => {
+        if (!Array.isArray(value)) return false;
+        if (value.length === 0) return true;
+        return value.includes(row.getValue(id));
+      },
     },
     {
       id: 'priority',
@@ -211,6 +238,11 @@ function getColumns(onRowClick: (task: Task) => void): ColumnDef<Task>[] {
       },
       enableColumnFilter: true,
       enableSorting: true,
+      filterFn: (row, id, value) => {
+        if (!Array.isArray(value)) return false;
+        if (value.length === 0) return true;
+        return value.includes(row.getValue(id));
+      },
     },
     {
       id: 'assignee',
@@ -222,15 +254,10 @@ function getColumns(onRowClick: (task: Task) => void): ColumnDef<Task>[] {
         const task = row.original;
         return (
           <div className="flex items-center space-x-2">
-            {/* @ts-expect-error - Task entity doesn't have assignee object yet */}
             {task.assignee ? (
               <Avatar className="w-6 h-6">
-                {/* @ts-expect-error - Task entity doesn't have assignee object yet */}
-                <AvatarImage src={task.assignee.avatar} />
-                <AvatarFallback>
-                  {/* @ts-expect-error - Task entity doesn't have assignee object yet */}
-                  {task.assignee.name?.[0]}
-                </AvatarFallback>
+                <AvatarImage src={task.assignee.avatarUrl || ''} />
+                <AvatarFallback>{task.assignee.name?.[0]}</AvatarFallback>
               </Avatar>
             ) : (
               <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-[10px]">
@@ -238,7 +265,6 @@ function getColumns(onRowClick: (task: Task) => void): ColumnDef<Task>[] {
               </div>
             )}
             <span className="text-sm truncate max-w-[120px]">
-              {/* @ts-expect-error - Task entity doesn't have assignee object yet */}
               {task.assignee?.name || 'Unassigned'}
             </span>
           </div>
@@ -304,6 +330,11 @@ export default function TableComponent({
   filteredTasks,
   setSelectedTask,
 }: TableComponentProps) {
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+
   const columns = React.useMemo(
     () => getColumns(setSelectedTask),
     [setSelectedTask],
@@ -315,6 +346,13 @@ export default function TableComponent({
     defaultColumn: {
       enableColumnFilter: false,
     },
+    state: {
+      columnFilters,
+      sorting,
+      rowSelection: {},
+    },
+    onColumnFiltersChange: setColumnFilters,
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),

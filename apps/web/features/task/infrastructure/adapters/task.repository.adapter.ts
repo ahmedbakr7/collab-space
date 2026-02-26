@@ -49,6 +49,26 @@ export class TaskRepositoryAdapter implements TaskRepositoryPort {
       data.assignedToId,
       new Date(data.createdAt),
       new Date(data.updatedAt),
+      data.tags || [],
+      data.comments || [],
+      data.attachments || [],
+      data.assignee || data.assignedTo
+        ? {
+            id: data.assignee?.id || data.assignedTo?.id,
+            name: data.assignee?.name || data.assignedTo?.name,
+            avatarUrl:
+              data.assignee?.avatarUrl || data.assignedTo?.avatarUrl || null,
+          }
+        : undefined,
+      data.project
+        ? { id: data.project.id, name: data.project.name }
+        : undefined,
+      data.workspace || data.project?.workspace
+        ? {
+            id: data.workspace?.id || data.project?.workspace?.id,
+            name: data.workspace?.name || data.project?.workspace?.name,
+          }
+        : undefined,
     );
   }
 }
