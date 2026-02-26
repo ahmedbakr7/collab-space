@@ -1,24 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, use } from 'react';
 import { Download, Plus, CheckSquare } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { TaskDetailDrawer } from '@/features/project/presentation/components/task-detail-drawer';
 import { Task, TaskStatus } from '@repo/domain/src/task/entities/task.entity';
 import { Card, CardContent } from '@/shared/components/ui/card';
+import { Skeleton } from '@/shared/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useTasks } from '@/features/task/presentation/hooks/use-tasks.hook';
+import { DataTableSkeleton } from '@/shared/components/data-table/data-table-skeleton';
 import TableComponent from './table-component';
 
-export default function TasksPage() {
+interface TasksPageProps {
+  params: Promise<{ dashboardId: string }>;
+}
+
+export default function TasksPage({ params }: TasksPageProps) {
+  const { dashboardId } = use(params);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const router = useRouter();
 
-  const { tasks, loading } = useTasks();
-
-  if (loading) {
-    return <div className="p-8">Loading tasks...</div>;
-  }
+  const { tasks, loading } = useTasks(dashboardId);
 
   // Calculate stats
   const stats = {
@@ -36,8 +39,14 @@ export default function TasksPage() {
         <div>
           <h1 className="mb-1 text-2xl font-semibold">All Tasks</h1>
           <p className="text-muted-foreground">
-            {stats.total} {stats.total === 1 ? 'task' : 'tasks'} across all
-            workspaces
+            {loading ? (
+              <Skeleton className="h-4 w-48" />
+            ) : (
+              <>
+                {stats.total} {stats.total === 1 ? 'task' : 'tasks'} across all
+                workspaces
+              </>
+            )}
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -60,7 +69,11 @@ export default function TasksPage() {
               <span className="text-sm text-muted-foreground">Total</span>
               <CheckSquare className="w-4 h-4 text-muted-foreground" />
             </div>
-            <p className="text-2xl font-semibold">{stats.total}</p>
+            {loading ? (
+              <Skeleton className="h-8 w-12" />
+            ) : (
+              <p className="text-2xl font-semibold">{stats.total}</p>
+            )}
           </CardContent>
         </Card>
         <Card>
@@ -69,7 +82,11 @@ export default function TasksPage() {
               <span className="text-sm text-muted-foreground">To Do</span>
               <div className="w-2 h-2 rounded-full bg-muted-foreground" />
             </div>
-            <p className="text-2xl font-semibold">{stats.todo}</p>
+            {loading ? (
+              <Skeleton className="h-8 w-12" />
+            ) : (
+              <p className="text-2xl font-semibold">{stats.todo}</p>
+            )}
           </CardContent>
         </Card>
         <Card>
@@ -78,7 +95,11 @@ export default function TasksPage() {
               <span className="text-sm text-muted-foreground">In Progress</span>
               <div className="w-2 h-2 rounded-full bg-chart-1" />
             </div>
-            <p className="text-2xl font-semibold">{stats.inProgress}</p>
+            {loading ? (
+              <Skeleton className="h-8 w-12" />
+            ) : (
+              <p className="text-2xl font-semibold">{stats.inProgress}</p>
+            )}
           </CardContent>
         </Card>
         <Card>
@@ -87,7 +108,11 @@ export default function TasksPage() {
               <span className="text-sm text-muted-foreground">Review</span>
               <div className="w-2 h-2 rounded-full bg-chart-4" />
             </div>
-            <p className="text-2xl font-semibold">{stats.review}</p>
+            {loading ? (
+              <Skeleton className="h-8 w-12" />
+            ) : (
+              <p className="text-2xl font-semibold">{stats.review}</p>
+            )}
           </CardContent>
         </Card>
         <Card>
@@ -96,13 +121,30 @@ export default function TasksPage() {
               <span className="text-sm text-muted-foreground">Done</span>
               <div className="w-2 h-2 rounded-full bg-chart-2" />
             </div>
-            <p className="text-2xl font-semibold">{stats.done}</p>
+            {loading ? (
+              <Skeleton className="h-8 w-12" />
+            ) : (
+              <p className="text-2xl font-semibold">{stats.done}</p>
+            )}
           </CardContent>
         </Card>
       </div>
 
       {/* Tasks Table */}
-      <TableComponent filteredTasks={tasks} setSelectedTask={setSelectedTask} />
+      {loading ? (
+        <DataTableSkeleton
+          columnCount={6}
+          rowCount={10}
+          filterCount={3}
+          withPagination
+          withViewOptions
+        />
+      ) : (
+        <TableComponent
+          filteredTasks={tasks}
+          setSelectedTask={setSelectedTask}
+        />
+      )}
 
       {/* Task Detail Drawer */}
       {selectedTask && (

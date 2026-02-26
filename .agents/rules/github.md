@@ -2,19 +2,27 @@
 trigger: always_on
 ---
 
-**Repository Workflow Context**
+### Repository Workflow Context (No PR Model)
 
-* The project is hosted on GitHub.
-* There is one remote repository (`origin`) with a `main` branch.
-* There are two separate local repositories.
-* Each local repository works on its own branch:
+* The project uses a single remote on GitHub (`origin`).
+* `main` is the integration branch.
+* Two local repositories exist:
 
-  * Local Repo A → `dev_1`
-  * Local Repo B → `dev_2`
-* Both branches track their corresponding remote branches (`origin/dev_1`, `origin/dev_2`).
-* Work is done independently on each branch.
-* Integration happens by merging branches into `main` (typically via Pull Requests).
-* Branches may periodically pull from `main` to stay up to date.
-* Conflicts only occur during merge or rebase operations.
+  * Local A works on `branch-a`
+  * Local B works on `branch-b`
+* No Pull Requests are used.
+* All merges are performed locally via Git CLI.
+* Workflow pattern:
 
-Assume this branching model when reasoning about synchronization, merges, rebases, and conflict resolution.
+  1. Each local works and pushes its own branch.
+  2. When integration is needed:
+
+     * Checkout `main`
+     * Pull latest `origin/main`
+     * Merge `branch-x` into `main`
+     * Push `main`
+  3. Other branches periodically merge or rebase from `main` to stay updated.
+* Conflicts are resolved locally during merge/rebase.
+* GitHub acts only as a synchronization hub, not a review tool.
+
+Assume direct branch pushes and local merges when reasoning about synchronization.

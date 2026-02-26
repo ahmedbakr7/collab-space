@@ -14,17 +14,22 @@ export class TaskRepositoryAdapter implements TaskRepositoryPort {
     filter?: TaskFilter,
     query?: QueryOptions,
   ): Promise<PaginatedResult<Task>> {
-    if (!filter?.projectId) {
+    let url: string;
+
+    if (filter?.organizationId) {
+      url = `/organizations/${filter.organizationId}/tasks`;
+    } else if (filter?.projectId) {
+      url = `/projects/${filter.projectId}/tasks`;
+    } else {
       return {
         data: [],
         meta: { page: 1, limit: 10, total: 0, totalPages: 0 },
       };
     }
 
-    const result = await apiClient.get<PaginatedResult<Task>>(
-      `/projects/${filter.projectId}/tasks`,
-      { params: buildQueryParams(query) },
-    );
+    const result = await apiClient.get<PaginatedResult<Task>>(url, {
+      params: buildQueryParams(query),
+    });
     return {
       data: result.data.map(this.mapToEntity),
       meta: result.meta,

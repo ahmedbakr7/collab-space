@@ -2,6 +2,7 @@ import { Task } from '@repo/domain/src/task/entities/task.entity';
 import type { QueryOptions, PaginatedResult } from '@repo/domain';
 
 export interface TaskFilter {
+  organizationId?: string;
   projectId?: string;
   workspaceId?: string;
   assigneeId?: string;
