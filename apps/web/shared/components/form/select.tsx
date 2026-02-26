@@ -139,6 +139,8 @@ export function SimpleSelect({
   label,
   id,
 }: SimpleSelectProps) {
+  const selectedLabel = options.find((o) => o.value === value)?.label;
+
   return (
     <div className={cn(className)}>
       {label && (
@@ -157,7 +159,9 @@ export function SimpleSelect({
         disabled={disabled}
       >
         <SelectTrigger id={id} className={cn(selectClassName)}>
-          <SelectValue placeholder={placeholder} />
+          <SelectValue placeholder={placeholder}>
+            {selectedLabel ?? placeholder}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
