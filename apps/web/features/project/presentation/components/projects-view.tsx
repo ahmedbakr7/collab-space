@@ -7,15 +7,11 @@ import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { Card, CardContent } from '@/shared/components/ui/card';
 import { Skeleton } from '@/shared/components/ui/skeleton';
 import { Grid3x3, List, FolderKanban } from 'lucide-react';
-import { Workspace } from '@repo/domain/src/workspace/entities/workspace.entity';
 import { ProjectStatus } from '@repo/domain/src/project/entities/project.entity';
 
 interface ProjectsViewProps {
   projects: ProjectUI[];
   loading: boolean;
-  workspaces: Workspace[];
-  selectedWorkspaceId: string;
-  onWorkspaceChange: (id: string) => void;
   onNavigate: (path: string) => void;
 }
 
@@ -29,9 +25,6 @@ const PROJECT_STATUSES: ProjectStatus[] = [
 export function ProjectsView({
   projects,
   loading,
-  workspaces,
-  selectedWorkspaceId,
-  onWorkspaceChange,
   onNavigate,
 }: ProjectsViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -87,14 +80,6 @@ export function ProjectsView({
           placeholder="Search projects..."
           className="flex-1"
           delay={300}
-        />
-
-        <SimpleSelect
-          value={selectedWorkspaceId}
-          onValueChange={(value) => value && onWorkspaceChange(value)}
-          options={workspaces.map((ws) => ({ value: ws.id, label: ws.name }))}
-          placeholder="Select Workspace"
-          selectClassName="w-full sm:w-48"
         />
 
         <SimpleSelect

@@ -7,6 +7,21 @@ import { MOCK_PROJECTS } from '@/features/shared/data/mock-data';
 
 @injectable()
 export class InMemoryProjectRepository implements ProjectRepositoryPort {
+  async getProjectsByOrganization(
+    _organizationId: string,
+    _query?: QueryOptions,
+  ): Promise<PaginatedResult<Project>> {
+    return {
+      data: MOCK_PROJECTS,
+      meta: {
+        page: 1,
+        limit: MOCK_PROJECTS.length,
+        total: MOCK_PROJECTS.length,
+        totalPages: 1,
+      },
+    };
+  }
+
   async getProjectsByWorkspace(
     workspaceId: string,
     _query?: QueryOptions,

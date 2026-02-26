@@ -10,6 +10,20 @@ import { buildQueryParams } from '@/features/shared/infrastructure/query-params.
 
 @injectable()
 export class ProjectRepositoryAdapter implements ProjectRepositoryPort {
+  async getProjectsByOrganization(
+    organizationId: string,
+    query?: QueryOptions,
+  ): Promise<PaginatedResult<Project>> {
+    const result = await apiClient.get<PaginatedResult<Project>>(
+      `/organizations/${organizationId}/projects`,
+      { params: buildQueryParams(query) },
+    );
+    return {
+      data: result.data.map(this.mapToEntity),
+      meta: result.meta,
+    };
+  }
+
   async getProjectsByWorkspace(
     workspaceId: string,
     query?: QueryOptions,
