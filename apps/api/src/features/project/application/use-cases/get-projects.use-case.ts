@@ -6,7 +6,7 @@ export class GetProjectsUseCase {
   constructor(private readonly projectRepository: ProjectRepository) {}
 
   async execute(
-    filter?: { workspaceId?: string; userId?: string },
+    filter?: { workspaceId?: string; orgId?: string; userId?: string },
     query?: QueryOptions,
   ): Promise<PaginatedResult<Project>> {
     return this.projectRepository.findAll(filter, query);

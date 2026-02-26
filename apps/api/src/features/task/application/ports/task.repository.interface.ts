@@ -5,7 +5,7 @@ export interface TaskRepository {
   save(task: Task): Promise<void>;
   findById(id: string, filter?: { userId?: string }): Promise<Task | null>;
   findAll(
-    filter?: { projectId?: string; userId?: string },
+    filter?: { projectId?: string; orgId?: string; userId?: string },
     query?: QueryOptions,
   ): Promise<PaginatedResult<Task>>;
   findByProjectId(projectId: string): Promise<Task[]>;

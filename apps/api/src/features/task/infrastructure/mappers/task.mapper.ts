@@ -18,6 +18,12 @@ type PrismaTaskWithRelations = PrismaTask & {
   comments?: PrismaComment[];
   attachments?: PrismaAttachment[];
   tags?: (TaskTag & { tag: PrismaTag })[];
+  project?: {
+    id: string;
+    name: string;
+    workspace: { id: string; name: string };
+  };
+  assignedTo?: { id: string; name: string; avatarUrl: string | null } | null;
 };
 
 export class TaskMapper {
@@ -61,6 +67,22 @@ export class TaskMapper {
             a.createdAt,
           ),
       ),
+      prismaTask.assignedTo
+        ? {
+            id: prismaTask.assignedTo.id,
+            name: prismaTask.assignedTo.name,
+            avatarUrl: prismaTask.assignedTo.avatarUrl,
+          }
+        : undefined,
+      prismaTask.project
+        ? { id: prismaTask.project.id, name: prismaTask.project.name }
+        : undefined,
+      prismaTask.project?.workspace
+        ? {
+            id: prismaTask.project.workspace.id,
+            name: prismaTask.project.workspace.name,
+          }
+        : undefined,
     );
   }
 }

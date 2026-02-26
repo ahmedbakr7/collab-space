@@ -31,5 +31,12 @@ export class Task {
     public readonly tags: Tag[] = [],
     public readonly comments: TaskComment[] = [],
     public readonly attachments: Attachment[] = [],
+    public readonly assignee?: {
+      id: string;
+      name: string;
+      avatarUrl: string | null;
+    },
+    public readonly project?: { id: string; name: string },
+    public readonly workspace?: { id: string; name: string },
   ) {}
 }

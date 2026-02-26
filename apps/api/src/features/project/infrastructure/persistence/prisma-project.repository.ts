@@ -56,7 +56,7 @@ export class PrismaProjectRepository implements ProjectRepository {
   }
 
   async findAll(
-    filter?: { workspaceId?: string; userId?: string },
+    filter?: { workspaceId?: string; orgId?: string; userId?: string },
     query?: QueryOptions,
   ): Promise<PaginatedResult<Project>> {
     const where: any = {
@@ -66,9 +66,14 @@ export class PrismaProjectRepository implements ProjectRepository {
     if (filter?.workspaceId) {
       where.workspaceId = filter.workspaceId;
     }
-    if (filter?.userId) {
+    if (filter?.orgId || filter?.userId) {
       where.workspace = {
-        organization: { members: { some: { userId: filter.userId } } },
+        organization: {
+          ...(filter?.orgId ? { id: filter.orgId } : {}),
+          ...(filter?.userId
+            ? { members: { some: { userId: filter.userId } } }
+            : {}),
+        },
       };
     }
 

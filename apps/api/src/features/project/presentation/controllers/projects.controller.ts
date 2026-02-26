@@ -61,19 +61,23 @@ export class ProjectsController {
   }
 
   @Get()
-  @UseGuards(SupabaseAuthGuard, PolicyGuard)
-  @CheckPolicy(ResourceType.WORKSPACE, 'workspaceId')
+  @UseGuards(SupabaseAuthGuard)
   async getAll(
     @Param(
       'workspaceId',
       new ZodValidationPipe(workspaceIdParamSchema.optional()),
     )
     workspaceId: string,
+    @Param(
+      'orgId',
+      new ZodValidationPipe(workspaceIdParamSchema.optional()), // Reusing the UUID schema for orgId
+    )
+    orgId: string,
     @CurrentUser() user: AuthUser,
     @Query(new ZodValidationPipe(projectQuerySchema)) query: QueryOptions,
   ) {
     return this.getProjectsUseCase.execute(
-      { workspaceId, userId: user.id },
+      { workspaceId, orgId, userId: user.id },
       query,
     );
   }

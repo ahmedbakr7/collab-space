@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CreateWorkspaceUseCase } from '../../application/use-cases/create-workspace.usecase';
-import { clientContainer } from '@/infrastructure/di/client.container';
+import { clientContainer } from '@/shared/layers/di/client.container';
 import { CreateWorkspaceDTO } from '../../application/dto/create-workspace.dto';
 import { Workspace } from '@repo/domain/src/workspace/entities/workspace.entity';
 

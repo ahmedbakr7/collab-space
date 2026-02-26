@@ -13,15 +13,15 @@ import { LogoutUseCase } from '../../../features/auth/application/use-cases/logo
 import { VerifySessionUseCase } from '../../../features/auth/application/use-cases/verify-session.use-case';
 
 // Project
-import { InMemoryProjectRepository } from '../../../features/project/infrastructure/repositories/in-memory-project.repository';
+import { ProjectRepositoryAdapter } from '../../../features/project/infrastructure/adapters/project.repository.adapter';
 import { GetProjectsByWorkspaceUseCase } from '../../../features/project/application/use-cases/get-projects-by-workspace.usecase';
 
 // Workspace
-import { InMemoryWorkspaceRepository } from '../../../features/workspace/infrastructure/repositories/in-memory-workspace.repository';
+import { WorkspaceRepositoryAdapter } from '../../../features/workspace/infrastructure/adapters/workspace.repository.adapter';
 import { GetAllWorkspacesUseCase } from '../../../features/workspace/application/use-cases/get-all-workspaces.usecase';
 
 // Task
-import { InMemoryTaskRepository } from '../../../features/task/infrastructure/repositories/in-memory-task.repository';
+import { TaskRepositoryAdapter } from '../../../features/task/infrastructure/adapters/task.repository.adapter';
 import { GetTasksUseCase } from '../../../features/task/application/use-cases/get-tasks.usecase';
 
 // Dashboard
@@ -43,7 +43,7 @@ export function registerClientDependencies(container: DependencyContainer) {
 
   // Project
   container.register(TYPES.IProjectRepository, {
-    useClass: InMemoryProjectRepository,
+    useClass: ProjectRepositoryAdapter,
   });
   container.register(TYPES.IGetProjectsByWorkspaceUseCase, {
     useClass: GetProjectsByWorkspaceUseCase,
@@ -51,7 +51,7 @@ export function registerClientDependencies(container: DependencyContainer) {
 
   // Workspace
   container.register(TYPES.IWorkspaceRepository, {
-    useClass: InMemoryWorkspaceRepository,
+    useClass: WorkspaceRepositoryAdapter,
   });
   container.register(TYPES.IGetAllWorkspacesUseCase, {
     useClass: GetAllWorkspacesUseCase,
@@ -59,11 +59,12 @@ export function registerClientDependencies(container: DependencyContainer) {
 
   // Task
   container.register(TYPES.ITaskRepository, {
-    useClass: InMemoryTaskRepository,
+    useClass: TaskRepositoryAdapter,
   });
   container.register(TYPES.IGetTasksUseCase, { useClass: GetTasksUseCase });
 
   // Dashboard
+  // Keeping in-memory for Dashboard if there is no real adapter yet
   container.register(TYPES.IDashboardRepository, {
     useClass: InMemoryDashboardRepository,
   });

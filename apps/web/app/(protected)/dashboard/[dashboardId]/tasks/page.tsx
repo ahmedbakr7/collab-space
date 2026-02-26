@@ -1,5 +1,6 @@
 'use client';
 
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { useState, use } from 'react';
 import { Download, Plus, CheckSquare } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
@@ -140,10 +141,12 @@ export default function TasksPage({ params }: TasksPageProps) {
           withViewOptions
         />
       ) : (
-        <TableComponent
-          filteredTasks={tasks}
-          setSelectedTask={setSelectedTask}
-        />
+        <NuqsAdapter>
+          <TableComponent
+            filteredTasks={tasks}
+            setSelectedTask={setSelectedTask}
+          />
+        </NuqsAdapter>
       )}
 
       {/* Task Detail Drawer */}

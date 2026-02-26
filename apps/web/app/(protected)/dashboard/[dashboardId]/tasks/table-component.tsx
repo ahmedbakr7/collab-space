@@ -112,6 +112,50 @@ function getColumns(onRowClick: (task: Task) => void): ColumnDef<Task>[] {
       enableSorting: true,
     },
     {
+      id: 'workspace',
+      accessorFn: (row) => row.workspace?.name,
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} label="Workspace" />
+      ),
+      cell: ({ row }) => {
+        const workspaceName = row.getValue('workspace') as string;
+        return (
+          <span className="text-sm truncate max-w-[120px]">
+            {workspaceName || 'Unassigned'}
+          </span>
+        );
+      },
+      meta: {
+        label: 'Workspace',
+        placeholder: 'Search workspace...',
+        variant: 'text' as const,
+      },
+      enableColumnFilter: true,
+      enableSorting: true,
+    },
+    {
+      id: 'project',
+      accessorFn: (row) => row.project?.name,
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} label="Project" />
+      ),
+      cell: ({ row }) => {
+        const projectName = row.getValue('project') as string;
+        return (
+          <span className="text-sm truncate max-w-[120px]">
+            {projectName || 'Unassigned'}
+          </span>
+        );
+      },
+      meta: {
+        label: 'Project',
+        placeholder: 'Search project...',
+        variant: 'text' as const,
+      },
+      enableColumnFilter: true,
+      enableSorting: true,
+    },
+    {
       id: 'status',
       accessorKey: 'status',
       header: ({ column }) => (

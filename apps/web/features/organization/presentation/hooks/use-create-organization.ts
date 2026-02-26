@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { CreateOrgValues } from '@repo/shared-schemas';
-import { clientContainer } from '@/infrastructure/di/client.container';
+import { clientContainer } from '@/shared/layers/di/client.container';
 import { CreateOrganizationUseCase } from '../../application/use-cases/create-organization.use-case';
 import { toast } from 'sonner';
 

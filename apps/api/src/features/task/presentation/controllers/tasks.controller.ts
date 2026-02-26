@@ -63,15 +63,19 @@ export class TasksController {
   }
 
   @Get()
-  @UseGuards(SupabaseAuthGuard, PolicyGuard)
-  @CheckPolicy(ResourceType.PROJECT, 'projectId')
+  @UseGuards(SupabaseAuthGuard)
   async getAll(
     @Param('projectId', new ZodValidationPipe(projectIdParamSchema.optional()))
     projectId: string,
+    @Param('orgId', new ZodValidationPipe(projectIdParamSchema.optional())) // Reusing the UUID schema for orgId
+    orgId: string,
     @CurrentUser() user: AuthUser,
     @Query(new ZodValidationPipe(taskQuerySchema)) query: QueryOptions,
   ) {
-    return this.getTasksUseCase.execute({ projectId, userId: user.id }, query);
+    return this.getTasksUseCase.execute(
+      { projectId, orgId, userId: user.id },
+      query,
+    );
   }
 
   @Get(':id')

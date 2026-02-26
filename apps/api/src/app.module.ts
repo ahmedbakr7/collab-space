@@ -9,11 +9,13 @@ import { UsersModule } from './features/user/presentation/users.module';
 import { OrganizationsModule } from './features/organization/presentation/organizations.module';
 import { WorkspacesModule } from './features/workspace/presentation/workspaces.module';
 import { ProjectsModule } from './features/project/presentation/projects.module';
+import { ProjectsOrgModule } from './features/project/presentation/projects-org.module';
 import { WorkspacesFlatModule } from './features/workspace/presentation/workspaces-flat.module';
 import { ProjectsFlatModule } from './features/project/presentation/projects-flat.module';
 import { TasksFlatModule } from './features/task/presentation/tasks-flat.module';
 import { TagsModule } from './features/tag/presentation/tags.module';
 import { TasksModule } from './features/task/presentation/tasks.module';
+import { TasksOrgModule } from './features/task/presentation/tasks-org.module';
 import { StorageModule } from './infrastructure/storage/storage.module';
 
 import { envSchema } from './env';
@@ -40,6 +42,14 @@ import { RequestLoggerMiddleware } from './shared/middleware/request-logger.midd
           {
             path: ':orgId/tags',
             module: TagsModule,
+          },
+          {
+            path: ':orgId/projects',
+            module: ProjectsOrgModule,
+          },
+          {
+            path: ':orgId/tasks',
+            module: TasksOrgModule,
           },
         ],
       },
@@ -73,10 +83,12 @@ import { RequestLoggerMiddleware } from './shared/middleware/request-logger.midd
     WorkspacesFlatModule,
 
     ProjectsModule,
+    ProjectsOrgModule,
     ProjectsFlatModule,
 
     TagsModule,
     TasksModule,
+    TasksOrgModule,
     TasksFlatModule,
 
     StorageModule,

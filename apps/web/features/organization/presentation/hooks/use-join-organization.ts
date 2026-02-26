@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { JoinOrgValues } from '@repo/shared-schemas';
-import { clientContainer } from '@/infrastructure/di/client.container';
+import { clientContainer } from '@/shared/layers/di/client.container';
 import { JoinOrganizationUseCase } from '../../application/use-cases/join-organization.use-case';
 import { toast } from 'sonner';
 

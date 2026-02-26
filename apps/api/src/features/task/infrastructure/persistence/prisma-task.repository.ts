@@ -69,13 +69,21 @@ export class PrismaTaskRepository implements TaskRepository {
         comments: true,
         attachments: true,
         tags: { include: { tag: true } },
+        assignedTo: { select: { id: true, name: true, avatarUrl: true } },
+        project: {
+          select: {
+            id: true,
+            name: true,
+            workspace: { select: { id: true, name: true } },
+          },
+        },
       },
     });
     return task ? TaskMapper.toDomain(task) : null;
   }
 
   async findAll(
-    filter?: { projectId?: string; userId?: string },
+    filter?: { projectId?: string; orgId?: string; userId?: string },
     query?: QueryOptions,
   ): Promise<PaginatedResult<Task>> {
     const where: any = {
@@ -85,10 +93,15 @@ export class PrismaTaskRepository implements TaskRepository {
     if (filter?.projectId) {
       where.projectId = filter.projectId;
     }
-    if (filter?.userId) {
+    if (filter?.orgId || filter?.userId) {
       where.project = {
         workspace: {
-          organization: { members: { some: { userId: filter.userId } } },
+          organization: {
+            ...(filter?.orgId ? { id: filter.orgId } : {}),
+            ...(filter?.userId
+              ? { members: { some: { userId: filter.userId } } }
+              : {}),
+          },
         },
       };
     }
@@ -106,6 +119,14 @@ export class PrismaTaskRepository implements TaskRepository {
           comments: true,
           attachments: true,
           tags: { include: { tag: true } },
+          assignedTo: { select: { id: true, name: true, avatarUrl: true } },
+          project: {
+            select: {
+              id: true,
+              name: true,
+              workspace: { select: { id: true, name: true } },
+            },
+          },
         },
       }),
       this.prisma.task.count({ where }),
@@ -125,6 +146,14 @@ export class PrismaTaskRepository implements TaskRepository {
         comments: true,
         attachments: true,
         tags: { include: { tag: true } },
+        assignedTo: { select: { id: true, name: true, avatarUrl: true } },
+        project: {
+          select: {
+            id: true,
+            name: true,
+            workspace: { select: { id: true, name: true } },
+          },
+        },
       },
     });
     return tasks.map((t) => TaskMapper.toDomain(t));
