@@ -181,3 +181,44 @@
 - [x] Database: Prisma Schema defined (User, Organization, Project, Task, TaskComment, Tag).
 - [x] Database: Prisma Client generated.
 - [x] Storage: Supabase Storage implemented.
+
+## Shared Query Infrastructure (Sorting, Filtering, Pagination)
+
+### Status
+
+- [x] Domain types (`@repo/domain/query`)
+- [x] Zod schema factory (`shared/query/query.schema.ts`)
+- [x] Prisma query builder (`shared/query/prisma-query.builder.ts`)
+- [x] Applied to all list endpoints
+
+### Supported Query Parameters
+
+All list (`GET /`) endpoints support:
+
+- **Pagination**: `?page=1&limit=20` (offset-based, defaults: page=1, limit=20)
+- **Sorting**: `?sort=name` (asc), `?sort=-name` (desc), `?sort=-priority,createdAt` (multi-sort)
+- **Filtering**: `?status=active` (exact match), `?status=todo,in_progress` (OR/in), `?dueDate[gte]=2024-01-01` (comparison)
+
+### Per-Feature Allowed Fields
+
+| Feature      | Sort Fields                                            | Filter Fields                         |
+| ------------ | ------------------------------------------------------ | ------------------------------------- |
+| Task         | title, status, priority, dueDate, createdAt, updatedAt | status, priority, assignedToId, title |
+| Project      | name, createdAt, updatedAt                             | name                                  |
+| Organization | name, createdAt, updatedAt                             | name, visibility                      |
+| Workspace    | name, createdAt, updatedAt                             | name                                  |
+| Tag          | name                                                   | name                                  |
+
+### Response Shape (Paginated)
+
+```json
+{
+  "data": [...],
+  "meta": {
+    "page": 1,
+    "limit": 20,
+    "total": 150,
+    "totalPages": 8
+  }
+}
+```

@@ -1,3 +1,4 @@
+import type { PaginatedResult, QueryOptions } from '@repo/domain';
 import { Organization } from '@repo/domain';
 import { OrganizationRepository } from '../ports/organization.repository.interface';
 
@@ -6,7 +7,7 @@ export class GetPublicOrganizationsUseCase {
     private readonly organizationRepository: OrganizationRepository,
   ) {}
 
-  async execute(): Promise<Organization[]> {
-    return this.organizationRepository.findPublic();
+  async execute(query?: QueryOptions): Promise<PaginatedResult<Organization>> {
+    return this.organizationRepository.findPublic(query);
   }
 }

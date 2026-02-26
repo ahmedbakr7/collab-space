@@ -5,25 +5,22 @@ import { useEffect } from 'react';
 import { GetOrganizationsUseCase } from '../../application/use-cases/get-organizations.use-case';
 import { toast } from 'sonner';
 import { useUseCase } from '@/shared/hooks/use-use-case';
+import type { QueryOptions, PaginatedResult } from '@repo/domain';
+import type { Organization } from '@repo/domain';
 
-export function useOrganizations() {
+export function useOrganizations(query?: QueryOptions) {
   const {
-    data: organizations,
+    data: result,
     loading: isLoading,
     error,
     execute: refetch,
   } = useUseCase(GetOrganizationsUseCase, {
-    initialInput: undefined, // executes immediately because input is void? No wait, my hook expects input if provided.
+    initialInput: query,
   });
 
-  // Since generic type inference might struggle with void input, we might need to cast or just call execute manually.
-  // Actually UseCase<void, Organization[]> means input is void.
-  // My hook definition: execute(input: TInput).
-  // If TInput is void, we pass undefined.
-
   useEffect(() => {
-    refetch(undefined);
-  }, [refetch]);
+    refetch(query);
+  }, [refetch, query]);
 
   useEffect(() => {
     if (error) {
@@ -32,7 +29,8 @@ export function useOrganizations() {
   }, [error]);
 
   return {
-    organizations: organizations || [],
+    organizations: result?.data || [],
+    meta: result?.meta || null,
     isLoading,
     error,
     refetch,

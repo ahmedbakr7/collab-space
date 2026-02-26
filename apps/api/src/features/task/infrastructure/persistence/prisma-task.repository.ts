@@ -1,8 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { TaskRepository } from '../../application/ports/task.repository.interface';
 import { Task } from '@repo/domain';
+import type { QueryOptions, PaginatedResult } from '@repo/domain';
 import { PrismaService } from '../../../../infrastructure/prisma/prisma.service';
 import { TaskMapper } from '../mappers/task.mapper';
+import {
+  buildPrismaWhere,
+  buildPrismaOrderBy,
+  buildPrismaPagination,
+  buildPaginatedResult,
+} from '../../../../shared/query/prisma-query.builder';
+
+const TASK_FILTER_FIELD_MAP: Record<string, string> = {
+  status: 'status',
+  priority: 'priority',
+  assignedToId: 'assignedToId',
+  title: 'title',
+};
 
 @Injectable()
 export class PrismaTaskRepository implements TaskRepository {
@@ -60,11 +74,14 @@ export class PrismaTaskRepository implements TaskRepository {
     return task ? TaskMapper.toDomain(task) : null;
   }
 
-  async findAll(filter?: {
-    projectId?: string;
-    userId?: string;
-  }): Promise<Task[]> {
-    const where: any = {};
+  async findAll(
+    filter?: { projectId?: string; userId?: string },
+    query?: QueryOptions,
+  ): Promise<PaginatedResult<Task>> {
+    const where: any = {
+      ...buildPrismaWhere(query?.filters, TASK_FILTER_FIELD_MAP),
+    };
+
     if (filter?.projectId) {
       where.projectId = filter.projectId;
     }
@@ -76,15 +93,29 @@ export class PrismaTaskRepository implements TaskRepository {
       };
     }
 
-    const tasks = await this.prisma.task.findMany({
-      where,
-      include: {
-        comments: true,
-        attachments: true,
-        tags: { include: { tag: true } },
-      },
-    });
-    return tasks.map((t) => TaskMapper.toDomain(t));
+    const orderBy = buildPrismaOrderBy(query?.sort);
+    const { skip, take } = buildPrismaPagination(query?.pagination);
+
+    const [tasks, total] = await Promise.all([
+      this.prisma.task.findMany({
+        where,
+        orderBy,
+        skip,
+        take,
+        include: {
+          comments: true,
+          attachments: true,
+          tags: { include: { tag: true } },
+        },
+      }),
+      this.prisma.task.count({ where }),
+    ]);
+
+    return buildPaginatedResult(
+      tasks.map((t) => TaskMapper.toDomain(t)),
+      total,
+      query?.pagination,
+    );
   }
 
   async findByProjectId(projectId: string): Promise<Task[]> {

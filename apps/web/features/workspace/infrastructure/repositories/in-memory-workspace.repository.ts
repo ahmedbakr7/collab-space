@@ -1,14 +1,14 @@
 import { WorkspaceRepositoryPort } from '../../application/ports/workspace.repository.port';
 import { Workspace } from '@repo/domain/src/workspace/entities/workspace.entity';
+import type { QueryOptions, PaginatedResult } from '@repo/domain';
 import { MOCK_WORKSPACES } from '@/features/shared/data/mock-data';
 
 export class InMemoryWorkspaceRepository implements WorkspaceRepositoryPort {
-  async getAllWorkspaces(orgId: string): Promise<Workspace[]> {
-    // Determine which "workspaces" belong to which org.
-    // MOCK_WORKSPACES are Organizations really.
-    // For now, let's treat them as if they are workspaces of the given orgId
-    // to satisfy the type.
-    return MOCK_WORKSPACES.map(
+  async getAllWorkspaces(
+    orgId: string,
+    _query?: QueryOptions,
+  ): Promise<PaginatedResult<Workspace>> {
+    const workspaces = MOCK_WORKSPACES.map(
       (org) =>
         new Workspace(
           org.id,
@@ -19,6 +19,15 @@ export class InMemoryWorkspaceRepository implements WorkspaceRepositoryPort {
           org.updatedAt,
         ),
     );
+    return {
+      data: workspaces,
+      meta: {
+        page: 1,
+        limit: workspaces.length,
+        total: workspaces.length,
+        totalPages: 1,
+      },
+    };
   }
 
   async getWorkspace(id: string): Promise<Workspace | null> {

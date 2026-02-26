@@ -1,5 +1,9 @@
 import { injectable, inject } from 'tsyringe';
-import { Organization } from '@repo/domain';
+import {
+  Organization,
+  type QueryOptions,
+  type PaginatedResult,
+} from '@repo/domain';
 import {
   ORGANIZATION_REPOSITORY_TOKEN,
   type OrganizationRepositoryPort,
@@ -12,7 +16,7 @@ export class GetOrganizationsUseCase {
     private readonly organizationRepository: OrganizationRepositoryPort,
   ) {}
 
-  async execute(): Promise<Organization[]> {
-    return this.organizationRepository.getOrganizations();
+  async execute(query?: QueryOptions): Promise<PaginatedResult<Organization>> {
+    return this.organizationRepository.getOrganizations(query);
   }
 }

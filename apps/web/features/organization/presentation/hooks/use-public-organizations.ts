@@ -1,16 +1,24 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Organization } from '@repo/domain';
-import { clientContainer } from '@/infrastructure/di/client.container';
+import {
+  Organization,
+  type QueryOptions,
+  type PaginatedResult,
+} from '@repo/domain';
+import { clientContainer } from '@/shared/layers/di/client.container';
 import {
   ORGANIZATION_REPOSITORY_TOKEN,
   OrganizationRepositoryPort,
 } from '../../application/ports/organization.repository.port';
 import { toast } from 'sonner';
 
-export function usePublicOrganizations() {
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
+export function usePublicOrganizations(query?: QueryOptions) {
+  const [result, setResult] = useState<PaginatedResult<Organization> | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(false);
-  const [joiningOrganizationId, setJoiningOrganizationId] = useState<string | null>(null);
+  const [joiningOrganizationId, setJoiningOrganizationId] = useState<
+    string | null
+  >(null);
 
   const repository = useMemo(
     () =>
@@ -23,15 +31,15 @@ export function usePublicOrganizations() {
   const fetchOrganizations = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await repository.getPublicOrganizations();
-      setOrganizations(data);
+      const data = await repository.getPublicOrganizations(query);
+      setResult(data);
     } catch (error) {
       console.error('Failed to fetch public organizations:', error);
       toast.error('Failed to load public organizations');
     } finally {
       setIsLoading(false);
     }
-  }, [repository]);
+  }, [repository, query]);
 
   const joinOrganization = async (organizationId: string) => {
     setJoiningOrganizationId(organizationId);
@@ -52,7 +60,8 @@ export function usePublicOrganizations() {
   }, [fetchOrganizations]);
 
   return {
-    organizations,
+    organizations: result?.data || [],
+    meta: result?.meta || null,
     isLoading,
     joiningOrganizationId,
     joinOrganization,

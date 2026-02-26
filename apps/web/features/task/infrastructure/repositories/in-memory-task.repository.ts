@@ -1,19 +1,22 @@
 import 'reflect-metadata';
 import { injectable } from 'tsyringe';
-import { TaskRepositoryPort } from '../../application/ports/task.repository.port';
+import {
+  TaskRepositoryPort,
+  TaskFilter,
+} from '../../application/ports/task.repository.port';
 import {
   Task,
   TaskStatus,
   TaskPriority,
 } from '@repo/domain/src/task/entities/task.entity';
+import type { QueryOptions, PaginatedResult } from '@repo/domain';
 
 @injectable()
 export class InMemoryTaskRepository implements TaskRepositoryPort {
-  async getTasks(filter?: {
-    projectId?: string;
-    workspaceId?: string;
-    assigneeId?: string;
-  }): Promise<Task[]> {
+  async getTasks(
+    filter?: TaskFilter,
+    _query?: QueryOptions,
+  ): Promise<PaginatedResult<Task>> {
     const tasks: any[] = [
       {
         id: '1',
@@ -158,15 +161,33 @@ export class InMemoryTaskRepository implements TaskRepositoryPort {
         updatedAt: new Date(),
       },
     ];
+    if (!filter) {
+      return {
+        data: tasks,
+        meta: {
+          page: 1,
+          limit: tasks.length,
+          total: tasks.length,
+          totalPages: 1,
+        },
+      };
+    }
 
-    if (!filter) return tasks;
-
-    return tasks.filter((task) => {
+    const filtered = tasks.filter((task) => {
       if (filter.projectId && task.projectId !== filter.projectId) return false;
       if (filter.workspaceId && task.workspace !== filter.workspaceId)
         return false;
 
       return true;
     });
+    return {
+      data: filtered,
+      meta: {
+        page: 1,
+        limit: filtered.length,
+        total: filtered.length,
+        totalPages: 1,
+      },
+    };
   }
 }

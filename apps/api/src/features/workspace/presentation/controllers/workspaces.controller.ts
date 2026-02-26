@@ -7,8 +7,10 @@ import {
   Put,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { AuthUser } from '@repo/domain';
+import type { QueryOptions } from '@repo/domain';
 import { CurrentUser } from '../../../../features/auth/presentation/decorators/current-user.decorator';
 import { CheckPolicy } from '../../../../features/auth/presentation/decorators/check-policy.decorator';
 import { SupabaseAuthGuard } from '../../../../features/auth/presentation/guards/supabase-auth.guard';
@@ -29,9 +31,15 @@ import {
 } from '../../application/dtos/update-workspace.dto';
 import { workspaceIdSchema } from '../../application/dtos/workspace-id.dto';
 import { ZodValidationPipe } from '../../../../shared/pipes/zod-validation.pipe';
+import { createQuerySchema } from '../../../../shared/query/query.schema';
 import { z } from 'zod';
 
 const orgIdSchema = z.string().uuid();
+
+const workspaceQuerySchema = createQuerySchema(
+  ['name', 'createdAt', 'updatedAt'],
+  ['name'],
+);
 
 @Controller()
 export class WorkspacesController {
@@ -61,8 +69,9 @@ export class WorkspacesController {
     @Param('orgId', new ZodValidationPipe(orgIdSchema.optional()))
     orgId: string,
     @CurrentUser() user: AuthUser,
+    @Query(new ZodValidationPipe(workspaceQuerySchema)) query: QueryOptions,
   ) {
-    return this.getWorkspacesUseCase.execute({ orgId, userId: user.id });
+    return this.getWorkspacesUseCase.execute({ orgId, userId: user.id }, query);
   }
 
   @Get(':id')

@@ -2,10 +2,12 @@ import { injectable, inject } from 'tsyringe';
 import { WorkspaceRepositoryPort } from '../../application/ports/workspace.repository.port';
 import { CreateWorkspaceDTO } from '../../application/dto/create-workspace.dto';
 import { Workspace } from '@repo/domain/src/workspace/entities/workspace.entity';
+import type { QueryOptions, PaginatedResult } from '@repo/domain';
 import {
   API_CLIENT_TOKEN,
   type ApiClientPort,
 } from '@/features/shared/application/ports/api-client.port';
+import { buildQueryParams } from '@/features/shared/infrastructure/query-params.builder';
 
 @injectable()
 export class WorkspaceRepositoryAdapter implements WorkspaceRepositoryPort {
@@ -13,11 +15,18 @@ export class WorkspaceRepositoryAdapter implements WorkspaceRepositoryPort {
     @inject(API_CLIENT_TOKEN) private readonly apiClient: ApiClientPort,
   ) {}
 
-  async getAllWorkspaces(orgId: string): Promise<Workspace[]> {
-    const workspaces = await this.apiClient.get<Workspace[]>(
+  async getAllWorkspaces(
+    orgId: string,
+    query?: QueryOptions,
+  ): Promise<PaginatedResult<Workspace>> {
+    const result = await this.apiClient.get<PaginatedResult<Workspace>>(
       `/organizations/${orgId}/workspaces`,
+      { params: buildQueryParams(query) },
     );
-    return workspaces.map(this.mapToEntity);
+    return {
+      data: result.data.map(this.mapToEntity),
+      meta: result.meta,
+    };
   }
 
   async createWorkspace(data: CreateWorkspaceDTO): Promise<Workspace> {

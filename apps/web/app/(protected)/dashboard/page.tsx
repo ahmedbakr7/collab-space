@@ -8,10 +8,10 @@ export default async function DashboardRootPage() {
     GetOrganizationsUseCase,
   );
 
-  const organizations = await getOrganizationsUseCase.execute();
+  const result = await getOrganizationsUseCase.execute();
 
-  if (organizations.length > 0) {
-    redirect(ROUTES.DASHBOARD.HOME(organizations[0]!.id));
+  if (result.data.length > 0) {
+    redirect(ROUTES.DASHBOARD.HOME(result.data[0]!.id));
   } else {
     redirect(ROUTES.ONBOARDING.ROOT);
   }

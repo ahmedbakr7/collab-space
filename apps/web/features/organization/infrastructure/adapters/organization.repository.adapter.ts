@@ -1,11 +1,16 @@
 import { injectable, inject } from 'tsyringe';
-import { Organization } from '@repo/domain';
+import {
+  Organization,
+  type QueryOptions,
+  type PaginatedResult,
+} from '@repo/domain';
 import { CreateOrgValues } from '@repo/shared-schemas';
 import { OrganizationRepositoryPort } from '../../application/ports/organization.repository.port';
 import {
   API_CLIENT_TOKEN,
   type ApiClientPort,
 } from '@/features/shared/application/ports/api-client.port';
+import { buildQueryParams } from '@/features/shared/infrastructure/query-params.builder';
 
 @injectable()
 export class OrganizationRepositoryAdapter implements OrganizationRepositoryPort {
@@ -29,12 +34,23 @@ export class OrganizationRepositoryAdapter implements OrganizationRepositoryPort
     );
   }
 
-  async getOrganizations(): Promise<Organization[]> {
-    return this.apiClient.get<Organization[]>('/organizations');
+  async getOrganizations(
+    query?: QueryOptions,
+  ): Promise<PaginatedResult<Organization>> {
+    return this.apiClient.get<PaginatedResult<Organization>>('/organizations', {
+      params: buildQueryParams(query),
+    });
   }
 
-  async getPublicOrganizations(): Promise<Organization[]> {
-    return this.apiClient.get<Organization[]>('/organizations/public');
+  async getPublicOrganizations(
+    query?: QueryOptions,
+  ): Promise<PaginatedResult<Organization>> {
+    return this.apiClient.get<PaginatedResult<Organization>>(
+      '/organizations/public',
+      {
+        params: buildQueryParams(query),
+      },
+    );
   }
 
   async joinPublicOrganization(organizationId: string): Promise<void> {

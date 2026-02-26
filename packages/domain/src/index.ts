@@ -6,3 +6,4 @@ export * from './tag';
 export * from './workspace';
 
 export * from './organization';
+export * from './query';

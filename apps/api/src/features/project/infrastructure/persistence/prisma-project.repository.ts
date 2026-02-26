@@ -1,8 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { ProjectRepository } from '../../application/ports/project.repository.interface';
 import { Project } from '@repo/domain';
+import type { QueryOptions, PaginatedResult } from '@repo/domain';
 import { PrismaService } from '../../../../infrastructure/prisma/prisma.service';
 import { ProjectMapper } from '../mappers/project.mapper';
+import {
+  buildPrismaWhere,
+  buildPrismaOrderBy,
+  buildPrismaPagination,
+  buildPaginatedResult,
+} from '../../../../shared/query/prisma-query.builder';
+
+const PROJECT_FILTER_FIELD_MAP: Record<string, string> = {
+  name: 'name',
+};
 
 @Injectable()
 export class PrismaProjectRepository implements ProjectRepository {
@@ -44,11 +55,14 @@ export class PrismaProjectRepository implements ProjectRepository {
     return project ? ProjectMapper.toDomain(project) : null;
   }
 
-  async findAll(filter?: {
-    workspaceId?: string;
-    userId?: string;
-  }): Promise<Project[]> {
-    const where: any = {};
+  async findAll(
+    filter?: { workspaceId?: string; userId?: string },
+    query?: QueryOptions,
+  ): Promise<PaginatedResult<Project>> {
+    const where: any = {
+      ...buildPrismaWhere(query?.filters, PROJECT_FILTER_FIELD_MAP),
+    };
+
     if (filter?.workspaceId) {
       where.workspaceId = filter.workspaceId;
     }
@@ -57,8 +71,20 @@ export class PrismaProjectRepository implements ProjectRepository {
         organization: { members: { some: { userId: filter.userId } } },
       };
     }
-    const projects = await this.prisma.project.findMany({ where });
-    return projects.map(ProjectMapper.toDomain);
+
+    const orderBy = buildPrismaOrderBy(query?.sort);
+    const { skip, take } = buildPrismaPagination(query?.pagination);
+
+    const [projects, total] = await Promise.all([
+      this.prisma.project.findMany({ where, orderBy, skip, take }),
+      this.prisma.project.count({ where }),
+    ]);
+
+    return buildPaginatedResult(
+      projects.map(ProjectMapper.toDomain),
+      total,
+      query?.pagination,
+    );
   }
 
   async findByWorkspaceId(workspaceId: string): Promise<Project[]> {

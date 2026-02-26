@@ -6,7 +6,9 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
+import type { QueryOptions } from '@repo/domain';
 import { CheckPolicy } from '../../../../features/auth/presentation/decorators/check-policy.decorator';
 import { SupabaseAuthGuard } from '../../../../features/auth/presentation/guards/supabase-auth.guard';
 import { PolicyGuard } from '../../../../features/auth/presentation/guards/policy.guard';
@@ -17,6 +19,9 @@ import { DeleteTagUseCase } from '../../application/use-cases/delete-tag.use-cas
 import { CreateTagDto, createTagSchema } from '../dtos/create-tag.dto';
 import { tagIdSchema } from '../dtos/tag-id.dto';
 import { ZodValidationPipe } from '../../../../shared/pipes/zod-validation.pipe';
+import { createQuerySchema } from '../../../../shared/query/query.schema';
+
+const tagQuerySchema = createQuerySchema(['name'], ['name']);
 
 @Controller()
 export class TagsController {
@@ -38,8 +43,11 @@ export class TagsController {
   @Get()
   @UseGuards(SupabaseAuthGuard, PolicyGuard)
   @CheckPolicy(ResourceType.ORGANIZATION, 'orgId')
-  async getAll(@Param('orgId') orgId: string) {
-    return this.getTagsUseCase.execute(orgId);
+  async getAll(
+    @Param('orgId') orgId: string,
+    @Query(new ZodValidationPipe(tagQuerySchema)) query: QueryOptions,
+  ) {
+    return this.getTagsUseCase.execute(orgId, query);
   }
 
   @Delete(':id')

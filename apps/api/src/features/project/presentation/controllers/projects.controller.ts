@@ -7,8 +7,10 @@ import {
   Put,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { AuthUser } from '@repo/domain';
+import type { QueryOptions } from '@repo/domain';
 import { CurrentUser } from '../../../../features/auth/presentation/decorators/current-user.decorator';
 import { CheckPolicy } from '../../../../features/auth/presentation/decorators/check-policy.decorator';
 import { SupabaseAuthGuard } from '../../../../features/auth/presentation/guards/supabase-auth.guard';
@@ -29,9 +31,15 @@ import {
 } from '../dtos/update-project.dto';
 import { projectIdSchema } from '../dtos/project-id.dto';
 import { ZodValidationPipe } from '../../../../shared/pipes/zod-validation.pipe';
+import { createQuerySchema } from '../../../../shared/query/query.schema';
 import { z } from 'zod';
 
 const workspaceIdParamSchema = z.string().uuid();
+
+const projectQuerySchema = createQuerySchema(
+  ['name', 'createdAt', 'updatedAt'],
+  ['name'],
+);
 
 @Controller()
 export class ProjectsController {
@@ -62,8 +70,12 @@ export class ProjectsController {
     )
     workspaceId: string,
     @CurrentUser() user: AuthUser,
+    @Query(new ZodValidationPipe(projectQuerySchema)) query: QueryOptions,
   ) {
-    return this.getProjectsUseCase.execute({ workspaceId, userId: user.id });
+    return this.getProjectsUseCase.execute(
+      { workspaceId, userId: user.id },
+      query,
+    );
   }
 
   @Get(':id')

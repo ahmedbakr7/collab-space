@@ -7,8 +7,10 @@ import {
   Put,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { AuthUser } from '@repo/domain';
+import type { QueryOptions } from '@repo/domain';
 import { CurrentUser } from '../../../auth/presentation/decorators/current-user.decorator';
 import { CheckPolicy } from '../../../auth/presentation/decorators/check-policy.decorator';
 import { SupabaseAuthGuard } from '../../../auth/presentation/guards/supabase-auth.guard';
@@ -31,6 +33,12 @@ import {
 } from '../dtos/update-organization.dto';
 import { organizationIdSchema } from '../dtos/organization-id.dto';
 import { ZodValidationPipe } from '../../../../shared/pipes/zod-validation.pipe';
+import { createQuerySchema } from '../../../../shared/query/query.schema';
+
+const orgQuerySchema = createQuerySchema(
+  ['name', 'createdAt', 'updatedAt'],
+  ['name', 'visibility'],
+);
 
 @Controller()
 export class OrganizationsController {
@@ -56,8 +64,10 @@ export class OrganizationsController {
 
   @Get('public')
   @UseGuards(SupabaseAuthGuard)
-  async getPublic() {
-    return this.getPublicOrganizationsUseCase.execute();
+  async getPublic(
+    @Query(new ZodValidationPipe(orgQuerySchema)) query: QueryOptions,
+  ) {
+    return this.getPublicOrganizationsUseCase.execute(query);
   }
 
   @Post(':id/join')
@@ -71,8 +81,11 @@ export class OrganizationsController {
 
   @Get()
   @UseGuards(SupabaseAuthGuard)
-  async getAll(@CurrentUser() user: AuthUser) {
-    return this.getOrganizationsUseCase.execute(user.id);
+  async getAll(
+    @CurrentUser() user: AuthUser,
+    @Query(new ZodValidationPipe(orgQuerySchema)) query: QueryOptions,
+  ) {
+    return this.getOrganizationsUseCase.execute(user.id, query);
   }
 
   @Get(':id')

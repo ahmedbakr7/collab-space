@@ -7,8 +7,10 @@ import {
   Put,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { AuthUser } from '@repo/domain';
+import type { QueryOptions } from '@repo/domain';
 import { CurrentUser } from '../../../../features/auth/presentation/decorators/current-user.decorator';
 import { CheckPolicy } from '../../../../features/auth/presentation/decorators/check-policy.decorator';
 import { SupabaseAuthGuard } from '../../../../features/auth/presentation/guards/supabase-auth.guard';
@@ -23,9 +25,15 @@ import { CreateTaskDto, createTaskSchema } from '../dtos/create-task.dto';
 import { UpdateTaskDto, updateTaskSchema } from '../dtos/update-task.dto';
 import { taskIdSchema } from '../dtos/task-id.dto';
 import { ZodValidationPipe } from '../../../../shared/pipes/zod-validation.pipe';
+import { createQuerySchema } from '../../../../shared/query/query.schema';
 import { z } from 'zod';
 
 const projectIdParamSchema = z.string().uuid();
+
+const taskQuerySchema = createQuerySchema(
+  ['title', 'status', 'priority', 'dueDate', 'createdAt', 'updatedAt'],
+  ['status', 'priority', 'assignedToId', 'title'],
+);
 
 @Controller()
 export class TasksController {
@@ -61,8 +69,9 @@ export class TasksController {
     @Param('projectId', new ZodValidationPipe(projectIdParamSchema.optional()))
     projectId: string,
     @CurrentUser() user: AuthUser,
+    @Query(new ZodValidationPipe(taskQuerySchema)) query: QueryOptions,
   ) {
-    return this.getTasksUseCase.execute({ projectId, userId: user.id });
+    return this.getTasksUseCase.execute({ projectId, userId: user.id }, query);
   }
 
   @Get(':id')

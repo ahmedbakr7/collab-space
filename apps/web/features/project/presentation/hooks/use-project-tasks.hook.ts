@@ -2,7 +2,8 @@ import { TYPES } from '@/shared/layers/di/types';
 import { Task, TaskStatus } from '@repo/domain/src/task/entities/task.entity';
 import 'reflect-metadata';
 import { useUseCase } from '@/shared/hooks/use-use-case';
-import { TaskFilter } from '@/features/task/application/ports/task.repository.port';
+import type { GetTasksInput } from '@/features/task/application/ports/task.repository.port';
+import type { PaginatedResult } from '@repo/domain';
 
 export interface KanbanColumn {
   id: string;
@@ -12,15 +13,15 @@ export interface KanbanColumn {
 }
 
 export function useProjectTasks(projectId: string) {
-  const { data, loading } = useUseCase<TaskFilter | undefined, Task[]>(
-    TYPES.IGetTasksUseCase,
-    {
-      initialInput: { projectId },
-      skip: !projectId,
-    },
-  );
+  const { data, loading } = useUseCase<
+    GetTasksInput | undefined,
+    PaginatedResult<Task>
+  >(TYPES.IGetTasksUseCase, {
+    initialInput: { filter: { projectId } },
+    skip: !projectId,
+  });
 
-  const tasks = data || [];
+  const tasks = data?.data || [];
 
   const columns: KanbanColumn[] = [
     {
@@ -49,5 +50,10 @@ export function useProjectTasks(projectId: string) {
     },
   ];
 
-  return { tasks, columns, loading };
+  return {
+    tasks,
+    columns,
+    meta: data?.meta || null,
+    loading,
+  };
 }

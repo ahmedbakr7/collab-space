@@ -22,9 +22,9 @@ async function DashboardLayoutContent({
   );
 
   const workspacesPromise = getAllWorkspacesUseCase
-    .execute(dashboardId)
-    .then((workspaces) =>
-      workspaces.map((w) => ({
+    .execute({ orgId: dashboardId })
+    .then((result) =>
+      result.data.map((w) => ({
         id: w.id,
         orgId: w.orgId,
         name: w.name,

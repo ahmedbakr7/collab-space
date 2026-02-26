@@ -4,19 +4,31 @@ import {
   TaskFilter,
 } from '../../application/ports/task.repository.port';
 import { Task } from '@repo/domain/src/task/entities/task.entity';
+import type { QueryOptions, PaginatedResult } from '@repo/domain';
 import { apiClient } from '@/features/shared/infrastructure/api-client';
+import { buildQueryParams } from '@/features/shared/infrastructure/query-params.builder';
 
 @injectable()
 export class TaskRepositoryAdapter implements TaskRepositoryPort {
-  async getTasks(filter?: TaskFilter): Promise<Task[]> {
+  async getTasks(
+    filter?: TaskFilter,
+    query?: QueryOptions,
+  ): Promise<PaginatedResult<Task>> {
     if (!filter?.projectId) {
-      return [];
+      return {
+        data: [],
+        meta: { page: 1, limit: 10, total: 0, totalPages: 0 },
+      };
     }
 
-    const tasks = await apiClient.get<Task[]>(
+    const result = await apiClient.get<PaginatedResult<Task>>(
       `/projects/${filter.projectId}/tasks`,
+      { params: buildQueryParams(query) },
     );
-    return tasks.map(this.mapToEntity);
+    return {
+      data: result.data.map(this.mapToEntity),
+      meta: result.meta,
+    };
   }
 
   private mapToEntity(data: any): Task {
