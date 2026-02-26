@@ -7,11 +7,13 @@ import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { Card, CardContent } from '@/shared/components/ui/card';
 import { Skeleton } from '@/shared/components/ui/skeleton';
 import { Grid3x3, List, FolderKanban } from 'lucide-react';
+import { Workspace } from '@repo/domain/src/workspace/entities/workspace.entity';
 import { ProjectStatus } from '@repo/domain/src/project/entities/project.entity';
 
 interface ProjectsViewProps {
   projects: ProjectUI[];
   loading: boolean;
+  workspaces: Workspace[];
   onNavigate: (path: string) => void;
 }
 
@@ -25,9 +27,11 @@ const PROJECT_STATUSES: ProjectStatus[] = [
 export function ProjectsView({
   projects,
   loading,
+  workspaces,
   onNavigate,
 }: ProjectsViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
@@ -36,9 +40,11 @@ export function ProjectsView({
     const matchesSearch =
       project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       project.description?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesWorkspace =
+      selectedWorkspaceId === 'all' || project.workspaceId === selectedWorkspaceId;
     const matchesStatus =
       selectedStatus === 'all' || project.status === selectedStatus;
-    return matchesSearch && matchesStatus;
+    return matchesSearch && matchesWorkspace && matchesStatus;
   });
 
   if (loading) {
@@ -80,6 +86,17 @@ export function ProjectsView({
           placeholder="Search projects..."
           className="flex-1"
           delay={300}
+        />
+
+        <SimpleSelect
+          value={selectedWorkspaceId}
+          onValueChange={(value) => value && setSelectedWorkspaceId(value)}
+          options={[
+            { value: 'all', label: 'All Workspaces' },
+            ...workspaces.map((ws) => ({ value: ws.id, label: ws.name })),
+          ]}
+          placeholder="All Workspaces"
+          selectClassName="w-full sm:w-48"
         />
 
         <SimpleSelect
