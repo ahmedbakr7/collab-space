@@ -13,6 +13,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+SelectGroup
 } from '@/shared/components/ui/select';
 import {
   Field,
@@ -91,7 +92,11 @@ export function FormSelect<
             </SelectTrigger>
             <SelectContent>
               {options.map((option) => (
-                <SelectItem key={option.value} value={option.value} label={option.label}>
+                <SelectItem
+                  key={option.value}
+                  value={option.value}
+                  label={option.label}
+                >
                   {option.label}
                 </SelectItem>
               ))}
@@ -150,6 +155,7 @@ export function SimpleSelect({
         </label>
       )}
       <Select
+        items={options}
         value={value}
         onValueChange={(val) => {
           if (val !== null) onValueChange(val);
@@ -160,11 +166,17 @@ export function SimpleSelect({
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
-          {options.map((option) => (
-            <SelectItem key={option.value} value={option.value} label={option.label}>
-              {option.label}
-            </SelectItem>
-          ))}
+          <SelectGroup>
+            {options.map((option) => (
+              <SelectItem
+                key={option.value}
+                value={option.value}
+                label={option.label}
+              >
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
         </SelectContent>
       </Select>
     </div>

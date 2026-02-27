@@ -1,7 +1,7 @@
 'use client';
 
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { useState, use } from 'react';
+import { useState, use, useMemo } from 'react';
 import { Download, Plus, CheckSquare } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { TaskDetailDrawer } from '@/features/project/presentation/components/task-detail-drawer';
@@ -12,21 +12,64 @@ import { useRouter } from 'next/navigation';
 import { useTasks } from '@/features/task/presentation/hooks/use-tasks.hook';
 import { DataTableSkeleton } from '@/shared/components/data-table/data-table-skeleton';
 import TableComponent from './table-component';
+import { useQueryState, parseAsInteger } from 'nuqs';
+import {
+  getSortingStateParser,
+  getFiltersStateParser,
+} from '@/shared/lib/parsers';
+import type { QueryOptions, FilterOption } from '@repo/domain';
+
+// Map internal datatable operators to Domain QueryOptions operators
+function mapOperator(op: string): FilterOption['operator'] {
+  switch (op) {
+    case 'eq':
+    case 'inArray':
+    case 'gte':
+    case 'lte':
+      return op as FilterOption['operator'];
+    default:
+      return 'eq';
+  }
+}
 
 interface TasksPageProps {
   params: Promise<{ dashboardId: string }>;
 }
 
-export default function TasksPage({ params }: TasksPageProps) {
-  const { dashboardId } = use(params);
+function TasksPageContent({ dashboardId }: { dashboardId: string }) {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const router = useRouter();
 
-  const { tasks, loading } = useTasks(dashboardId);
+  // Read URL state via nuqs
+  const [page] = useQueryState('page', parseAsInteger.withDefault(1));
+  const [perPage] = useQueryState('perPage', parseAsInteger.withDefault(10));
+  const [sort] = useQueryState('sort', getSortingStateParser<Task>());
+  const [filters] = useQueryState('filters', getFiltersStateParser<Task>());
 
-  // Calculate stats
+  // Build domain QueryOptions
+  const queryOptions = useMemo<QueryOptions>(() => {
+    return {
+      pagination: {
+        page,
+        limit: perPage,
+      },
+      sort: sort?.map((s) => ({
+        field: s.id,
+        direction: s.desc ? 'desc' : 'asc',
+      })),
+      filters: filters?.map((f) => ({
+        field: f.id,
+        value: f.value,
+        operator: mapOperator(f.operator),
+      })),
+    };
+  }, [page, perPage, sort, filters]);
+
+  const { tasks, meta, loading } = useTasks(dashboardId, queryOptions);
+
+  // Calculate local stats based on the returned data and meta
   const stats = {
-    total: tasks.length,
+    total: meta?.total ?? tasks.length,
     todo: tasks.filter((t) => t.status === TaskStatus.TODO).length,
     inProgress: tasks.filter((t) => t.status === TaskStatus.IN_PROGRESS).length,
     review: tasks.filter((t) => t.status === TaskStatus.REVIEW).length,
@@ -44,8 +87,7 @@ export default function TasksPage({ params }: TasksPageProps) {
               <Skeleton className="h-4 w-48" />
             ) : (
               <>
-                {stats.total} {stats.total === 1 ? 'task' : 'tasks'} across all
-                workspaces
+                {stats.total} {stats.total === 1 ? 'task' : 'tasks'} found
               </>
             )}
           </div>
@@ -141,12 +183,11 @@ export default function TasksPage({ params }: TasksPageProps) {
           withViewOptions
         />
       ) : (
-        <NuqsAdapter>
-          <TableComponent
-            filteredTasks={tasks}
-            setSelectedTask={setSelectedTask}
-          />
-        </NuqsAdapter>
+        <TableComponent
+          filteredTasks={tasks}
+          pageCount={meta?.totalPages ?? -1}
+          setSelectedTask={setSelectedTask}
+        />
       )}
 
       {/* Task Detail Drawer */}
@@ -157,5 +198,15 @@ export default function TasksPage({ params }: TasksPageProps) {
         />
       )}
     </div>
+  );
+}
+
+export default function TasksPage({ params }: TasksPageProps) {
+  const { dashboardId } = use(params);
+
+  return (
+    <NuqsAdapter>
+      <TasksPageContent dashboardId={dashboardId} />
+    </NuqsAdapter>
   );
 }

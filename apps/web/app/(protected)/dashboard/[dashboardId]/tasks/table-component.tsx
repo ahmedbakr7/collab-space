@@ -1,18 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import type {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-} from '@tanstack/react-table';
-import {
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
+import type { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@/shared/components/ui/badge';
 import {
   Avatar,
@@ -34,6 +23,8 @@ import {
 import { DataTable } from '@/shared/components/data-table/data-table';
 import { DataTableColumnHeader } from '@/shared/components/data-table/data-table-column-header';
 import { DataTableToolbar } from '@/shared/components/data-table/data-table-toolbar';
+import { DataTableSortList } from '@/shared/components/data-table/data-table-sort-list';
+import { useDataTable } from '@/shared/hooks/use-data-table';
 
 // ── Status & Priority configs (exported for use in page.tsx stats) ──
 
@@ -323,49 +314,39 @@ function getColumns(onRowClick: (task: Task) => void): ColumnDef<Task>[] {
 
 interface TableComponentProps {
   filteredTasks: Task[];
+  pageCount: number;
   setSelectedTask: (task: Task) => void;
 }
 
 export default function TableComponent({
   filteredTasks,
+  pageCount,
   setSelectedTask,
 }: TableComponentProps) {
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  );
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-
   const columns = React.useMemo(
     () => getColumns(setSelectedTask),
     [setSelectedTask],
   );
 
-  const table = useReactTable({
+  const { table } = useDataTable({
     data: filteredTasks,
     columns,
-    defaultColumn: {
-      enableColumnFilter: false,
-    },
-    state: {
-      columnFilters,
-      sorting,
-      rowSelection: {},
-    },
-    onColumnFiltersChange: setColumnFilters,
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getRowId: (row) => row.id,
+    // Pass the total number of pages for the table
+    pageCount,
     initialState: {
-      pagination: { pageSize: 10, pageIndex: 0 },
+      sorting: [{ id: 'createdAt', desc: true }],
+      pagination: { pageIndex: 0, pageSize: 10 },
     },
+    shallow: false,
+    // Unique identifier for rows, can be used for unique row selection
+    getRowId: (row) => row.id,
   });
 
   return (
     <DataTable table={table}>
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table}>
+        <DataTableSortList table={table} />
+      </DataTableToolbar>
     </DataTable>
   );
 }
