@@ -12,8 +12,14 @@ import {
   Calendar,
   MessageSquare,
   Text,
-  AlertTriangle,
-  CircleDot,
+  // Priority Icons
+  ArrowDown,
+  ArrowRight,
+  ArrowUp,
+  // Status Icons
+  Circle,
+  Timer,
+  CheckCircle2,
 } from 'lucide-react';
 import {
   Task,
@@ -30,27 +36,36 @@ import { useDataTable } from '@/shared/hooks/use-data-table';
 
 export const statusConfig: Record<
   string,
-  { label: string; color: string; dotColor: string }
+  {
+    label: string;
+    color: string;
+    dotColor: string;
+    icon: React.ComponentType<{ className?: string }>;
+  }
 > = {
   [TaskStatus.TODO]: {
     label: 'To Do',
     color: 'bg-muted',
     dotColor: 'bg-muted-foreground',
+    icon: Circle,
   },
   [TaskStatus.IN_PROGRESS]: {
     label: 'In Progress',
     color: 'bg-chart-1',
     dotColor: 'bg-chart-1',
+    icon: Timer,
   },
   [TaskStatus.REVIEW]: {
     label: 'Review',
     color: 'bg-chart-4',
     dotColor: 'bg-chart-4',
+    icon: CheckCircle2,
   },
   [TaskStatus.DONE]: {
     label: 'Done',
     color: 'bg-chart-2',
     dotColor: 'bg-chart-2',
+    icon: CheckCircle2,
   },
 };
 
@@ -59,11 +74,16 @@ export const priorityConfig: Record<
   {
     label: string;
     variant: 'default' | 'destructive' | 'secondary' | 'outline';
+    icon: React.ComponentType<{ className?: string }>;
   }
 > = {
-  [TaskPriority.HIGH]: { label: 'High', variant: 'destructive' },
-  [TaskPriority.MEDIUM]: { label: 'Medium', variant: 'default' },
-  [TaskPriority.LOW]: { label: 'Low', variant: 'outline' },
+  [TaskPriority.HIGH]: { label: 'High', variant: 'destructive', icon: ArrowUp },
+  [TaskPriority.MEDIUM]: {
+    label: 'Medium',
+    variant: 'default',
+    icon: ArrowRight,
+  },
+  [TaskPriority.LOW]: { label: 'Low', variant: 'outline', icon: ArrowDown },
 };
 
 // ── Column definitions ──
@@ -131,7 +151,7 @@ function getColumns(onRowClick: (task: Task) => void): ColumnDef<Task>[] {
         placeholder: 'Search workspace...',
         variant: 'text' as const,
       },
-      enableColumnFilter: true,
+      enableColumnFilter: false,
       enableSorting: true,
       filterFn: (row, id, value) => {
         const rowValue = row.getValue(id) as string;
@@ -159,7 +179,7 @@ function getColumns(onRowClick: (task: Task) => void): ColumnDef<Task>[] {
         placeholder: 'Search project...',
         variant: 'text' as const,
       },
-      enableColumnFilter: true,
+      enableColumnFilter: false,
       enableSorting: true,
       filterFn: (row, id, value) => {
         const rowValue = row.getValue(id) as string;
@@ -188,12 +208,14 @@ function getColumns(onRowClick: (task: Task) => void): ColumnDef<Task>[] {
       },
       meta: {
         label: 'Status',
-        variant: 'select' as const,
-        icon: CircleDot,
-        options: Object.entries(statusConfig).map(([value, { label }]) => ({
-          label,
-          value,
-        })),
+        variant: 'multiSelect' as const,
+        options: Object.entries(statusConfig).map(
+          ([value, { label, icon }]) => ({
+            label,
+            value,
+            icon: icon as any,
+          }),
+        ),
       },
       enableColumnFilter: true,
       enableSorting: true,
@@ -220,12 +242,14 @@ function getColumns(onRowClick: (task: Task) => void): ColumnDef<Task>[] {
       },
       meta: {
         label: 'Priority',
-        variant: 'select' as const,
-        icon: AlertTriangle,
-        options: Object.entries(priorityConfig).map(([value, { label }]) => ({
-          label,
-          value,
-        })),
+        variant: 'multiSelect' as const,
+        options: Object.entries(priorityConfig).map(
+          ([value, { label, icon }]) => ({
+            label,
+            value,
+            icon: icon as any,
+          }),
+        ),
       },
       enableColumnFilter: true,
       enableSorting: true,
@@ -342,10 +366,17 @@ export default function TableComponent({
     getRowId: (row) => row.id,
   });
 
+  React.useEffect(() => {
+    console.log(
+      '[DEBUG] Table Component Rendered!',
+      table.getState().columnVisibility,
+    );
+  });
+
   return (
     <DataTable table={table}>
       <DataTableToolbar table={table}>
-        <DataTableSortList table={table} />
+        <DataTableSortList table={table} align="end" />
       </DataTableToolbar>
     </DataTable>
   );

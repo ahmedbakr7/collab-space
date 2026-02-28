@@ -7,10 +7,10 @@ import {
   Users,
   TrendingUp,
 } from 'lucide-react';
-import { Button } from '@/shared/components/ui/button';
 import { WorkspaceCard } from '@/features/dashboard/presentation/components/workspace-card';
 import { RecentActivity } from '@/features/dashboard/presentation/components/recent-activity';
 import { StatsCard } from '@/features/dashboard/presentation/components/stats-card';
+import { buttonVariants } from '@/shared/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/shared/config/routes';
 
@@ -74,15 +74,13 @@ export default function Dashboard({ dashboardId }: DashboardProps) {
             Here&apos;s what&apos;s happening with your projects today
           </p>
         </div>
-        <Button
-          nativeButton={false}
-          render={
-            <Link href={ROUTES.DASHBOARD.WORKSPACES.CREATE(dashboardId)}>
-              <Plus className="w-4 h-4 mr-2" />
-              New workspace
-            </Link>
-          }
-        ></Button>
+        <Link
+          href={ROUTES.DASHBOARD.WORKSPACES.CREATE(dashboardId)}
+          className={buttonVariants()}
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          New workspace
+        </Link>
       </div>
 
       {/* Stats */}

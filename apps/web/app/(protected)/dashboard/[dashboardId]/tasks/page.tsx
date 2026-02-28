@@ -3,34 +3,24 @@
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { useState, use, useMemo } from 'react';
 import { Download, Plus, CheckSquare } from 'lucide-react';
-import { Button } from '@/shared/components/ui/button';
+import { Button, buttonVariants } from '@/shared/components/ui/button';
+import { ROUTES } from '@/shared/config/routes';
+import Link from 'next/link';
 import { TaskDetailDrawer } from '@/features/project/presentation/components/task-detail-drawer';
 import { Task, TaskStatus } from '@repo/domain/src/task/entities/task.entity';
 import { Card, CardContent } from '@/shared/components/ui/card';
 import { Skeleton } from '@/shared/components/ui/skeleton';
-import { useRouter } from 'next/navigation';
 import { useTasks } from '@/features/task/presentation/hooks/use-tasks.hook';
 import { DataTableSkeleton } from '@/shared/components/data-table/data-table-skeleton';
 import TableComponent from './table-component';
-import { useQueryState, parseAsInteger } from 'nuqs';
 import {
-  getSortingStateParser,
-  getFiltersStateParser,
-} from '@/shared/lib/parsers';
+  useQueryState,
+  parseAsInteger,
+  parseAsString,
+  parseAsArrayOf,
+} from 'nuqs';
+import { getSortingStateParser } from '@/shared/lib/parsers';
 import type { QueryOptions, FilterOption } from '@repo/domain';
-
-// Map internal datatable operators to Domain QueryOptions operators
-function mapOperator(op: string): FilterOption['operator'] {
-  switch (op) {
-    case 'eq':
-    case 'inArray':
-    case 'gte':
-    case 'lte':
-      return op as FilterOption['operator'];
-    default:
-      return 'eq';
-  }
-}
 
 interface TasksPageProps {
   params: Promise<{ dashboardId: string }>;
@@ -38,16 +28,37 @@ interface TasksPageProps {
 
 function TasksPageContent({ dashboardId }: { dashboardId: string }) {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const router = useRouter();
 
   // Read URL state via nuqs
   const [page] = useQueryState('page', parseAsInteger.withDefault(1));
   const [perPage] = useQueryState('perPage', parseAsInteger.withDefault(10));
   const [sort] = useQueryState('sort', getSortingStateParser<Task>());
-  const [filters] = useQueryState('filters', getFiltersStateParser<Task>());
+
+  // Read standard filter columns individually
+  const [title] = useQueryState('title', parseAsString.withDefault(''));
+  const [status] = useQueryState(
+    'status',
+    parseAsArrayOf(parseAsString).withDefault([]),
+  );
+  const [priority] = useQueryState(
+    'priority',
+    parseAsArrayOf(parseAsString).withDefault([]),
+  );
 
   // Build domain QueryOptions
   const queryOptions = useMemo<QueryOptions>(() => {
+    const activeFilters: FilterOption[] = [];
+    if (title)
+      activeFilters.push({ field: 'title', value: title, operator: 'eq' });
+    if (status && status.length > 0)
+      activeFilters.push({ field: 'status', value: status, operator: 'in' });
+    if (priority && priority.length > 0)
+      activeFilters.push({
+        field: 'priority',
+        value: priority,
+        operator: 'in',
+      });
+
     return {
       pagination: {
         page,
@@ -57,13 +68,9 @@ function TasksPageContent({ dashboardId }: { dashboardId: string }) {
         field: s.id,
         direction: s.desc ? 'desc' : 'asc',
       })),
-      filters: filters?.map((f) => ({
-        field: f.id,
-        value: f.value,
-        operator: mapOperator(f.operator),
-      })),
+      filters: activeFilters.length > 0 ? activeFilters : undefined,
     };
-  }, [page, perPage, sort, filters]);
+  }, [page, perPage, sort, title, status, priority]);
 
   const { tasks, meta, loading } = useTasks(dashboardId, queryOptions);
 
@@ -97,10 +104,13 @@ function TasksPageContent({ dashboardId }: { dashboardId: string }) {
             <Download className="w-4 h-4 mr-2" />
             Export
           </Button>
-          <Button onClick={() => router.push('/projects')}>
+          <Link
+            href={ROUTES.DASHBOARD.TASKS.CREATE(dashboardId)}
+            className={buttonVariants()}
+          >
             <Plus className="w-4 h-4 mr-2" />
             New Task
-          </Button>
+          </Link>
         </div>
       </div>
 

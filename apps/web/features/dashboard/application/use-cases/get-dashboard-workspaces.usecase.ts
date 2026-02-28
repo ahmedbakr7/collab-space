@@ -1,7 +1,5 @@
-import {
-  DashboardRepositoryPort,
-  DashboardWorkspace,
-} from '../ports/dashboard.repository.port';
+import { DashboardRepositoryPort } from '../ports/dashboard.repository.port';
+import { DashboardWorkspace } from '../../domain/models/dashboard-data';
 
 export class GetDashboardWorkspacesUseCase {
   constructor(private readonly repository: DashboardRepositoryPort) {}

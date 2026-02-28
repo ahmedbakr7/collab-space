@@ -22,6 +22,7 @@ export default function ProjectsPage({ params }: ProjectsPageProps) {
       projects={projects}
       loading={workspacesLoading || projectsLoading}
       workspaces={workspaces}
+      dashboardId={dashboardId}
       onNavigate={(path) => router.push(path)}
     />
   );

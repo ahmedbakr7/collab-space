@@ -20,7 +20,6 @@ const priorityVariants: Record<
   [TaskPriority.LOW]: 'outline',
   [TaskPriority.MEDIUM]: 'secondary',
   [TaskPriority.HIGH]: 'default',
-  [TaskPriority.URGENT]: 'destructive',
 };
 
 export function TaskCard({ task, onClick }: TaskCardProps) {
@@ -54,7 +53,7 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
               key={index}
               className="text-xs px-2 py-0.5 bg-secondary text-secondary-foreground rounded-md"
             >
-              {tag}
+              {typeof tag === 'string' ? tag : tag.name}
             </span>
           ))}
         </div>

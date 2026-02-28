@@ -9,11 +9,16 @@ import { Skeleton } from '@/shared/components/ui/skeleton';
 import { Grid3x3, List, FolderKanban } from 'lucide-react';
 import { Workspace } from '@repo/domain/src/workspace/entities/workspace.entity';
 import { ProjectStatus } from '@repo/domain/src/project/entities/project.entity';
+import Link from 'next/link';
+import { ROUTES } from '@/shared/config/routes';
+import { buttonVariants } from '@/shared/components/ui/button';
+import { Plus } from 'lucide-react';
 
 interface ProjectsViewProps {
   projects: ProjectUI[];
   loading: boolean;
   workspaces: Workspace[];
+  dashboardId: string;
   onNavigate: (path: string) => void;
 }
 
@@ -28,6 +33,7 @@ export function ProjectsView({
   projects,
   loading,
   workspaces,
+  dashboardId,
   onNavigate,
 }: ProjectsViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -72,11 +78,22 @@ export function ProjectsView({
   return (
     <div className="p-8 space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="mb-2 text-2xl font-bold tracking-tight">All Projects</h1>
-        <p className="text-muted-foreground">
-          Manage and track all projects across your workspaces
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="mb-2 text-2xl font-bold tracking-tight">
+            All Projects
+          </h1>
+          <p className="text-muted-foreground">
+            Manage and track all projects across your workspaces
+          </p>
+        </div>
+        <Link
+          href={ROUTES.DASHBOARD.PROJECTS.CREATE(dashboardId)}
+          className={buttonVariants()}
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          New Project
+        </Link>
       </div>
 
       {/* Filters */}
@@ -115,19 +132,21 @@ export function ProjectsView({
           selectClassName="w-full sm:w-48"
         />
 
-        <Tabs
-          value={viewMode}
-          onValueChange={(v) => setViewMode(v as 'grid' | 'list')}
-        >
-          <TabsList>
-            <TabsTrigger value="grid">
-              <Grid3x3 className="w-4 h-4" />
-            </TabsTrigger>
-            <TabsTrigger value="list">
-              <List className="w-4 h-4" />
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <div className="flex items-center gap-4">
+          <Tabs
+            value={viewMode}
+            onValueChange={(v) => setViewMode(v as 'grid' | 'list')}
+          >
+            <TabsList>
+              <TabsTrigger value="grid">
+                <Grid3x3 className="w-4 h-4" />
+              </TabsTrigger>
+              <TabsTrigger value="list">
+                <List className="w-4 h-4" />
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
       </div>
 
       {/* Stats */}

@@ -45,6 +45,7 @@ export const MOCK_PROJECTS: Project[] = [
     workspaceId: '1', // Product Team
     name: 'Product Roadmap Q4',
     description: 'Q4 2024 feature planning and development roadmap',
+    status: 'active',
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -53,6 +54,7 @@ export const MOCK_PROJECTS: Project[] = [
     workspaceId: '2', // Engineering
     name: 'Backend Migration',
     description: 'Migrating legacy services to microservices',
+    status: 'active',
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -61,6 +63,7 @@ export const MOCK_PROJECTS: Project[] = [
     workspaceId: '1', // Product Team
     name: 'Website Redesign',
     description: 'New corporate website design',
+    status: 'active',
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -80,6 +83,9 @@ export const MOCK_TASKS: Task[] = [
     assignedToId: 'u1',
     createdAt: new Date(),
     updatedAt: new Date(),
+    tags: [],
+    comments: [],
+    attachments: [],
   },
   {
     id: '2',
@@ -93,6 +99,9 @@ export const MOCK_TASKS: Task[] = [
     assignedToId: 'u2',
     createdAt: new Date(),
     updatedAt: new Date(),
+    tags: [],
+    comments: [],
+    attachments: [],
   },
   {
     id: '3',
@@ -106,6 +115,9 @@ export const MOCK_TASKS: Task[] = [
     assignedToId: 'u3',
     createdAt: new Date(),
     updatedAt: new Date(),
+    tags: [],
+    comments: [],
+    attachments: [],
   },
   // Adding Project 4 for Auth System
 ];
@@ -116,6 +128,7 @@ MOCK_PROJECTS.push({
   workspaceId: '2', // Engineering
   name: 'Authentication System',
   description: 'Auth system overhaul',
+  status: 'active',
   createdAt: new Date(),
   updatedAt: new Date(),
 });

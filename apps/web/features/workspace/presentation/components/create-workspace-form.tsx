@@ -38,11 +38,12 @@ export function CreateWorkspaceForm() {
   }
 
   return (
-    <Form<CreateOrgValues>
-      resolver={zodResolver(createOrgSchema)}
+    <Form
+      resolver={zodResolver(createOrgSchema) as any}
       defaultValues={{
         name: '',
         description: '',
+        visibility: 'private',
       }}
       onSubmit={onSubmit}
       className="space-y-6"

@@ -55,12 +55,12 @@ import {
   SortableItemHandle,
   SortableOverlay,
 } from '@/shared/components/ui/sortable';
-import { dataTableConfig } from '@/config/data-table';
-import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
+import { dataTableConfig } from '@/shared/config/data-table';
+import { useDebouncedCallback } from '@/shared/hooks/use-debounced-callback';
 import {
   getDefaultFilterOperator,
   getFilterOperators,
-} from '@/config/data-table';
+} from '@/shared/lib/data-table';
 import { formatDate } from '@/shared/lib/format';
 import { generateId } from '@/shared/lib/id';
 import { getFiltersStateParser } from '@/shared/lib/parsers';
@@ -69,7 +69,7 @@ import type {
   ExtendedColumnFilter,
   FilterOperator,
   JoinOperator,
-} from '@/types/data-table';
+} from '@/shared/types/data-table';
 
 const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;
@@ -416,7 +416,9 @@ function DataTableFilterItem<TData>({
         ) : index === 1 ? (
           <Select
             value={joinOperator}
-            onValueChange={(value: JoinOperator) => setJoinOperator(value)}
+            onValueChange={(value) => {
+              if (value) setJoinOperator(value as JoinOperator);
+            }}
           >
             <SelectTrigger
               aria-label="Select join operator"
@@ -428,7 +430,6 @@ function DataTableFilterItem<TData>({
             </SelectTrigger>
             <SelectContent
               id={joinOperatorListboxId}
-              position="popper"
               className="min-w-(--radix-select-trigger-width) lowercase"
             >
               {dataTableConfig.joinOperators.map((joinOperator) => (
@@ -648,11 +649,13 @@ function onFilterInputRender<TData>({
           open={showValueSelector}
           onOpenChange={setShowValueSelector}
           value={filter.value}
-          onValueChange={(value) =>
-            onFilterUpdate(filter.filterId, {
-              value,
-            })
-          }
+          onValueChange={(value) => {
+            if (value !== null) {
+              onFilterUpdate(filter.filterId, {
+                value,
+              });
+            }
+          }}
         >
           <SelectTrigger
             id={inputId}

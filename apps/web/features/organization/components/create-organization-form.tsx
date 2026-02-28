@@ -33,14 +33,14 @@ export function CreateOrganizationForm({
   };
 
   return (
-    <Form<CreateOrgValues>
+    <Form
       onSubmit={handleSubmit}
       defaultValues={{
         name: '',
         description: '',
-        visibility: 'private' as 'private' | 'public',
+        visibility: 'private',
       }}
-      resolver={zodResolver(createOrgSchema)}
+      resolver={zodResolver(createOrgSchema) as any}
       fieldGroupClassName="gap-2"
     >
       {(form) => (

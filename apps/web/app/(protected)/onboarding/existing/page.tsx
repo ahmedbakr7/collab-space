@@ -7,6 +7,8 @@ export default function ExistingOrganizationsPage() {
   const router = useRouter();
 
   return (
-    <ExistingOrganizationsList onBack={() => router.push('/onboarding')} />
+    <>
+      <ExistingOrganizationsList onBack={() => router.push('/onboarding')} />
+    </>
   );
 }

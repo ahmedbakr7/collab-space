@@ -94,15 +94,21 @@ export function TaskDetailDrawer({ task, onClose }: TaskDetailDrawerProps) {
                 <User className="w-4 h-4" />
                 <span>Assignee</span>
               </label>
-              <div className="flex items-center space-x-2 p-2 bg-secondary rounded-lg">
-                <Avatar className="w-6 h-6">
-                  <AvatarImage src={task.assignee.avatar} />
-                  <AvatarFallback>
-                    {task.assignee.name.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-sm">{task.assignee.name}</span>
-              </div>
+              {task.assignee ? (
+                <div className="flex items-center space-x-2 p-2 bg-secondary rounded-lg">
+                  <Avatar className="w-6 h-6">
+                    <AvatarImage src={task.assignee.avatarUrl || undefined} />
+                    <AvatarFallback>
+                      {task.assignee.name.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm">{task.assignee.name}</span>
+                </div>
+              ) : (
+                <div className="p-2 bg-secondary/50 rounded-lg text-sm text-muted-foreground">
+                  Unassigned
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -111,7 +117,7 @@ export function TaskDetailDrawer({ task, onClose }: TaskDetailDrawerProps) {
                 <span>Due Date</span>
               </label>
               <div className="p-2 bg-secondary rounded-lg text-sm">
-                {task.dueDate.toLocaleDateString()}
+                {task.dueDate?.toLocaleDateString() || 'No due date'}
               </div>
             </div>
 
@@ -167,7 +173,7 @@ export function TaskDetailDrawer({ task, onClose }: TaskDetailDrawerProps) {
               <div className="flex flex-wrap gap-2">
                 {task.tags.map((tag, index) => (
                   <Badge key={index} variant="secondary">
-                    {tag}
+                    {typeof tag === 'string' ? tag : tag.name}
                   </Badge>
                 ))}
               </div>
