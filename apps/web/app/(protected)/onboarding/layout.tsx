@@ -42,7 +42,7 @@ export default function OnboardingLayout({
           </p>
         </div>
 
-        <Card className="border-border rounded-2xl shadow-sm overflow-hidden">
+        <Card className="border-border rounded-2xl shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
           <CardContent className="p-4">{children}</CardContent>
         </Card>
 

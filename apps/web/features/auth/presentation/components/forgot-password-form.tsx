@@ -26,7 +26,7 @@ export function ForgotPasswordForm() {
 
   if (isSubmitted) {
     return (
-      <div className="w-full max-w-md text-center">
+      <div className="w-full max-w-md text-center animate-in fade-in zoom-in-95 duration-500">
         <div className="mb-6 inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10">
           <Mail className="w-8 h-8 text-primary" />
         </div>
@@ -75,8 +75,12 @@ export function ForgotPasswordForm() {
               className="space-y-2"
             />
 
-            <Button type="submit" className="w-full">
-              Send reset link
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting ? 'Sending...' : 'Send reset link'}
             </Button>
           </>
         )}
