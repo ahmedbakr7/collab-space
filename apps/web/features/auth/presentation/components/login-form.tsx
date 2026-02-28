@@ -2,6 +2,7 @@
 
 import { loginSchema, LoginValues } from '@repo/shared-schemas';
 import { useRouter } from 'next/navigation';
+import { useTransition } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Mail, Lock } from 'lucide-react';
 import Link from 'next/link';
@@ -16,6 +17,7 @@ import { toast } from 'sonner';
 export function LoginForm() {
   const router = useRouter();
   const { login } = useLogin();
+  const [isPending, startTransition] = useTransition();
 
   const handleSubmit = async (values: LoginValues) => {
     const loginPromise = login(values.email, values.password);
@@ -28,7 +30,9 @@ export function LoginForm() {
 
     try {
       await loginPromise;
-      router.push(ROUTES.ONBOARDING.ROOT);
+      startTransition(() => {
+        router.push(ROUTES.ONBOARDING.ROOT);
+      });
     } catch (error) {
       console.error(error);
     }
@@ -90,8 +94,12 @@ export function LoginForm() {
               </Link>
             </div>
 
-            <Button type="submit" className="w-full">
-              Sign in
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={form.formState.isSubmitting || isPending}
+            >
+              {form.formState.isSubmitting || isPending ? 'Signing in...' : 'Sign in'}
             </Button>
           </>
         )}

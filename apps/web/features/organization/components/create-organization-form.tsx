@@ -4,6 +4,7 @@ import { Button } from '@/shared/components/ui/button';
 import { Form } from '@/shared/components/form/form';
 import FormInput from '@/shared/components/form/input';
 import { Building2 } from 'lucide-react';
+import { useTransition } from 'react';
 import { useCreateOrganization } from '../presentation/hooks/use-create-organization';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/shared/config/routes';
@@ -19,12 +20,15 @@ export function CreateOrganizationForm({
 }: CreateOrganizationFormProps) {
   const { createOrganization, isLoading } = useCreateOrganization();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const handleSubmit = async (values: CreateOrgValues) => {
     try {
       await createOrganization(values);
       // Navigate to dashboard after successful creation
-      router.push(ROUTES.DASHBOARD.ROOT);
+      startTransition(() => {
+        router.push(ROUTES.DASHBOARD.ROOT);
+      });
       onCreateOrganization?.(values);
     } catch (error) {
       // Error is already handled by the hook with toast
@@ -76,8 +80,8 @@ export function CreateOrganizationForm({
             ]}
           />
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? 'Creating...' : 'Create Organization'}
+          <Button type="submit" className="w-full" disabled={isLoading || form.formState.isSubmitting || isPending}>
+            {isLoading || form.formState.isSubmitting || isPending ? 'Creating...' : 'Create Organization'}
           </Button>
         </>
       )}

@@ -5,17 +5,20 @@ import { Button } from '@/shared/components/ui/button';
 
 interface OrganizationModePickerProps {
   onModeSelect: (mode: 'create' | 'join' | 'existing') => void;
+  isPending?: boolean;
 }
 
 export function OrganizationModePicker({
   onModeSelect,
+  isPending,
 }: OrganizationModePickerProps) {
   return (
     <div className="grid gap-2 animate-in fade-in duration-300">
       <Button
         variant="outline"
         onClick={() => onModeSelect('create')}
-        className="group h-auto w-full justify-start items-start relative overflow-hidden rounded-xl border-2 hover:border-primary p-4 bg-background hover:bg-muted/50"
+        disabled={isPending}
+        className="group h-auto w-full justify-start items-start relative overflow-hidden rounded-xl border-2 hover:border-primary p-4 bg-background hover:bg-muted/50 disabled:opacity-50"
       >
         <div className="flex items-start gap-4 text-left">
           <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors shrink-0">
@@ -36,7 +39,8 @@ export function OrganizationModePicker({
       <Button
         variant="outline"
         onClick={() => onModeSelect('join')}
-        className="group h-auto w-full justify-start items-start relative overflow-hidden rounded-xl border-2 hover:border-primary p-4 bg-background hover:bg-muted/50"
+        disabled={isPending}
+        className="group h-auto w-full justify-start items-start relative overflow-hidden rounded-xl border-2 hover:border-primary p-4 bg-background hover:bg-muted/50 disabled:opacity-50"
       >
         <div className="flex items-start gap-4 text-left">
           <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors shrink-0">
@@ -57,7 +61,8 @@ export function OrganizationModePicker({
       <Button
         variant="outline"
         onClick={() => onModeSelect('existing')}
-        className="group h-auto w-full justify-start items-start relative overflow-hidden rounded-xl border-2 hover:border-primary p-4 bg-background hover:bg-muted/50"
+        disabled={isPending}
+        className="group h-auto w-full justify-start items-start relative overflow-hidden rounded-xl border-2 hover:border-primary p-4 bg-background hover:bg-muted/50 disabled:opacity-50"
       >
         <div className="flex items-start gap-4 text-left">
           <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors shrink-0">

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowRight, Building2, ArrowLeft } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { ScrollArea } from '@/shared/components/ui/scroll-area';
+import { useTransition } from 'react';
 import { ROUTES } from '@/shared/config/routes';
 import { useOrganizations } from '../presentation/hooks/use-organizations';
 
@@ -16,9 +17,12 @@ export function ExistingOrganizationsList({
 }: ExistingOrganizationsListProps) {
   const router = useRouter();
   const { organizations, isLoading } = useOrganizations();
+  const [isPending, startTransition] = useTransition();
 
   const handleOrgClick = (orgId: string) => {
-    router.push(ROUTES.DASHBOARD.HOME(orgId));
+    startTransition(() => {
+      router.push(ROUTES.DASHBOARD.HOME(orgId));
+    });
   };
 
   if (isLoading) {
@@ -53,7 +57,8 @@ export function ExistingOrganizationsList({
               <button
                 key={org.id}
                 onClick={() => handleOrgClick(org.id)}
-                className="w-full group relative overflow-hidden rounded-xl border border-border hover:border-primary transition-all p-4 bg-background hover:bg-accent/40 text-left"
+                disabled={isPending}
+                className="w-full group relative overflow-hidden rounded-xl border border-border hover:border-primary transition-all p-4 bg-background hover:bg-accent/40 text-left disabled:opacity-50"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors shrink-0">

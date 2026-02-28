@@ -2,6 +2,7 @@
 
 import { signUpSchema, SignUpValues } from '@repo/shared-schemas';
 import { useRouter } from 'next/navigation';
+import { useTransition } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { User, Mail, Lock, Briefcase } from 'lucide-react';
 import Link from 'next/link';
@@ -16,12 +17,15 @@ import { toast } from 'sonner';
 export function SignUpForm() {
   const router = useRouter();
   const { signup } = useSignup();
+  const [isPending, startTransition] = useTransition();
 
   const handleSubmit = async (values: SignUpValues) => {
     try {
       await signup(values.email, values.password, values.name);
       toast.success('Account created successfully! Please check your email.');
-      router.push(ROUTES.ONBOARDING.ROOT);
+      startTransition(() => {
+        router.push(ROUTES.ONBOARDING.ROOT);
+      });
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : 'Failed to create account',
@@ -112,8 +116,12 @@ export function SignUpForm() {
                 }
               />
 
-              <Button type="submit" className="w-full">
-                Create account
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={form.formState.isSubmitting || isPending}
+              >
+                {form.formState.isSubmitting || isPending ? 'Creating account...' : 'Create account'}
               </Button>
             </div>
           </>

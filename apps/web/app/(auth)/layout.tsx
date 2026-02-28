@@ -6,7 +6,7 @@ export default function AuthLayout({
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-linear-to-br from-primary via-primary to-primary p-12 flex-col justify-between relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-linear-to-br from-primary via-primary/95 to-primary/80 p-12 flex-col justify-between relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-primary-foreground/[0.05] bg-size-[32px_32px]" />
         <div className="relative z-10">
           <div className="flex items-center space-x-3 mb-12">
@@ -57,7 +57,7 @@ export default function AuthLayout({
 
       {/* Right Side - Auth Forms */}
       <div className="flex-1 flex items-center justify-center p-8 bg-background">
-        <div className="w-full max-w-md">{children}</div>
+        <div className="w-full max-w-md animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">{children}</div>
       </div>
     </div>
   );
