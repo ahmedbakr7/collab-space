@@ -32,9 +32,9 @@ Status of features in `apps/web/features` following Clean Architecture.
 
 - **Location**: `src/features/project`
 - **Layers**:
-  - `presentation`: Components (`ProjectsView`, `ProjectsList`, `ProjectCard`) and Hooks (`useProjects`) refactored to use DI. Uses `ProjectUI` model and `ProjectUIMapper`.
-  - `application`: Use Cases (`GetProjectsByWorkspaceUseCase`) and Ports (`ProjectRepositoryPort`) DI-ready.
-  - `infrastructure`: Adapters (`ProjectRepositoryAdapter`) registered in DI. Repository and Entities updated to support `status`.
+  - `presentation`: Components (`ProjectsView`, `ProjectsList`, `ProjectCard`, `CreateProjectForm`) and Hooks (`useProjects`, `useCreateProject`) refactored to use DI. Uses `ProjectUI` model and `ProjectUIMapper`.
+  - `application`: Use Cases (`GetProjectsByWorkspaceUseCase`, `CreateProjectUseCase`) and Ports (`ProjectRepositoryPort`) DI-ready. Zod schemas and DTOs moved to `@repo/shared-schemas` and `@repo/domain` packages.
+  - `infrastructure`: Adapters (`ProjectRepositoryAdapter`) registered in DI. Repository and Entities updated to support `status`. Added `createProject` to adapter.
 
 ### `shared`
 
@@ -46,16 +46,16 @@ Status of features in `apps/web/features` following Clean Architecture.
 
 - **Location**: `src/features/tasks` (and `src/features/task`)
 - **Layers**:
-  - `presentation`: Hooks (`useProjectTasks`) refactored to use DI
-  - `application`: Use Cases (`GetTasksUseCase`) DI-ready
-  - `infrastructure`: Adapters (`InMemoryTaskRepository`) registered in DI
+  - `presentation`: Hooks (`useProjectTasks`, `useCreateTask`) and Components (`CreateTaskForm`) refactored to use DI
+  - `application`: Use Cases (`GetTasksUseCase`, `CreateTaskUseCase`) and Ports DI-ready. Zod schemas and DTOs moved to `@repo/shared-schemas` and `@repo/domain` packages.
+  - `infrastructure`: Adapters (`InMemoryTaskRepository`, `TaskRepositoryAdapter`) registered in DI. Added `createTask` to adapter.
 
 ### `workspace`
 
 - **Location**: `src/features/workspace`
 - **Layers**:
-  - `presentation`: Components (Refactored, Sidebar connected)
-  - `application`: Use Cases (`GetAllWorkspacesUseCase`) fetches by orgId from route params
+  - `presentation`: Components (`CreateWorkspaceForm`, Refactored, Sidebar connected) and Hooks (`useCreateWorkspace`).
+  - `application`: Use Cases (`GetAllWorkspacesUseCase`, `CreateWorkspaceUseCase`) fetches by orgId from route params
   - `infrastructure`: Adapters (`WorkspaceRepositoryAdapter`) registered in Server Container
 
 ## Next Steps

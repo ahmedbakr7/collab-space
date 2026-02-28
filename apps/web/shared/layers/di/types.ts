@@ -18,6 +18,7 @@ export const TYPES = {
   // Project Feature
   IProjectRepository: Symbol.for('IProjectRepository'),
   IGetProjectsByWorkspaceUseCase: Symbol.for('IGetProjectsByWorkspaceUseCase'),
+  ICreateProjectUseCase: Symbol.for('ICreateProjectUseCase'),
 
   // Workspace Feature
   IWorkspaceRepository: Symbol.for('IWorkspaceRepository'),
@@ -26,6 +27,7 @@ export const TYPES = {
   // Task Feature
   ITaskRepository: Symbol.for('ITaskRepository'),
   IGetTasksUseCase: Symbol.for('IGetTasksUseCase'),
+  ICreateTaskUseCase: Symbol.for('ICreateTaskUseCase'),
 
   // Dashboard Feature
   IDashboardRepository: Symbol.for('IDashboardRepository'),

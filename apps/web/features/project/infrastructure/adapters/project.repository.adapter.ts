@@ -1,7 +1,8 @@
 import { injectable } from 'tsyringe';
 import { ProjectRepositoryPort } from '../../application/ports/project.repository.port';
+import { Project } from '@repo/domain/src/project/entities/project.entity';
+import { CreateProjectDTO } from '@repo/domain';
 import {
-  Project,
   ProjectStatus,
 } from '@repo/domain/src/project/entities/project.entity';
 import type { QueryOptions, PaginatedResult } from '@repo/domain';
@@ -45,6 +46,11 @@ export class ProjectRepositoryAdapter implements ProjectRepositoryPort {
     } catch (error) {
       return null;
     }
+  }
+
+  async createProject(data: { name: string; description?: string; workspaceId: string }): Promise<Project> {
+    const result = await apiClient.post<Project>('/projects', data);
+    return this.mapToEntity(result);
   }
 
   private mapToEntity(data: any): Project {

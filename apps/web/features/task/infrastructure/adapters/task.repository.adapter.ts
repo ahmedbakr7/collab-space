@@ -4,6 +4,7 @@ import {
   TaskFilter,
 } from '../../application/ports/task.repository.port';
 import { Task } from '@repo/domain/src/task/entities/task.entity';
+import { CreateTaskDTO } from '@repo/domain';
 import type { QueryOptions, PaginatedResult } from '@repo/domain';
 import { apiClient } from '@/features/shared/infrastructure/api-client';
 import { buildQueryParams } from '@/features/shared/infrastructure/query-params.builder';
@@ -34,6 +35,11 @@ export class TaskRepositoryAdapter implements TaskRepositoryPort {
       data: result.data.map(this.mapToEntity),
       meta: result.meta,
     };
+  }
+
+  async createTask(data: { title: string; description?: string; projectId: string; priority?: string; dueDate?: Date }): Promise<Task> {
+    const result = await apiClient.post<Task>('/tasks', data);
+    return this.mapToEntity(result);
   }
 
   private mapToEntity(data: any): Task {

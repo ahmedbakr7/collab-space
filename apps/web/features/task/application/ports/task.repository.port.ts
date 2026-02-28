@@ -1,5 +1,6 @@
 import { Task } from '@repo/domain/src/task/entities/task.entity';
 import type { QueryOptions, PaginatedResult } from '@repo/domain';
+import { CreateTaskDTO } from '@repo/domain';
 
 export interface TaskFilter {
   organizationId?: string;
@@ -18,4 +19,5 @@ export interface TaskRepositoryPort {
     filter?: TaskFilter,
     query?: QueryOptions,
   ): Promise<PaginatedResult<Task>>;
+  createTask(data: { title: string; description?: string; projectId: string; priority?: string; dueDate?: Date }): Promise<Task>;
 }

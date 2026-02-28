@@ -1,3 +1,5 @@
+import { CreateProjectForm } from '@/features/project/presentation/components/create-project-form';
+
 export default function CreateProjectPage() {
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
@@ -12,10 +14,8 @@ export default function CreateProjectPage() {
             </p>
           </div>
         </div>
-        {/* TODO: Add Project Form */}
-        <div className="p-8 text-center border rounded-lg bg-muted/10 text-muted-foreground">
-          Project Form Component will go here
-        </div>
+        {/* Project Form */}
+        <CreateProjectForm />
       </div>
     </div>
   );
